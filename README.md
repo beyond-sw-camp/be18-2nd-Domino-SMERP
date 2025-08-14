@@ -33,11 +33,26 @@
       </td>
       </tr>
     <tr align="center">
-      <td><a href="https://github.com/KorSwib" target="_blank">KorSwib</a></td>
-      <td><a href="https://github.com/IIIjong" target="_blank">IIIjong</a></td>
-      <td><a href="https://github.com/wjdvlf5456" target="_blank">wjdvlf5456</a></td>
-     <td><a href="https://github.com/promandu" target="_blank">promandu</a></td>
-      <td><a href="https://github.com/pcochoco" target="_blank">pcochoco</a></td>
+      <td>
+        <a href="https://github.com/KorSwib" target="_blank">
+        <img src="https://img.shields.io/badge/GitHub-Link-black?logo=github" alt="GitHub Link"/></a>
+      </td>
+      <td>
+        <a href="https://github.com/IIIjong" target="_blank">
+        <img src="https://img.shields.io/badge/GitHub-Link-black?logo=github" alt="GitHub Link"/></a>
+      </td>
+      <td>
+        <a href="https://github.com/wjdvlf5456" target="_blank">
+        <img src="https://img.shields.io/badge/GitHub-Link-black?logo=github" alt="GitHub Link"/></a>
+      </td>
+      <td>
+        <a href="https://github.com/promandu" target="_blank">
+        <img src="https://img.shields.io/badge/GitHub-Link-black?logo=github" alt="GitHub Link"/></a>
+      </td>
+      <td>
+        <a href="https://github.com/pcochoco" target="_blank">
+        <img src="https://img.shields.io/badge/GitHub-Link-black?logo=github" alt="GitHub Link"/></a>
+      </td>
     </tr>
     </tbody>
 </table>
