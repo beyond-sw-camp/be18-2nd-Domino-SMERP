@@ -1,0 +1,32 @@
+<!--?xml version="1.0" encoding="UTF-8"?-->
+<svg width="850" height="150" viewBox="0 0 850 150" xmlns="http://www.w3.org/2000/svg">
+  <style>
+    .letter {
+      font-size: 80px;
+      font-family: sans-serif;
+      font-weight: bold;
+      fill: #000000;
+      transform-box: fill-box;
+      transform-origin: bottom left;
+      animation: fall 2s infinite;
+    }
+    @keyframes fall {
+      0%   { transform: rotate(0deg); }
+      20%  { transform: rotate(90deg); }
+      50%  { transform: rotate(90deg); }
+      70%  { transform: rotate(0deg); }
+      100% { transform: rotate(0deg); }
+    }
+  </style>
+
+  <text class="letter" x="50" y="100" style="animation-delay:0s">T</text>
+  <text class="letter" x="120" y="100" style="animation-delay:0.12s">E</text>
+  <text class="letter" x="190" y="100" style="animation-delay:0.24s">A</text>
+  <text class="letter" x="260" y="100" style="animation-delay:0.36s">M</text>
+  <text class="letter" x="370" y="100" style="animation-delay:0.60s">D</text>
+  <text class="letter" x="440" y="100" style="animation-delay:0.72s">O</text>
+  <text class="letter" x="510" y="100" style="animation-delay:0.84s">M</text>
+  <text class="letter" x="580" y="100" style="animation-delay:0.96s">I</text>
+  <text class="letter" x="620" y="100" style="animation-delay:1.08s">N</text>
+  <text class="letter" x="690" y="100" style="animation-delay:1.20s">O</text>
+</svg>
