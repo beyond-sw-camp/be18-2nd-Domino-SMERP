@@ -29,7 +29,7 @@
        <img src="https://github.com/user-attachments/assets/b2131110-7c4f-4cd4-b298-dd647655b281" height = "100px" width="100" alt="김민준 프로필"/>
       </td>
       <td>
-       <<img src="https://github.com/user-attachments/assets/39542beb-298c-4dae-b2e9-d59b2c1e8b0a" height = "100px" width="100" alt="박채연 프로필" />
+       <img src="https://github.com/user-attachments/assets/39542beb-298c-4dae-b2e9-d59b2c1e8b0a" height = "100px" width="100" alt="박채연 프로필" />
       </td>
       </tr>
     <tr align="center">
