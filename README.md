@@ -2,8 +2,6 @@
 # be18-2nd-Team_Domino-project
 
 # 📉 Project_SMERP
-## ⭐팀명 ⭐
-
 
 ## ✨팀원✨
 <table style="width:100%;">
