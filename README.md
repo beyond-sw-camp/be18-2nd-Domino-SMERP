@@ -4,8 +4,43 @@
 ## ⭐팀명: Team Dominos⭐
 
 ## ✨팀원✨
-육세윤, 최정필, 김민준, 박종원, 박채연
-
+<table style="width:100%;">
+  <thead>
+    <tr align="center">
+      <th>육세윤</th>
+      <th>박종원</th>
+      <th>최정필</th>
+      <th>김민준</th>
+      <th>박채연</th>
+     </tr>
+  </thead>
+   <tbody>
+    <tr align="center">
+      <td>
+       <img src="https://github.com/user-attachments/assets/53f9c867-810a-4fd0-8c68-d63cdb83be22" height = "100px" alt="육세윤 프로필" />
+      </td>
+      <td>
+       <img src="https://github.com/user-attachments/assets/1f7e166a-c40a-4abf-ad5b-483d8b02c2a0" height = "100px" alt="박종원 프로필" />
+      </td>
+      <td>
+       <img src="https://github.com/user-attachments/assets/91de1ba0-5d0a-49e2-bc9d-bc72cba21c0f" height = "100px" alt="최정필 프로필" />
+      </td>
+      <td>
+       <img src="https://github.com/user-attachments/assets/e2117168-72fa-450d-a869-5c0f7197f15b" height = "100px" alt="김민준 프로필"/>
+      </td>
+      <td>
+       <img src="https://github.com/user-attachments/assets/a5a1806a-3318-430b-bfa0-69454b13c719" height = "100px" alt="박채연 프로필" />
+      </td>
+      </tr>
+    <tr align="center">
+      <td><a href="https://github.com/KorSwib" target="_blank">KorSwib</a></td>
+      <td><a href="https://github.com/IIIjong" target="_blank">IIIjong</a></td>
+      <td><a href="https://github.com/wjdvlf5456" target="_blank">wjdvlf5456</a></td>
+     <td><a href="https://github.com/promandu" target="_blank">promandu</a></td>
+      <td><a href="https://github.com/pcochoco" target="_blank">pcochoco</a></td>
+    </tr>
+    </tbody>
+</table>
 ## 📚 목차
 
 <br>
