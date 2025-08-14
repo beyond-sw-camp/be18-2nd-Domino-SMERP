@@ -1,0 +1,29 @@
+<svg width="1000" height="150" viewBox="0 0 1000 150" xmlns="http://www.w3.org/2000/svg">
+  <style>
+    .letter {
+      font-size: 80px;
+      font-family: sans-serif;
+      font-weight: bold;
+      transform-box: fill-box;
+      transform-origin: bottom left;
+      animation: fall 2s infinite;
+    }
+    @keyframes fall {
+      0%   { transform: rotate(0deg); }
+      20%  { transform: rotate(90deg); }
+      50%  { transform: rotate(90deg); }
+      70%  { transform: rotate(0deg); }
+      100% { transform: rotate(0deg); }
+    }
+  </style>
+  <text x="40" y="110" class="letter" style="animation-delay: 0.00s;">T</text>
+  <text x="125" y="110" class="letter" style="animation-delay: 0.12s;">E</text>
+  <text x="210" y="110" class="letter" style="animation-delay: 0.24s;">A</text>
+  <text x="295" y="110" class="letter" style="animation-delay: 0.36s;">M</text>
+  <text x="465" y="110" class="letter" style="animation-delay: 0.60s;">D</text>
+  <text x="550" y="110" class="letter" style="animation-delay: 0.72s;">O</text>
+  <text x="635" y="110" class="letter" style="animation-delay: 0.84s;">M</text>
+  <text x="720" y="110" class="letter" style="animation-delay: 0.96s;">I</text>
+  <text x="805" y="110" class="letter" style="animation-delay: 1.08s;">N</text>
+  <text x="890" y="110" class="letter" style="animation-delay: 1.20s;">O</text>
+</svg>
