@@ -15,7 +15,7 @@
 <details>
 <summary>요구사항 명세서 링크</summary>
 <div markdown="1">
-[https://docs.google.com/spreadsheets/d/1atr55TXd0Bk1su-PHP-4pP_yuwYqgyo55p04q3iMQh0/edit?gid=726808703#gid=726808703]
+ <a href="https://docs.google.com/spreadsheets/d/1atr55TXd0Bk1su-PHP-4pP_yuwYqgyo55p04q3iMQh0/edit?gid=726808703#gid=726808703">요구사항 명세서</a>
 </div>
 </details>
 <br>
@@ -29,7 +29,8 @@
 
 ## <a id="requirements"></a>3. 테이블 명세서
 <details>
-https://docs.google.com/spreadsheets/d/1atr55TXd0Bk1su-PHP-4pP_yuwYqgyo55p04q3iMQh0/edit?gid=421782869#gid=421782869
+ <a href="https://docs.google.com/spreadsheets/d/1atr55TXd0Bk1su-PHP-4pP_yuwYqgyo55p04q3iMQh0/edit?gid=421782869#gid=421782869">테이블 명세서</a>
+
 </div>
 </details>
 <br>
