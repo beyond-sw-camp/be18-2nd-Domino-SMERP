@@ -1,4 +1,4 @@
-# <img src="docs/team-domino.svg">
+# <img src="docs/팀 도미노.svg">
 # be18-2nd-Team_Domino-project
 
 # 📉 Project_SMERP
