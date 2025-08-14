@@ -17,19 +17,19 @@
    <tbody>
     <tr align="center">
       <td>
-       <img src="https://github.com/user-attachments/assets/53f9c867-810a-4fd0-8c68-d63cdb83be22" height = "100px" alt="육세윤 프로필" />
+       <img src="https://github.com/user-attachments/assets/71656f3f-172a-4e27-a88e-6b2b261c7423" height = "100px" width="100" alt="육세윤 프로필" />
       </td>
       <td>
-       <img src="https://github.com/user-attachments/assets/1f7e166a-c40a-4abf-ad5b-483d8b02c2a0" height = "100px" alt="박종원 프로필" />
+       <img src="https://github.com/user-attachments/assets/2201edcb-bbbc-41f4-ab4d-08d4acce34db" height = "100px" width="100" alt="박종원 프로필" />
       </td>
       <td>
-       <img src="https://github.com/user-attachments/assets/91de1ba0-5d0a-49e2-bc9d-bc72cba21c0f" height = "100px" alt="최정필 프로필" />
+       <img src="https://github.com/user-attachments/assets/e2642af1-d3fe-49fe-a304-6dcad654577a" height = "100px" width="100" alt="최정필 프로필" />
       </td>
       <td>
-       <img src="https://github.com/user-attachments/assets/e2117168-72fa-450d-a869-5c0f7197f15b" height = "100px" alt="김민준 프로필"/>
+       <img src="https://github.com/user-attachments/assets/b2131110-7c4f-4cd4-b298-dd647655b281" height = "100px" width="100" alt="김민준 프로필"/>
       </td>
       <td>
-       <img src="https://github.com/user-attachments/assets/a5a1806a-3318-430b-bfa0-69454b13c719" height = "100px" alt="박채연 프로필" />
+       <<img src="https://github.com/user-attachments/assets/39542beb-298c-4dae-b2e9-d59b2c1e8b0a" height = "100px" width="100" alt="박채연 프로필" />
       </td>
       </tr>
     <tr align="center">
