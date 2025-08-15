@@ -6,7 +6,7 @@ plugins {
 
 group = 'com.domino'
 version = '0.0.1-SNAPSHOT'
-description = 'Demo project for Spring Boot'
+description = 'SMERP project for Spring Boot'
 
 java {
 	toolchain {
