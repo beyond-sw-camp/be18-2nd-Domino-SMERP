@@ -10,7 +10,7 @@
       <th>육세윤</th>
       <th>박종원</th>
       <th>최정필</th>
-      <th>김민준</th>
+      <th>김민중</th>
       <th>박채연</th>
      </tr>
   </thead>
