@@ -73,6 +73,7 @@
 
 ## <a id="requirements"></a>2. ERD
  <details>
+  <a href="https://www.erdcloud.com/d/DoDGNTmSjS7EYKnFs">ERD</a>
 <img width="4199" height="2042" alt="Domino_SMERP_ERD" src="https://github.com/user-attachments/assets/67e6a031-d88c-4ec8-a015-5e49f9fcbb5d" />
 </div>
 </details>
