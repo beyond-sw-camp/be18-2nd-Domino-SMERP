@@ -1,7 +1,7 @@
-# <img src="docs/팀 도미노.svg">
-# be18-2nd-Team_Domino-project
-
 # 📉 Project_SMERP
+
+# <img src="docs/팀 도미노.svg">
+
 
 ## ✨팀원✨
 <table style="width:100%;">
