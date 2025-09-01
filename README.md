@@ -1,3 +1,4 @@
+
 # <img src="docs/팀 도미노.svg">
 # be18-2nd-Team_Domino-project
 
@@ -82,6 +83,22 @@
 ## <a id="requirements"></a>3. 테이블 명세서
 <details>
  <a href="https://docs.google.com/spreadsheets/d/1atr55TXd0Bk1su-PHP-4pP_yuwYqgyo55p04q3iMQh0/edit?gid=421782869#gid=421782869">테이블 명세서</a>
+
+</div>
+</details>
+<br>
+
+## <a id="requirements"></a>4. API 명세서
+<details>
+ <a href="https://abalone-poppyseed-018.notion.site/254819b5e8c6813795d1ffae47426f4b?v=254819b5e8c6814baf53000c647a6bf3">API 명세서</a>
+
+</div>
+</details>
+<br>
+
+## <a id="requirements"></a>5. 화면 및 기능 설계서
+<details>
+ <a href="https://abalone-poppyseed-018.notion.site/254819b5e8c6813795d1ffae47426f4b?v=254819b5e8c6814baf53000c647a6bf3">화면 및 기능 설계서</a>
 
 </div>
 </details>
