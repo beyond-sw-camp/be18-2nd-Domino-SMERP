@@ -1,7 +1,7 @@
-# <img src="docs/팀 도미노.svg">
-# be18-2nd-Team_Domino-project
-
 # 📉 Project_SMERP
+
+# <img src="docs/팀 도미노.svg">
+
 
 ## ✨팀원✨
 <table style="width:100%;">
@@ -97,7 +97,7 @@
 
 ## <a id="requirements"></a>5. 화면 및 기능 설계서
 <details>
- <a href="https://abalone-poppyseed-018.notion.site/254819b5e8c6813795d1ffae47426f4b?v=254819b5e8c6814baf53000c647a6bf3">화면 및 기능 설계서</a>
+ <a href="https://www.figma.com/design/LbG41JvpR35x1pO2skQ069/SMERP?node-id=0-1&t=eZnFgf17fhanYC6o-1">화면 및 기능 설계서</a>
 
 </div>
 </details>
