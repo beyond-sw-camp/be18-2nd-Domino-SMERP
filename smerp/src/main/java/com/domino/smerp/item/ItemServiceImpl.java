@@ -14,13 +14,13 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-@Transactional
 public class ItemServiceImpl implements ItemService {
 
     private final ItemRepository itemRepository;
     private final ItemStatusRepository itemStatusRepository;
 
     @Override
+    @Transactional
     public ItemResponse createItem(ItemRequest request) {
         ItemStatus itemStatus =
                 itemStatusRepository.findById(request.getItemStatusId())
@@ -74,6 +74,7 @@ public class ItemServiceImpl implements ItemService {
 
     // 품목 수정(품목 구분 포함)
     @Override
+    @Transactional
     public ItemResponse updateItem(Long itemId, ItemRequest request) {
         Item item = itemRepository.findById(itemId)
                                     .orElseThrow(
@@ -94,6 +95,7 @@ public class ItemServiceImpl implements ItemService {
 
     // 품목 안전재고 / 사용여부 수정
     @Override
+    @Transactional
     public ItemResponse updateItemStatus(Long itemId, UpdateItemStatusRequest request) {
         Item item = itemRepository.findById(itemId)
                                     .orElseThrow(
@@ -108,6 +110,7 @@ public class ItemServiceImpl implements ItemService {
 
     // 품목 삭제
     @Override
+    @Transactional
     public void deleteItem(Long itemId) {
         // 수불 이력이 없는 품목만 삭제 가능.
         // 이 부분에 실제 수불 이력을 확인하는 로직 추가 예정
