@@ -1,26 +1,17 @@
 package com.domino.smerp.item;
 
+import com.domino.smerp.common.DatedEntity;
 import com.domino.smerp.item.constants.ItemAct;
 import com.domino.smerp.item.constants.SafetyStockAct;
 import com.domino.smerp.item.dto.request.ItemRequest;
 import com.domino.smerp.item.dto.request.UpdateItemStatusRequest;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
-import java.math.BigDecimal;
-import java.time.LocalDate;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.math.BigDecimal;
 
 
 @Entity
@@ -29,7 +20,7 @@ import lombok.NoArgsConstructor;
 @Table(name = "item")
 @NoArgsConstructor
 @AllArgsConstructor
-public class Item {
+public class Item extends DatedEntity {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -54,12 +45,6 @@ public class Item {
 
   @Column(name = "outbound_unit_price", precision = 12, scale = 2)
   private BigDecimal outboundUnitPrice;
-
-  @Column(name = "created_date", insertable = false, updatable = false)
-  private LocalDate createdDate;
-
-  @Column(name = "updated_date", insertable = false, updatable = false)
-  private LocalDate updatedDate;
 
   @Enumerated(EnumType.STRING)
   @Column(name = "item_act", nullable = false)
