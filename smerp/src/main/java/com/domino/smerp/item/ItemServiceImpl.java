@@ -21,7 +21,7 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     @Transactional
-    public ItemResponse createItem(ItemRequest request) {
+    public ItemResponse createItem(final ItemRequest request) {
         ItemStatus itemStatus =
                 itemStatusRepository.findById(request.getItemStatusId())
                         .orElseThrow(
@@ -48,7 +48,7 @@ public class ItemServiceImpl implements ItemService {
                         .build();
 
         Item savedItem = itemRepository.save(item);
-        return mapToResponseDto(savedItem);
+        return ItemResponse.fromEntity(savedItem);
     }
 
     // 품목 목록 조회
@@ -58,24 +58,24 @@ public class ItemServiceImpl implements ItemService {
 
         return itemRepository.findAll()
                             .stream()
-                            .map(this::mapToResponseDto)
+                            .map(ItemResponse::fromEntity)
                             .toList();
     }
 
     // 품목 상세 조회
     @Override
     @Transactional(readOnly = true)
-    public ItemResponse getItemById(Long itemId) {
+    public ItemResponse getItemById(final Long itemId) {
         Item item = itemRepository.findById(itemId)
                                     .orElseThrow(
                                         () -> new IllegalArgumentException("ID " + itemId + "에 해당하는 품목을 찾을 수 없습니다."));
-        return mapToResponseDto(item);
+        return ItemResponse.fromEntity(item);
     }
 
     // 품목 수정(품목 구분 포함)
     @Override
     @Transactional
-    public ItemResponse updateItem(Long itemId, ItemRequest request) {
+    public ItemResponse updateItem(final Long itemId, final ItemRequest request) {
         Item item = itemRepository.findById(itemId)
                                     .orElseThrow(
                                         () -> new IllegalArgumentException("ID " + itemId + "에 해당하는 품목을 찾을 수 없습니다."));
@@ -90,13 +90,13 @@ public class ItemServiceImpl implements ItemService {
         item.updateItem(request, itemStatus);
 
         Item updatedItem = itemRepository.save(item);
-        return mapToResponseDto(updatedItem);
+        return ItemResponse.fromEntity(updatedItem);
     }
 
     // 품목 안전재고 / 사용여부 수정
     @Override
     @Transactional
-    public ItemResponse updateItemStatus(Long itemId, UpdateItemStatusRequest request) {
+    public ItemResponse updateItemStatus(final Long itemId, final UpdateItemStatusRequest request) {
         Item item = itemRepository.findById(itemId)
                                     .orElseThrow(
                                         () -> new IllegalArgumentException("ID " + itemId + "에 해당하는 품목을 찾을 수 없습니다."));
@@ -104,45 +104,20 @@ public class ItemServiceImpl implements ItemService {
         item.updateStatus(request);
 
         Item updatedItem = itemRepository.save(item);
-        return mapToResponseDto(updatedItem);
+        return ItemResponse.fromEntity(updatedItem);
     }
 
 
     // 품목 삭제
     @Override
     @Transactional
-    public void deleteItem(Long itemId) {
+    public void deleteItem(final Long itemId) {
         // 수불 이력이 없는 품목만 삭제 가능.
         // 이 부분에 실제 수불 이력을 확인하는 로직 추가 예정
         if (!itemRepository.existsById(itemId)) {
             throw new IllegalArgumentException("ID " + itemId + "에 해당하는 품목을 찾을 수 없습니다.");
         }
         itemRepository.deleteById(itemId);
-    }
-
-
-    // 엔티티를 DTO로 변환하는 헬퍼 메소드
-    private ItemResponse mapToResponseDto(Item item) {
-
-        return ItemResponse.builder()
-                            .itemId(item.getItemId())
-                            .itemStatusId(item.getItemStatus().getItemStatusId())
-                            .itemStatusName(item.getItemStatus().getStatus().getDescription())
-                            .name(item.getName())
-                            .specification(item.getSpecification())
-                            .unit(item.getUnit())
-                            .inboundUnitPrice(item.getInboundUnitPrice())
-                            .outboundUnitPrice(item.getOutboundUnitPrice())
-                            .createdDate(item.getCreatedDate())
-                            .updatedDate(item.getUpdatedDate())
-                            .itemAct(item.getItemAct().getDescription())
-                            .safetyStock(item.getSafetyStock())
-                            .safetyStockAct(item.getSafetyStockAct().getDescription())
-                            .rfid(item.getRfid())
-                            .groupName1(item.getGroupName1())
-                            .groupName2(item.getGroupName2())
-                            .groupName3(item.getGroupName3())
-                            .build();
     }
 
 }
