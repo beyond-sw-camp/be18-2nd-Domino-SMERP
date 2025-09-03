@@ -2,6 +2,7 @@ package com.domino.smerp.user;
 
 import com.domino.smerp.client.Client;
 import com.domino.smerp.client.ClientRepository;
+import com.domino.smerp.common.encrypt.SsnEncryptor;
 import com.domino.smerp.user.constants.UserRole;
 import com.domino.smerp.user.dto.request.CreateUserRequest;
 import com.domino.smerp.user.dto.request.UpdateUserRequest;
@@ -11,6 +12,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,6 +21,8 @@ import org.springframework.transaction.annotation.Transactional;
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final ClientRepository clientRepository;
+    private final PasswordEncoder passwordEncoder;
+    private final SsnEncryptor ssnEncryptor;
 
     @Override
     @Transactional
@@ -49,9 +53,9 @@ public class UserServiceImpl implements UserService {
                         .email(request.getEmail())
                         .phone(request.getPhone())
                         .address(request.getAddress())
-                        .ssn(request.getSsn())
+                        .ssn(ssnEncryptor.SsnEncrypt(request.getSsn()))
                         .loginId(request.getLoginId())
-                        .password(request.getPassword())
+                        .password(passwordEncoder.encode(request.getPassword()))
                         .hireDate(LocalDate.parse(request.getHireDate()))
                         .fireDate(
                             request.getFireDate() != null ? LocalDate.parse(request.getFireDate())
@@ -102,7 +106,7 @@ public class UserServiceImpl implements UserService {
                            .email(user.getEmail())
                            .phone(user.getPhone())
                            .address(user.getAddress())
-                           .ssn(user.getSsn())
+                           .ssn(ssnEncryptor.SsnDecrypt(user.getSsn()))
                            .hireDate(user.getHireDate())
                            .fireDate(user.getFireDate())
                            .loginId(user.getLoginId())
