@@ -9,11 +9,9 @@ import com.domino.smerp.user.dto.request.UpdateUserRequest;
 import com.domino.smerp.user.dto.response.UserListResponse;
 import com.domino.smerp.user.dto.response.UserResponse;
 import java.time.LocalDate;
-import java.util.Base64;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.crypto.encrypt.AesBytesEncryptor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -55,7 +53,7 @@ public class UserServiceImpl implements UserService {
                         .email(request.getEmail())
                         .phone(request.getPhone())
                         .address(request.getAddress())
-                        .ssn(ssnEncryptor.SsnEncryptor(request.getSsn()))
+                        .ssn(ssnEncryptor.SsnEncrypt(request.getSsn()))
                         .loginId(request.getLoginId())
                         .password(passwordEncoder.encode(request.getPassword()))
                         .hireDate(LocalDate.parse(request.getHireDate()))
@@ -108,7 +106,7 @@ public class UserServiceImpl implements UserService {
                            .email(user.getEmail())
                            .phone(user.getPhone())
                            .address(user.getAddress())
-                           .ssn(ssnEncryptor.SsnDecryptor(user.getSsn()))
+                           .ssn(ssnEncryptor.SsnDecrypt(user.getSsn()))
                            .hireDate(user.getHireDate())
                            .fireDate(user.getFireDate())
                            .loginId(user.getLoginId())

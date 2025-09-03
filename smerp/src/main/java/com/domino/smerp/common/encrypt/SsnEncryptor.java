@@ -1,7 +1,7 @@
 package com.domino.smerp.common.encrypt;
 
+import java.util.Base64;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.crypto.codec.Base64;
 import org.springframework.security.crypto.encrypt.AesBytesEncryptor;
 import org.springframework.stereotype.Component;
 
@@ -10,15 +10,15 @@ import org.springframework.stereotype.Component;
 public class SsnEncryptor {
     private final AesBytesEncryptor aesBytesEncryptor;
 
-    public String SsnEncryptor(String ssn) {
+    public String SsnEncrypt(String ssn) {
 
         byte[] encrypt = aesBytesEncryptor.encrypt(ssn.getBytes());
-        return new String(Base64.encode(encrypt));
+        return Base64.getEncoder().encodeToString(encrypt);
     }
 
-    public String SsnDecryptor(String ssn) {
+    public String SsnDecrypt(String ssn) {
 
-        byte[] decode = Base64.decode(ssn.getBytes());
+        byte[] decode = Base64.getDecoder().decode(ssn);
         return new String(aesBytesEncryptor.decrypt(decode));
     }
 }
