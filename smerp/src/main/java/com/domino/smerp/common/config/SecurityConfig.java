@@ -3,8 +3,8 @@ package com.domino.smerp.common.config;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -18,12 +18,19 @@ import org.springframework.security.web.SecurityFilterChain;
 public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+
         http
             .csrf(csrf -> csrf.disable())
-            .authorizeHttpRequests(auth->auth.requestMatchers("/api/v1/auth/login","/api/v1/users").permitAll().anyRequest().authenticated()
+            .authorizeHttpRequests(
+                auth -> auth.requestMatchers("/api/v1/auth/login", "/api/v1/users")
+                            .permitAll()
+                            .requestMatchers(HttpMethod.DELETE, "/api/v1/**")
+                            .hasRole("ADMIN")
+                            .anyRequest()
+                            .authenticated()
             )
             .formLogin(form -> form.disable())
-            .httpBasic(basic->basic.disable())
+            .httpBasic(basic -> basic.disable())
             .sessionManagement(sessionManagement -> sessionManagement.maximumSessions(1));
         return http.build();
     }
@@ -35,7 +42,9 @@ public class SecurityConfig {
     }
 
     @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
+    public AuthenticationManager authenticationManager(
+        AuthenticationConfiguration authenticationConfiguration) throws Exception {
+
         return authenticationConfiguration.getAuthenticationManager();
     }
 }
