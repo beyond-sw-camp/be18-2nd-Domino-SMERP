@@ -120,15 +120,13 @@ public class ItemServiceImpl implements ItemService {
   @Override
   @Transactional
   public void deleteItem(final Long itemId) {
-    if (!itemRepository.existsById(itemId)) {
-      throw new CustomException(ErrorCode.ITEM_NOT_FOUND);
-    }
-    /*
-    TODO: 소프트딜리트 고려 `is_deleted` 칼럼 추가 희망
-    */
+    Item item = itemRepository.findById(itemId)
+                              .orElseThrow(
+                () -> new CustomException(ErrorCode.ITEM_NOT_FOUND));
 
-    itemRepository.deleteById(itemId);
+    item.delete();
   }
+
 
   // findById 공통 메소드
   // 품목 구분 findById

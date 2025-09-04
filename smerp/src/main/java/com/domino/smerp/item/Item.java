@@ -26,6 +26,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Where;
 
 
 @Entity
@@ -34,6 +35,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Table(name = "item")
+@Where(clause = "is_deleted = false")
 public class Item {
 
   @Id
@@ -89,6 +91,10 @@ public class Item {
   @Column(name = "group_name3", length = 50)
   private String groupName3;
 
+  @Builder.Default
+  @Column(name = "is_deleted", nullable = false)
+  private boolean isDeleted = false;
+
   // 품목 수정
   public void updateItem(ItemRequest request, ItemStatus itemStatus) {
     if (itemStatus != null) this.itemStatus = itemStatus;
@@ -109,6 +115,11 @@ public class Item {
     if (request.getItemAct() != null) {this.itemAct = ItemAct.fromLabel(request.getItemAct());}
     if (request.getSafetyStock() != null) {this.safetyStock = request.getSafetyStock();}
     if (request.getSafetyStockAct() != null) {this.safetyStockAct = SafetyStockAct.fromLabel(request.getSafetyStockAct());}
+  }
+
+  // 품목 삭제 (소프트딜리트)
+  public void delete() {
+    this.isDeleted = true;
   }
 
   @PrePersist
