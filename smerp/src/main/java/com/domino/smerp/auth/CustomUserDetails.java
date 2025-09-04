@@ -1,6 +1,7 @@
 package com.domino.smerp.auth;
 
 import com.domino.smerp.user.User;
+import com.domino.smerp.user.constants.UserRole;
 import java.util.Collection;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -15,7 +16,7 @@ public class CustomUserDetails implements UserDetails {
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
 
-        return List.of(new SimpleGrantedAuthority("ROLE_" + user.getRole()));
+        return List.of(new SimpleGrantedAuthority(user.getRole().getRoleName()));
     }
 
     @Override

@@ -1,5 +1,7 @@
 package com.domino.smerp.auth;
 
+import com.domino.smerp.common.exception.CustomException;
+import com.domino.smerp.common.exception.ErrorCode;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.apache.catalina.Manager;
@@ -16,6 +18,9 @@ public class AuthServiceImpl implements AuthService {
     private final AuthenticationManager authenticationManager;
     @Override
     public void login(String loginId, String password, HttpSession session) {
+        if (loginId == null || loginId.isEmpty() || password == null || password.isEmpty()) {
+            throw new CustomException(ErrorCode.INVALID_LOGIN);
+        }
         Authentication authentication = authenticationManager.authenticate(
             new UsernamePasswordAuthenticationToken(loginId, password)
         );
