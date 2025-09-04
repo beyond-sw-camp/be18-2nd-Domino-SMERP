@@ -5,6 +5,9 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,14 +22,21 @@ public class AuthController {
     @PostMapping("/login")
     public void login(@RequestBody UserLoginRequest request, HttpSession session) {
         authService.login(request.getLoginId(),request.getPassword(),session);
-        log.info("Login Success ID ${}",request.getLoginId());
-        log.info("Login Success PASSWORD ${}",request.getPassword());
     }
 
     @PostMapping("/logout")
     public void logout(HttpSession session) {
         authService.logout(session);
         log.info("Logout Success ID ${}",session.getId());
-        log.info("Logout Success PASSWORD ${}",session.getId());
+    }
+
+    @GetMapping("/me")
+    public String whoAmI(HttpSession session) {
+        String loginId = (String) session.getAttribute("loginId");
+        String realName = (String) session.getAttribute("name");
+        String role = (String) session.getAttribute("role");
+
+        log.info("현재 로그인: {}, 이름: {}, 권한: {}", loginId, realName, role);
+        return String.format("Hello %s (%s) with role %s", realName, loginId, role);
     }
 }
