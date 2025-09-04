@@ -1,6 +1,7 @@
 package com.domino.smerp.common.exception;
 
 import lombok.Getter;
+import org.springframework.boot.logging.LogLevel;
 import org.springframework.http.HttpStatus;
 
 @Getter
@@ -22,7 +23,6 @@ public enum ErrorCode {
     private final String message;
 
     ErrorCode(HttpStatus status, String code, String message) {
-
         this.status = status;
         this.code = code;
         this.message = message;
