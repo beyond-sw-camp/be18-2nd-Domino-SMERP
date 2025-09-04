@@ -38,6 +38,10 @@ public class OrderServiceImpl implements OrderService {
                 ? request.getStatus()
                 : OrderStatus.PENDING;
 
+        OrderStatus status = (request.getStatus() != null)
+                ? request.getStatus()
+                : OrderStatus.PENDING;
+
         Order order = Order.builder()
                 .client(client)
                 .user(user)
