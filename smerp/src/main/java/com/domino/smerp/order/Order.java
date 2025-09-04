@@ -12,12 +12,13 @@ import java.time.LocalDate;
 @Table(name = "orders")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Builder
 public class Order {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "order_id")
     private Long orderId;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -29,19 +30,22 @@ public class Order {
     private User user;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
+    @Column(name = "status", nullable = false)
     private OrderStatus status = OrderStatus.PENDING;   // ✅ constants 패키지로 이동한 Enum 사용
 
-    @Column(nullable = false)
+    @Column(name = "created_date", nullable = false)
     private LocalDate createdDate;
 
+    @Column(name = "updated_date")
     private LocalDate updatedDate;
 
-    @Column(nullable = false)
+    @Column(name = "delivery_date", nullable = false)
     private LocalDate deliveryDate;
 
+    @Column(name = "remark")
     private String remark;
 
+    @Column(name = "status")
     public void updateStatus(OrderStatus status) {
         this.status = status;
         this.updatedDate = LocalDate.now();

@@ -1,7 +1,6 @@
 package com.domino.smerp.order.dto.response;
 
 import com.domino.smerp.order.Order;
-import com.domino.smerp.order.constants.OrderStatus;
 import lombok.Builder;
 import lombok.Getter;
 

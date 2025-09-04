@@ -11,12 +11,13 @@ import java.time.LocalDate;
 @Table(name = "sales_order")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Builder
 public class SalesOrder {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "so_id", nullable = false)
     private Long soId;
 
     @ManyToOne(fetch = FetchType.LAZY)
