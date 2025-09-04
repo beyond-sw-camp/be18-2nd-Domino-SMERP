@@ -9,7 +9,7 @@ import lombok.*;
 @Table(name = "item_order_crossed_table")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Builder
 public class ItemOrderCrossedTable {
 

@@ -2,6 +2,8 @@ package com.domino.smerp.order;
 
 import com.domino.smerp.client.Client;
 import com.domino.smerp.client.ClientRepository;
+import com.domino.smerp.common.exception.CustomException;
+import com.domino.smerp.common.exception.ErrorCode;
 import com.domino.smerp.order.constants.OrderStatus;
 import com.domino.smerp.order.dto.request.OrderRequest;
 import com.domino.smerp.order.dto.request.UpdateOrderStatusRequest;
@@ -27,9 +29,10 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public OrderResponse createOrder(OrderRequest request) {
         Client client = clientRepository.findById(request.getClientId())
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 거래처 ID: " + request.getClientId()));
+                .orElseThrow(() -> new CustomException(ErrorCode.CLIENT_NOT_FOUND));
+
         User user = userRepository.findById(request.getUserId())
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자 ID: " + request.getUserId()));
+                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
         OrderStatus status = (request.getStatus() != null)
                 ? request.getStatus()
@@ -60,19 +63,27 @@ public class OrderServiceImpl implements OrderService {
     public OrderResponse getOrderById(Long orderId) {
         return orderRepository.findById(orderId)
                 .map(OrderResponse::from)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 주문 ID: " + orderId));
+                .orElseThrow(() -> new CustomException(ErrorCode.ORDER_NOT_FOUND));
     }
 
     @Override
     public OrderResponse updateOrderStatus(Long orderId, UpdateOrderStatusRequest request) {
         Order order = orderRepository.findById(orderId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 주문 ID: " + orderId));
+                .orElseThrow(() -> new CustomException(ErrorCode.ORDER_NOT_FOUND));
+
+        if (request.getStatus() == null) {
+            throw new CustomException(ErrorCode.INVALID_ORDER_STATUS);
+        }
+
         order.updateStatus(request.getStatus());
         return OrderResponse.from(order);
     }
 
     @Override
     public void deleteOrder(Long orderId) {
+        if (!orderRepository.existsById(orderId)) {
+            throw new CustomException(ErrorCode.ORDER_NOT_FOUND);
+        }
         orderRepository.deleteById(orderId);
     }
 }
