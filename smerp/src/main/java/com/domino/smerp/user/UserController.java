@@ -7,6 +7,7 @@ import com.domino.smerp.user.dto.response.UserResponse;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -36,17 +37,20 @@ public class UserController {
     }
 
     @GetMapping("/{userId}")
+    @PreAuthorize("#userId == principal.userId or hasRole('ADMIN')")
     public UserResponse findUserById(@PathVariable Long userId) {
         return userService.findUserById(userId);
     }
 
     @DeleteMapping("/{userId}")
+    @PreAuthorize("hasRole('ADMIN')")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteUser(@PathVariable Long userId) {
         userService.deleteUser(userId);
     }
 
     @PatchMapping("/{userId}")
+    @PreAuthorize("hasAnyRole('ADMIN','MANAGER')")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void updateUser(@PathVariable Long userId, @RequestBody UpdateUserRequest request) {
         userService.updateUser(userId, request);
