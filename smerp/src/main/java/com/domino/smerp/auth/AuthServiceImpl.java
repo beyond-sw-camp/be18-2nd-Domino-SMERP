@@ -7,6 +7,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -19,10 +20,17 @@ public class AuthServiceImpl implements AuthService {
             new UsernamePasswordAuthenticationToken(loginId, password)
         );
         SecurityContextHolder.getContext().setAuthentication(authentication);
+        session.setAttribute(HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY, SecurityContextHolder.getContext());
+        if (authentication.getPrincipal() instanceof CustomUserDetails customUserDetails) {
+            session.setAttribute("loginId", customUserDetails.getUsername());
+            session.setAttribute("name", customUserDetails.getName());
+            session.setAttribute("role", customUserDetails.getAuthorities().toString());
+        }
     }
 
     @Override
     public void logout(HttpSession session) {
         session.invalidate();
+        SecurityContextHolder.getContext().setAuthentication(null);
     }
 }
