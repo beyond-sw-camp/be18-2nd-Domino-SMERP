@@ -30,9 +30,16 @@ public class OrderServiceImpl implements OrderService {
     public OrderResponse createOrder(OrderRequest request) {
         Client client = clientRepository.findById(request.getClientId())
                 .orElseThrow(() -> new CustomException(ErrorCode.CLIENT_NOT_FOUND));
-
         User user = userRepository.findById(request.getUserId())
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+
+//        // ✅ status 검증
+//        OrderStatus status;
+//        try {
+//            status = (request.getStatus() != null) ? request.getStatus() : OrderStatus.PENDING;
+//        } catch (IllegalArgumentException e) {
+//            throw new CustomException(ErrorCode.INVALID_ORDER_STATUS);
+//        }
 
         OrderStatus status = (request.getStatus() != null)
                 ? request.getStatus()
@@ -75,11 +82,13 @@ public class OrderServiceImpl implements OrderService {
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new CustomException(ErrorCode.ORDER_NOT_FOUND));
 
-        if (request.getStatus() == null) {
-            throw new CustomException(ErrorCode.INVALID_ORDER_STATUS);
-        }
+//        // ✅ 상태값 검증
+//        try {
+//            order.updateStatus(request.getStatus());
+//        } catch (IllegalArgumentException e) {
+//            throw new CustomException(ErrorCode.INVALID_ORDER_STATUS);
+//        }
 
-        order.updateStatus(request.getStatus());
         return OrderResponse.from(order);
     }
 
