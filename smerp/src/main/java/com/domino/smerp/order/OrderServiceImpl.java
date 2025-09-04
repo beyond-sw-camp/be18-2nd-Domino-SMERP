@@ -31,10 +31,14 @@ public class OrderServiceImpl implements OrderService {
         User user = userRepository.findById(request.getUserId())
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자 ID: " + request.getUserId()));
 
+        OrderStatus status = (request.getStatus() != null)
+                ? request.getStatus()
+                : OrderStatus.PENDING;
+
         Order order = Order.builder()
                 .client(client)
                 .user(user)
-                .status(request.getStatus())   // ✅ 이제 Enum 타입이라 문제 없음
+                .status(status)   // default값 입력
                 .deliveryDate(request.getDeliveryDate())
                 .remark(request.getRemark())
                 .createdDate(LocalDate.now())

@@ -1,5 +1,6 @@
 package com.domino.smerp.salesorder;
 
+import com.domino.smerp.salesorder.SalesOrderService;
 import com.domino.smerp.salesorder.dto.request.SalesOrderRequest;
 import com.domino.smerp.salesorder.dto.response.SalesOrderResponse;
 import lombok.RequiredArgsConstructor;
@@ -28,5 +29,20 @@ public class SalesOrderController {
     @GetMapping("/{soId}")
     public ResponseEntity<SalesOrderResponse> getSalesOrder(@PathVariable Long soId) {
         return ResponseEntity.ok(salesOrderService.getSalesOrderById(soId));
+    }
+
+    // ✅ 판매 수정
+    @PatchMapping("/{soId}")
+    public ResponseEntity<SalesOrderResponse> updateSalesOrder(
+            @PathVariable Long soId,
+            @RequestBody SalesOrderRequest request) {
+        return ResponseEntity.ok(salesOrderService.updateSalesOrder(soId, request));
+    }
+
+    // ✅ 판매 삭제
+    @DeleteMapping("/{soId}")
+    public ResponseEntity<Void> deleteSalesOrder(@PathVariable Long soId) {
+        salesOrderService.deleteSalesOrder(soId);
+        return ResponseEntity.noContent().build();
     }
 }

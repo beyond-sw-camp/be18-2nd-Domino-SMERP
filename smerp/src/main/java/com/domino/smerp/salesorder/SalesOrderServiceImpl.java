@@ -31,7 +31,7 @@ public class SalesOrderServiceImpl implements SalesOrderService {
                 .surtax(request.getSurtax())
                 .price(request.getPrice())
                 .remark(request.getRemark())
-                .status(request.getStatus())   // ✅ Enum이면 그대로, String이면 변환 필요
+                .status(SalesOrderStatus.APPROVED)   // ✅ 강제로 APPROVED 지정
                 .createdDate(LocalDate.now())
                 .build();
 

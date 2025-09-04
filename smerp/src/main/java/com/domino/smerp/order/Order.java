@@ -30,7 +30,7 @@ public class Order {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private OrderStatus status;   // ✅ constants 패키지로 이동한 Enum 사용
+    private OrderStatus status = OrderStatus.PENDING;   // ✅ constants 패키지로 이동한 Enum 사용
 
     @Column(nullable = false)
     private LocalDate createdDate;

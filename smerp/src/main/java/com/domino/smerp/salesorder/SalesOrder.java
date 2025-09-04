@@ -36,7 +36,7 @@ public class SalesOrder {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private SalesOrderStatus status;  // ✅ constants 패키지 Enum 적용
+    private SalesOrderStatus status = SalesOrderStatus.APPROVED;  // ✅ 기본값 설정
 
     @Column(nullable = false)
     private LocalDate createdDate;
