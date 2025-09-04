@@ -1,26 +1,40 @@
 package com.domino.smerp.item;
 
-import com.domino.smerp.common.DatedEntity;
 import com.domino.smerp.item.constants.ItemAct;
 import com.domino.smerp.item.constants.SafetyStockAct;
 import com.domino.smerp.item.dto.request.ItemRequest;
 import com.domino.smerp.item.dto.request.UpdateItemStatusRequest;
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.ConstraintMode;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.ForeignKey;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.PreUpdate;
+import jakarta.persistence.Table;
+import java.math.BigDecimal;
+import java.time.Instant;
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.math.BigDecimal;
-
 
 @Entity
 @Getter
 @Builder
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Table(name = "item")
-@NoArgsConstructor
-@AllArgsConstructor
-public class Item extends DatedEntity {
+public class Item {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -28,7 +42,7 @@ public class Item extends DatedEntity {
   private Long itemId;
 
   @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "item_status_id", nullable = false)
+  @JoinColumn(name = "item_status_id", nullable = false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
   private ItemStatus itemStatus;
 
   @Column(name = "name", nullable = false, length = 60)
@@ -45,6 +59,12 @@ public class Item extends DatedEntity {
 
   @Column(name = "outbound_unit_price", precision = 12, scale = 2)
   private BigDecimal outboundUnitPrice;
+
+  @Column(name = "created_date", nullable = false, updatable = false)
+  private Instant createdDate;
+
+  @Column(name = "updated_date")
+  private Instant updatedDate;
 
   @Enumerated(EnumType.STRING)
   @Column(name = "item_act", nullable = false)
@@ -90,4 +110,13 @@ public class Item extends DatedEntity {
     if (request.getSafetyStockAct() != null) {this.safetyStockAct = SafetyStockAct.fromLabel(request.getSafetyStockAct());}
   }
 
+  @PrePersist
+  private void onPrePersist() {
+    this.createdDate = Instant.now();
+  }
+
+  @PreUpdate
+  private void onPreUpdate() {
+    this.updatedDate = Instant.now();
+  }
 }

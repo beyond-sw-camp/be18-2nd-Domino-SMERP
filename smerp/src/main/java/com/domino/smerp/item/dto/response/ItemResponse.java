@@ -1,16 +1,17 @@
 package com.domino.smerp.item.dto.response;
 
 import com.domino.smerp.item.Item;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import java.math.BigDecimal;
-import java.time.LocalDate;
+import java.time.Instant;
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
-
+import lombok.NoArgsConstructor;
 
 @Getter
 @Builder
-@AllArgsConstructor
 public class ItemResponse {
 
   private Long itemId;
@@ -21,8 +22,10 @@ public class ItemResponse {
   private String unit;
   private BigDecimal inboundUnitPrice;
   private BigDecimal outboundUnitPrice;
-  private LocalDate createdDate;
-  private LocalDate updatedDate;
+  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "UTC")
+  private Instant createdDate;
+  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "UTC")
+  private Instant updatedDate;
   private String itemAct;
   private Integer safetyStock;
   private String safetyStockAct;
@@ -31,9 +34,8 @@ public class ItemResponse {
   private String groupName2;
   private String groupName3;
 
-  // Item 엔티티를 DTO로 변환하는 정적 팩토리 메소드
+  // 정적 팩토리 메서드 (Entity → DTO)
   public static ItemResponse fromEntity(Item item) {
-
     return ItemResponse.builder()
                         .itemId(item.getItemId())
                         .itemStatusId(item.getItemStatus().getItemStatusId())
@@ -54,5 +56,4 @@ public class ItemResponse {
                         .groupName3(item.getGroupName3())
                         .build();
   }
-
 }

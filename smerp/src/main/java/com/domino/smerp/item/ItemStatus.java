@@ -6,9 +6,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "item_status")
 @Getter
 @NoArgsConstructor
+@Table(name = "item_status")
 public class ItemStatus {
 
   @Id
