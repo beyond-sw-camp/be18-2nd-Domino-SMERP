@@ -1,5 +1,7 @@
 package com.domino.smerp.item;
 
+import com.domino.smerp.common.exception.CustomException;
+import com.domino.smerp.common.exception.ErrorCode;
 import com.domino.smerp.item.constants.ItemAct;
 import com.domino.smerp.item.constants.SafetyStockAct;
 import com.domino.smerp.item.dto.request.ItemRequest;
@@ -15,111 +17,136 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class ItemServiceImpl implements ItemService {
 
-    private final ItemRepository itemRepository;
-    private final ItemStatusRepository itemStatusRepository;
+  private final ItemRepository itemRepository;
+  private final ItemStatusRepository itemStatusRepository;
 
-    // 품목 생성
-    @Override
-    @Transactional
-    public ItemResponse createItem(final ItemRequest request) {
-        ItemStatus itemStatus = findItemStatusById(request.getItemStatusId());
+  // 품목 생성
+  @Override
+  @Transactional
+  public ItemResponse createItem(final ItemRequest request) {
+    ItemStatus itemStatus = findItemStatusById(request.getItemStatusId());
 
-        Item item = Item.builder()
-                        .itemStatus(itemStatus)
-                        .name(request.getName())
-                        .specification(request.getSpecification())
-                        .unit(request.getUnit())
-                        .inboundUnitPrice(request.getInboundUnitPrice())
-                        .outboundUnitPrice(request.getOutboundUnitPrice())
-                        .itemAct(Optional.ofNullable(request.getItemAct())
-                            .map(ItemAct::fromLabel)
-                            .orElse(ItemAct.ACTIVE))
-                        .safetyStock(Optional.ofNullable(request.getSafetyStock()).orElse(0))
-                        .safetyStockAct(Optional.ofNullable(request.getSafetyStockAct())
-                            .map(SafetyStockAct::fromLabel)
-                            .orElse(SafetyStockAct.DISABLED))
-                        .rfid(request.getRfid())
-                        .groupName1(request.getGroupName1())
-                        .groupName2(request.getGroupName2())
-                        .groupName3(request.getGroupName3())
-                        .build();
+    Item item = Item.builder()
+                    .itemStatus(itemStatus)
+                    .name(request.getName())
+                    .specification(request.getSpecification())
+                    .unit(request.getUnit())
+                    .inboundUnitPrice(request.getInboundUnitPrice())
+                    .outboundUnitPrice(request.getOutboundUnitPrice())
+                    .itemAct(Optional.ofNullable(request.getItemAct())
+                        .map(ItemAct::fromLabel)
+                        .orElse(ItemAct.ACTIVE))
+                    .safetyStock(Optional.ofNullable(request.getSafetyStock()).orElse(0))
+                    .safetyStockAct(Optional.ofNullable(request.getSafetyStockAct())
+                        .map(SafetyStockAct::fromLabel)
+                        .orElse(SafetyStockAct.DISABLED))
+                    .rfid(request.getRfid())
+                    .groupName1(request.getGroupName1())
+                    .groupName2(request.getGroupName2())
+                    .groupName3(request.getGroupName3())
+                    .build();
 
-        Item savedItem = itemRepository.save(item);
-        return ItemResponse.fromEntity(savedItem);
+    Item savedItem = itemRepository.save(item);
+    return ItemResponse.fromEntity(savedItem);
+  }
+
+  // 품목 목록 조회
+  @Override
+  @Transactional(readOnly = true)
+  public List<ItemResponse> getItems() {
+
+    return itemRepository.findAll()
+                          .stream()
+                          .map(ItemResponse::fromEntity)
+                          .toList();
+  }
+
+  // 품목 상세 조회
+  @Override
+  @Transactional(readOnly = true)
+  public ItemResponse getItemById(final Long itemId) {
+    Item item = findItemById(itemId);
+
+    return ItemResponse.fromEntity(item);
+  }
+
+  // 품목 수정(품목 구분 포함)
+  @Override
+  @Transactional
+  public ItemResponse updateItem(final Long itemId, final ItemRequest request) {
+    Item item = findItemById(itemId);
+
+    ItemStatus itemStatus = null;
+    if (request.getItemStatusId() != null) {
+      itemStatus = findItemStatusById(request.getItemStatusId());
     }
 
-    // 품목 목록 조회
-    @Override
-    @Transactional(readOnly = true)
-    public List<ItemResponse> getItems() {
+    item.updateItem(request, itemStatus);
 
-        return itemRepository.findAll()
-                                .stream()
-                                .map(ItemResponse::fromEntity)
-                                .toList();
+    Item updatedItem = itemRepository.save(item);
+    return ItemResponse.fromEntity(updatedItem);
+  }
+
+  // 품목 안전재고 / 사용여부 수정
+  @Override
+  @Transactional
+  public ItemResponse updateItemStatus(final Long itemId, final UpdateItemStatusRequest request) {
+    Item item = findItemById(itemId);
+
+    // 안전재고수량 음수 체크
+    if (request.getSafetyStock() != null && request.getSafetyStock() < 0) {
+      throw new CustomException(ErrorCode.INVALID_SAFETY_STOCK);
     }
 
-    // 품목 상세 조회
-    @Override
-    @Transactional(readOnly = true)
-    public ItemResponse getItemById(final Long itemId) {
-        Item item = findItemById(itemId);
-
-        return ItemResponse.fromEntity(item);
+    try {
+      item.updateStatus(request);
+      
+    // 안전재고 / 사용여부 ENUM값 체크
+    } catch (IllegalArgumentException e) {
+      if (e.getMessage().contains("ItemAct")) {
+        throw new CustomException(ErrorCode.INVALID_ITEM_ACT);
+      }
+      if (e.getMessage().contains("SafetyStockAct")) {
+        throw new CustomException(ErrorCode.INVALID_SAFETY_STOCK_ACT);
+      }
+      throw e;
     }
 
-    // 품목 수정(품목 구분 포함)
-    @Override
-    @Transactional
-    public ItemResponse updateItem(final Long itemId, final ItemRequest request) {
-        Item item = findItemById(itemId);
+    Item updatedItem = itemRepository.save(item);
+    return ItemResponse.fromEntity(updatedItem);
+  }
 
-        ItemStatus itemStatus = null;
-        if (request.getItemStatusId() != null) {
-            itemStatus = findItemStatusById(request.getItemStatusId());
-        }
-
-        item.updateItem(request, itemStatus);
-
-        Item updatedItem = itemRepository.save(item);
-        return ItemResponse.fromEntity(updatedItem);
+  // 품목 삭제
+  @Override
+  @Transactional
+  public void deleteItem(final Long itemId) {
+    if (!itemRepository.existsById(itemId)) {
+      throw new CustomException(ErrorCode.ITEM_NOT_FOUND);
     }
+    /*
+    TODO: 소프트딜리트 고려 `is_deleted` 칼럼 추가 희망
+    */
 
-    // 품목 안전재고 / 사용여부 수정
-    @Override
-    @Transactional
-    public ItemResponse updateItemStatus(final Long itemId, final UpdateItemStatusRequest request) {
-        Item item = findItemById(itemId);
+    itemRepository.deleteById(itemId);
+  }
 
-        item.updateStatus(request);
+  // findById 공통 메소드
+  // 품목 구분 findById
+  public ItemStatus findItemStatusById(final Long itemStatusId) {
+    return itemStatusRepository.findById(itemStatusId)
+        .orElseThrow(
+            () -> new CustomException(ErrorCode.ITEM_STATUS_NOT_FOUND));
+  }
 
-        Item updatedItem = itemRepository.save(item);
-        return ItemResponse.fromEntity(updatedItem);
-    }
+  // 품목 findById
+  public Item findItemById(final Long itemId) {
+    return itemRepository.findById(itemId)
+        .orElseThrow(
+            () -> new CustomException(ErrorCode.ITEM_NOT_FOUND));
+  }
 
-    // 품목 삭제
-    @Override
-    @Transactional
-    public void deleteItem(final Long itemId) {
-        if (!itemRepository.existsById(itemId)) {
-            throw new IllegalArgumentException("ID " + itemId + "에 해당하는 품목을 찾을 수 없습니다.");
-        }
-        itemRepository.deleteById(itemId);
-    }
+  // TODO: 유효성 검사 로직 추가 (e.g. null 여부)
 
-    // findById 공통 메소드
-    // 품목 구분 findById
-    public ItemStatus findItemStatusById(final Long itemStatusId) {
-        return itemStatusRepository.findById(itemStatusId)
-            .orElseThrow(
-                () -> new IllegalArgumentException("존재하지 않는 품목 구분(Item Status) ID입니다."));
-    }
 
-    // 품목 findById
-    public Item findItemById(final Long itemId) {
-        return itemRepository.findById(itemId)
-            .orElseThrow(
-                () -> new IllegalArgumentException("ID " + itemId + "에 해당하는 품목을 찾을 수 없습니다."));
-    }
 
 }

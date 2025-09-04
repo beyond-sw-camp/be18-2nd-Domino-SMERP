@@ -77,7 +77,7 @@ public class Item {
   @Column(name = "safety_stock_act", nullable = false)
   private SafetyStockAct safetyStockAct;
 
-  @Column(name = "rfid", nullable = false, length = 30)
+  @Column(name = "rfid", nullable = false, unique = true,length = 30)
   private String rfid;
 
   @Column(name = "group_name1", length = 50)
@@ -90,18 +90,19 @@ public class Item {
   private String groupName3;
 
   // 품목 수정
-  public void updateItem(ItemRequest dto, ItemStatus itemStatus) {
+  public void updateItem(ItemRequest request, ItemStatus itemStatus) {
     if (itemStatus != null) this.itemStatus = itemStatus;
-    if (dto.getName() != null) this.name = dto.getName();
-    if (dto.getSpecification() != null) this.specification = dto.getSpecification();
-    if (dto.getUnit() != null) this.unit = dto.getUnit();
-    if (dto.getInboundUnitPrice() != null) this.inboundUnitPrice = dto.getInboundUnitPrice();
-    if (dto.getOutboundUnitPrice() != null) this.outboundUnitPrice = dto.getOutboundUnitPrice();
-    if (dto.getRfid() != null) this.rfid = dto.getRfid();
-    if (dto.getGroupName1() != null) this.groupName1 = dto.getGroupName1();
-    if (dto.getGroupName2() != null) this.groupName2 = dto.getGroupName2();
-    if (dto.getGroupName3() != null) this.groupName3 = dto.getGroupName3();
+    if (request.getName() != null) this.name = request.getName();
+    if (request.getSpecification() != null) this.specification = request.getSpecification();
+    if (request.getUnit() != null) this.unit = request.getUnit();
+    if (request.getInboundUnitPrice() != null) this.inboundUnitPrice = request.getInboundUnitPrice();
+    if (request.getOutboundUnitPrice() != null) this.outboundUnitPrice = request.getOutboundUnitPrice();
+    if (request.getRfid() != null) this.rfid = request.getRfid();
+    if (request.getGroupName1() != null) this.groupName1 = request.getGroupName1();
+    if (request.getGroupName2() != null) this.groupName2 = request.getGroupName2();
+    if (request.getGroupName3() != null) this.groupName3 = request.getGroupName3();
   }
+
 
   // 품목 사용/비사용, 안전 재고를 다룹니다.
   public void updateStatus(UpdateItemStatusRequest request) {

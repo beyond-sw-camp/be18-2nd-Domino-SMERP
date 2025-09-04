@@ -1,5 +1,7 @@
 package com.domino.smerp.item.constants;
 
+import com.domino.smerp.common.exception.CustomException;
+import com.domino.smerp.common.exception.ErrorCode;
 import java.util.Arrays;
 
 public enum ItemStatusStatus {
@@ -26,6 +28,6 @@ public enum ItemStatusStatus {
         .filter(status -> status.description.equals(label)   // 한글 설명 매칭
             || status.name().equalsIgnoreCase(label))   // Enum 이름 매칭
         .findFirst()
-        .orElseThrow(() -> new IllegalArgumentException("잘못된 상태: " + label));
+        .orElseThrow(() -> new CustomException(ErrorCode.ITEM_STATUS_NOT_FOUND));
   }
 }
