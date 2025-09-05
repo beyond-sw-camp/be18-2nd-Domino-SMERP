@@ -1,6 +1,5 @@
 package com.domino.smerp.order;
 
-import com.domino.smerp.client.Client;
 import com.domino.smerp.client.ClientRepository;
 import com.domino.smerp.common.exception.CustomException;
 import com.domino.smerp.common.exception.ErrorCode;
@@ -32,28 +31,23 @@ public class OrderServiceImpl implements OrderService {
     private final UserRepository userRepository;
     private final ItemRepository itemRepository;
 
+    /**
+     * 주문 등록
+     */
     @Override
     public OrderCreateResponse createOrder(OrderRequest request) {
-        // 거래처 확인
-        Client client = clientRepository.findById(request.getClientId())
+        var client = clientRepository.findById(request.getClientId())
                 .orElseThrow(() -> new CustomException(ErrorCode.CLIENT_NOT_FOUND));
-
-        // 영업 담당자 확인
-        User user = userRepository.findById(request.getUserId())
+        var user = userRepository.findById(request.getUserId())
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
-        // 품목 필수 검증
         if (request.getItems() == null || request.getItems().isEmpty()) {
             throw new CustomException(ErrorCode.ITEMS_REQUIRED);
         }
 
-        // 상태값 기본 처리
-        OrderStatus status = (request.getStatus() != null)
-                ? request.getStatus()
-                : OrderStatus.PENDING;
+        var status = (request.getStatus() != null) ? request.getStatus() : OrderStatus.PENDING;
 
-        // 주문 엔티티 생성
-        Order order = Order.builder()
+        var order = Order.builder()
                 .client(client)
                 .user(user)
                 .status(status)
@@ -63,12 +57,11 @@ public class OrderServiceImpl implements OrderService {
                 .createdDate(LocalDate.now())
                 .build();
 
-        // 품목 매핑 → 교차 테이블 생성
         for (ItemOrderRequest itemReq : request.getItems()) {
             Item item = itemRepository.findById(itemReq.getItemId())
                     .orElseThrow(() -> new CustomException(ErrorCode.ITEM_NOT_FOUND));
 
-            ItemOrderCrossedTable orderItem = ItemOrderCrossedTable.builder()
+            var orderItem = ItemOrderCrossedTable.builder()
                     .order(order)
                     .item(item)
                     .qty(itemReq.getQty())
@@ -77,11 +70,12 @@ public class OrderServiceImpl implements OrderService {
             order.addOrderItem(orderItem);
         }
 
-        Order savedOrder = orderRepository.save(order);
-        
-        return OrderCreateResponse.from(savedOrder);
+        return OrderCreateResponse.from(orderRepository.save(order));
     }
 
+    /**
+     * 주문 목록 조회
+     */
     @Override
     @Transactional(readOnly = true)
     public List<OrderResponse> getOrders() {
@@ -90,6 +84,9 @@ public class OrderServiceImpl implements OrderService {
                 .toList();
     }
 
+    /**
+     * 주문 단건 조회
+     */
     @Override
     @Transactional(readOnly = true)
     public OrderResponse getOrderById(Long orderId) {
@@ -98,15 +95,51 @@ public class OrderServiceImpl implements OrderService {
                 .orElseThrow(() -> new CustomException(ErrorCode.ORDER_NOT_FOUND));
     }
 
+    /**
+     * 주문 전체 수정 (PUT)
+     */
     @Override
-    public OrderResponse updateOrderStatus(Long orderId, UpdateOrderRequest request) {
+    public OrderResponse updateOrder(Long orderId, UpdateOrderRequest request) {
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new CustomException(ErrorCode.ORDER_NOT_FOUND));
 
-        order.updateStatus(request.getStatus());
-        return OrderResponse.from(order);
+        User newUser = userRepository.findById(request.getUserId())
+                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+
+        if (request.getItems() == null || request.getItems().isEmpty()) {
+            throw new CustomException(ErrorCode.ITEMS_REQUIRED);
+        }
+
+        // 새로운 orderItems 생성
+        List<ItemOrderCrossedTable> newOrderItems = request.getItems().stream()
+                .map(itemReq -> {
+                    Item item = itemRepository.findById(itemReq.getItemId())
+                            .orElseThrow(() -> new CustomException(ErrorCode.ITEM_NOT_FOUND));
+
+                    return ItemOrderCrossedTable.builder()
+                            .order(order)
+                            .item(item)
+                            .qty(itemReq.getQty())
+                            .build();
+                })
+                .toList();
+
+        // 엔티티에 전체 업데이트 적용
+        order.updateAll(
+                request.getOrderDate(),
+                request.getDeliveryDate(),
+                request.getRemark(),
+                request.getStatus(),
+                newUser,
+                newOrderItems
+        );
+
+        return OrderResponse.from(orderRepository.save(order));
     }
 
+    /**
+     * 주문 삭제
+     */
     @Override
     public void deleteOrder(Long orderId) {
         if (!orderRepository.existsById(orderId)) {

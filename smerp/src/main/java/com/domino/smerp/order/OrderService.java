@@ -11,6 +11,6 @@ public interface OrderService {
     OrderCreateResponse createOrder(OrderRequest request);
     List<OrderResponse> getOrders();
     OrderResponse getOrderById(Long orderId);
-    OrderResponse updateOrderStatus(Long orderId, UpdateOrderRequest request);
+    OrderResponse updateOrder(Long orderId, UpdateOrderRequest request); // ✅ PUT 전체 수정
     void deleteOrder(Long orderId);
 }

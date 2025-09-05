@@ -35,11 +35,10 @@ public class Order {
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false, length = 20)
     @Builder.Default
-    private OrderStatus status = OrderStatus.PENDING;   // ✅ 기본값 PENDING
-
+    private OrderStatus status = OrderStatus.PENDING;
 
     @Column(name = "order_date", nullable = false)
-    private LocalDate orderDate;   // ✅ 주문 일자 추가
+    private LocalDate orderDate;
 
     @Column(name = "delivery_date", nullable = false)
     private LocalDate deliveryDate;
@@ -53,19 +52,34 @@ public class Order {
     @Column(name = "updated_date")
     private LocalDate updatedDate;
 
-    // ✅ 교차 테이블 연관관계
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
     private List<ItemOrderCrossedTable> orderItems = new ArrayList<>();
 
-    // === 편의 메서드 ===
+    // === 연관관계 편의 메서드 ===
     public void addOrderItem(ItemOrderCrossedTable orderItem) {
         this.orderItems.add(orderItem);
-        orderItem.assignOrder(this); // 역방향 설정
+        orderItem.assignOrder(this);
     }
 
-    public void updateStatus(OrderStatus status) {
+    // === 전체 업데이트 메서드 ===
+    public void updateAll(LocalDate orderDate,
+                          LocalDate deliveryDate,
+                          String remark,
+                          OrderStatus status,
+                          User newUser,
+                          List<ItemOrderCrossedTable> newOrderItems) {
+        this.orderDate = orderDate;
+        this.deliveryDate = deliveryDate;
+        this.remark = remark;
         this.status = status;
+        this.user = newUser;
+
+        this.orderItems.clear();
+        if (newOrderItems != null) {
+            newOrderItems.forEach(this::addOrderItem);
+        }
+
         this.updatedDate = LocalDate.now();
     }
 }

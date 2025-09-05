@@ -35,13 +35,16 @@ public class OrderController {
         return ResponseEntity.ok(orderService.getOrderById(orderId));
     }
 
-    @PatchMapping("/{orderId}/status")
-    public ResponseEntity<OrderResponse> updateOrderStatus(
+    // ✅ 주문 전체 수정 (PUT)
+    @PutMapping("/{orderId}")
+    public ResponseEntity<OrderResponse> updateOrder(
             @PathVariable Long orderId,
-            @RequestBody UpdateOrderRequest request) {
-        return ResponseEntity.ok(orderService.updateOrderStatus(orderId, request));
+            @RequestBody @Valid UpdateOrderRequest request
+    ) {
+        return ResponseEntity.ok(orderService.updateOrder(orderId, request));
     }
 
+    // ✅ 삭제 (soft-delete 고려 시 patch로 유지 가능)
     @PatchMapping("/{orderId}/delete")
     public ResponseEntity<Void> deleteOrder(@PathVariable Long orderId) {
         orderService.deleteOrder(orderId);
