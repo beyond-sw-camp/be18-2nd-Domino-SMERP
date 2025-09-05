@@ -1,19 +1,16 @@
 package com.domino.smerp.purchase.requestpurchaseorder;
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+import com.domino.smerp.purchase.requestpurchaseorder.constants.RequestPurchaseOrderStatus;
+import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
-public interface RequestPurchaseOrderRepository
-    extends JpaRepository<RequestPurchaseOrder, Long> {
+@Repository
+public interface RequestPurchaseOrderRepository extends JpaRepository<RequestPurchaseOrder, Long> {
 
-  Page<RequestPurchaseOrder> findByUserId(Long userId, Pageable pageable);
+  // 상태별 조회
+  List<RequestPurchaseOrder> findByStatus(RequestPurchaseOrderStatus status);
 
-  Page<RequestPurchaseOrder> findByStatus(
-      com.domino.smerp.purchase.requestpurchaseorder.RequestPurchaseOrderStatus status,
-      Pageable pageable);
-
-  Page<RequestPurchaseOrder> findByUserIdAndStatus(Long userId,
-      com.domino.smerp.purchase.requestpurchaseorder.RequestPurchaseOrderStatus status,
-      Pageable pageable);
+  // 특정 사용자 기준 조회
+  List<RequestPurchaseOrder> findByUser_UserId(Long userId);
 }

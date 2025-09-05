@@ -1,56 +1,54 @@
-package com.domino.smerp.purchase.requestpurchaseorder;
+package com.domino.smerp.purchase.requestorder;
 
-import com.domino.smerp.purchase.itemrpocrossedtablerequest.ItemRpoCrossedTable;
-import com.domino.smerp.purchase.requestpurchaseorder.constants.RequestPurchaseOrderStatus;
-import com.domino.smerp.user;
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Index;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.PrePersist;
-import jakarta.persistence.Table;
+import com.domino.smerp.client.Client;
+import com.domino.smerp.user.User;
+import com.domino.smerp.purchase.requestorder.constants.RequestOrderStatus;
+import com.domino.smerp.purchase.requestpurchaseorder.RequestPurchaseOrder;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
+import lombok.*;
+
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
 
+/**
+ * 발주(RequestOrder) 엔티티
+ * - 매니저 권한으로 구매요청(RequestPurchaseOrder)을 불러와 확정하는 전표
+ */
 @Entity
 @Getter
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Table(
-    name = "request_purchase_order",
+    name = "request_order",
     indexes = {
-        @Index(name = "idx_rpo_user_id", columnList = "user_id"),
-        @Index(name = "idx_rpo_delivery_at", columnList = "delivery_at"),
-        @Index(name = "idx_rpo_status", columnList = "status")
+        @Index(name = "idx_ro_user_id", columnList = "user_id"),
+        @Index(name = "idx_ro_client_id", columnList = "client_id"),
+        @Index(name = "idx_ro_rpo_id", columnList = "rpo_id"),
+        @Index(name = "idx_ro_delivery_at", columnList = "delivery_at"),
+        @Index(name = "idx_ro_status", columnList = "status")
     }
 )
-public class RequestPurchaseOrder {
+public class RequestOrder {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  @Column(name = "rpo_id", nullable = false)
-  private Long rpoId; // 구매요청 PK
+  @Column(name = "ro_id", nullable = false)
+  private Long roId; // 발주 PK
+
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "rpo_id", nullable = false)
+  private RequestPurchaseOrder requestPurchaseOrder; // 구매요청 FK
+
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "client_id", nullable = false)
+  private Client client; // 거래처 FK
 
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "user_id", nullable = false)
-  private User user; // 사용자 FK
+  private User user; // 작성자(매니저) FK
 
   @Column(name = "created_at", nullable = false, updatable = false)
   private Instant createdAt; // 생성일시 (UTC)
@@ -67,10 +65,10 @@ public class RequestPurchaseOrder {
 
   @Enumerated(EnumType.STRING)
   @Column(name = "status", nullable = false, length = 20)
-  private RequestPurchaseOrderStatus status; // 상태 (기본: PENDING)
+  private RequestOrderStatus status; // 상태 (PENDING, APPROVED, COMPLETED, RETURNED)
 
-  @OneToMany(mappedBy = "requestPurchaseOrder", cascade = CascadeType.ALL, orphanRemoval = true)
-  private List<ItemRpoCrossedTable> items = new ArrayList<>();
+  @OneToMany(mappedBy = "requestOrder", cascade = CascadeType.ALL, orphanRemoval = true)
+  private List<ItemRoCrossedTable> items = new ArrayList<>();
 
   // ====== Lifecycle ======
   @PrePersist
@@ -81,7 +79,7 @@ public class RequestPurchaseOrder {
       this.deliveryAt = now;
     }
     if (this.status == null) {
-      this.status = RequestPurchaseOrderStatus.PENDING;
+      this.status = RequestOrderStatus.PENDING;
     }
     if (this.updatedAt == null) {
       this.updatedAt = this.createdAt;
@@ -102,20 +100,20 @@ public class RequestPurchaseOrder {
   }
 
   public void markApproved() {
-    this.status = RequestPurchaseOrderStatus.APPROVED;
+    this.status = RequestOrderStatus.APPROVED;
   }
 
   public void markCompleted() {
-    this.status = RequestPurchaseOrderStatus.COMPLETED;
+    this.status = RequestOrderStatus.COMPLETED;
   }
 
   public void markReturned(final String reason) {
-    this.status = RequestPurchaseOrderStatus.RETURNED;
+    this.status = RequestOrderStatus.RETURNED;
     appendRemark(reason);
   }
 
   public void revertToPending(final String reason) {
-    this.status = RequestPurchaseOrderStatus.PENDING;
+    this.status = RequestOrderStatus.PENDING;
     appendRemark(reason);
   }
 
@@ -131,7 +129,7 @@ public class RequestPurchaseOrder {
     }
   }
 
-  public void addItem(final ItemRpoCrossedTable item) {
+  public void addItem(final ItemRoCrossedTable item) {
     this.items.add(item);
   }
 }

@@ -1,30 +1,21 @@
 package com.domino.smerp.purchase.requestpurchaseorder;
 
-import com.domino.smerp.purchase.requestpurchaseorder.dto.RequestPurchaseOrderRequest;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-
-import java.time.LocalDate;
+import com.domino.smerp.purchase.requestpurchaseorder.dto.request.RequestPurchaseOrderRequest;
+import com.domino.smerp.purchase.requestpurchaseorder.dto.response.RequestPurchaseOrderResponse;
+import java.util.List;
 
 public interface RequestPurchaseOrderService {
 
-  RequestPurchaseOrder create(RequestPurchaseOrderRequest req);
+  RequestPurchaseOrderResponse create(final RequestPurchaseOrderRequest request);
 
-  RequestPurchaseOrder get(Long id);
+  List<RequestPurchaseOrderResponse> getAll(final String status, final int page, final int size);
 
-  Page<RequestPurchaseOrder> list(Pageable pageable, Long userId,
-      RequestPurchaseOrderStatus status);
+  RequestPurchaseOrderResponse getById(final Long rpoId);
 
-  RequestPurchaseOrder changeDeliveryDate(Long id, LocalDate deliveryDate);
+  RequestPurchaseOrderResponse update(final Long rpoId, final RequestPurchaseOrderRequest request);
 
-  RequestPurchaseOrder changeStatus(Long id, RequestPurchaseOrderStatus status, String reason);
+  RequestPurchaseOrderResponse updateStatus(final Long rpoId, final String status,
+      final String reason);
 
-  RequestPurchaseOrder changeRemark(Long id, String remark);
-
-  /**
-   * 전표일자 변경(PATCH)
-   */
-  RequestPurchaseOrder changeDocumentDate(Long id, LocalDate date);
-
-  void delete(Long id);
+  void softDelete(final Long rpoId);
 }

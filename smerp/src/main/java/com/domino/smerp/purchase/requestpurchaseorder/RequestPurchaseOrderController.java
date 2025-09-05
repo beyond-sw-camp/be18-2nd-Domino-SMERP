@@ -1,95 +1,93 @@
 package com.domino.smerp.purchase.requestpurchaseorder;
 
-import com.domino.smerp.purchase.requestpurchaseorder.dto.RequestPurchaseOrderRequest;
-import com.domino.smerp.purchase.requestpurchaseorder.dto.RequestPurchaseOrderResponse;
-import jakarta.validation.Valid;
+import com.domino.smerp.purchase.requestpurchaseorder.dto.request.RequestPurchaseOrderRequest;
+import com.domino.smerp.purchase.requestpurchaseorder.dto.response.RequestPurchaseOrderResponse;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
-import java.time.LocalDate;
-import java.util.Map;
-
+/**
+ * 구매요청(RequestPurchaseOrder) Controller
+ */
 @RestController
+@RequestMapping("/api/request-purchase-orders")
 @RequiredArgsConstructor
-@RequestMapping("/api/rpos")
 public class RequestPurchaseOrderController {
 
-  private final RequestPurchaseOrderService service;
+  private final RequestPurchaseOrderService requestPurchaseOrderService;
 
+  /**
+   * 구매요청 등록
+   */
   @PostMapping
-  public ResponseEntity<RequestPurchaseOrderResponse> create(
-      @Valid @RequestBody RequestPurchaseOrderRequest req) {
-    return ResponseEntity.ok(RequestPurchaseOrderResponse.from(service.create(req)));
-  }
-
-  @GetMapping("/{id}")
-  public ResponseEntity<RequestPurchaseOrderResponse> get(@PathVariable Long id) {
-    return ResponseEntity.ok(RequestPurchaseOrderResponse.from(service.get(id)));
-  }
-
-  @GetMapping
-  public ResponseEntity<Page<RequestPurchaseOrderResponse>> list(
-      @RequestParam(defaultValue = "0") int page,
-      @RequestParam(defaultValue = "20") int size,
-      @RequestParam(required = false) Long userId,
-      @RequestParam(required = false) RequestPurchaseOrderStatus status
-  ) {
-    PageRequest pageable = PageRequest.of(page, size);
-    Page<RequestPurchaseOrderResponse> body = service.list(pageable, userId, status)
-        .map(RequestPurchaseOrderResponse::from);
-    return ResponseEntity.ok(body);
-  }
-
-  @PatchMapping("/{id}/delivery-date")
-  public ResponseEntity<RequestPurchaseOrderResponse> changeDeliveryDate(
-      @PathVariable Long id,
-      @RequestBody Map<String, String> body
-  ) {
-    LocalDate date = LocalDate.parse(body.get("deliveryDate"));
-    return ResponseEntity.ok(
-        RequestPurchaseOrderResponse.from(service.changeDeliveryDate(id, date)));
-  }
-
-  @PatchMapping("/{id}/status")
-  public ResponseEntity<RequestPurchaseOrderResponse> changeStatus(
-      @PathVariable Long id,
-      @RequestBody Map<String, String> body
-  ) {
-    RequestPurchaseOrderStatus status = RequestPurchaseOrderStatus.valueOf(
-        body.get("status").toUpperCase());
-    String reason = body.getOrDefault("reason", null);
-    return ResponseEntity.ok(
-        RequestPurchaseOrderResponse.from(service.changeStatus(id, status, reason)));
-  }
-
-  @PatchMapping("/{id}/remark")
-  public ResponseEntity<RequestPurchaseOrderResponse> changeRemark(
-      @PathVariable Long id,
-      @RequestBody Map<String, String> body
-  ) {
-    return ResponseEntity.ok(
-        RequestPurchaseOrderResponse.from(service.changeRemark(id, body.get("remark"))));
+  public ResponseEntity<RequestPurchaseOrderResponse> createRequestPurchaseOrder(
+      @RequestBody final RequestPurchaseOrderRequest request) {
+    RequestPurchaseOrderResponse response = requestPurchaseOrderService.create(request);
+    return ResponseEntity.status(201).body(response);
   }
 
   /**
-   * ✅ 전표일자 변경 PATCH
+   * 구매요청 목록 조회 (페이징)
    */
-  @PatchMapping("/{id}/document-date")
-  public ResponseEntity<RequestPurchaseOrderResponse> changeDocumentDate(
-      @PathVariable Long id,
-      @RequestBody Map<String, String> body
-  ) {
-    LocalDate date = LocalDate.parse(body.get("updatedDate"));
-    return ResponseEntity.ok(
-        RequestPurchaseOrderResponse.from(service.changeDocumentDate(id, date)));
+  @GetMapping
+  public ResponseEntity<List<RequestPurchaseOrderResponse>> getRequestPurchaseOrders(
+      @RequestParam(required = false) final String status,
+      @RequestParam(defaultValue = "0") final int page,
+      @RequestParam(defaultValue = "10") final int size) {
+    List<RequestPurchaseOrderResponse> responses =
+        requestPurchaseOrderService.getAll(status, page, size);
+    return ResponseEntity.ok(responses);
   }
 
-  @DeleteMapping("/{id}")
-  public ResponseEntity<Void> delete(@PathVariable Long id) {
-    service.delete(id);
-    return ResponseEntity.noContent().build();
+  /**
+   * 구매요청 상세 조회
+   */
+  @GetMapping("/{rpoId}")
+  public ResponseEntity<RequestPurchaseOrderResponse> getRequestPurchaseOrder(
+      @PathVariable final Long rpoId) {
+    RequestPurchaseOrderResponse response = requestPurchaseOrderService.getById(rpoId);
+    return ResponseEntity.ok(response);
+  }
+
+  /**
+   * 구매요청 수정
+   */
+  @PatchMapping("/{rpoId}")
+  public ResponseEntity<RequestPurchaseOrderResponse> updateRequestPurchaseOrder(
+      @PathVariable final Long rpoId,
+      @RequestBody final RequestPurchaseOrderRequest request) {
+    RequestPurchaseOrderResponse response = requestPurchaseOrderService.update(rpoId, request);
+    return ResponseEntity.ok(response);
+  }
+
+  /**
+   * 구매요청 상태 변경
+   */
+  @PatchMapping("/{rpoId}/status")
+  public ResponseEntity<RequestPurchaseOrderResponse> updateStatus(
+      @PathVariable final Long rpoId,
+      @RequestParam final String status,
+      @RequestParam(required = false) final String reason) {
+    RequestPurchaseOrderResponse response = requestPurchaseOrderService.updateStatus(rpoId, status,
+        reason);
+    return ResponseEntity.ok(response);
+  }
+
+  /**
+   * 구매요청 소프트 삭제
+   */
+  @DeleteMapping("/{rpoId}")
+  public ResponseEntity<Void> deleteRequestPurchaseOrder(@PathVariable final Long rpoId) {
+    requestPurchaseOrderService.softDelete(rpoId);
+    return ResponseEntity.noContent().build(); // 204
   }
 }
