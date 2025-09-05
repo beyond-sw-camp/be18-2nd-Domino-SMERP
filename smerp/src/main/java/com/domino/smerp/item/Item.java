@@ -2,7 +2,7 @@ package com.domino.smerp.item;
 
 import com.domino.smerp.item.constants.ItemAct;
 import com.domino.smerp.item.constants.SafetyStockAct;
-import com.domino.smerp.item.dto.request.ItemRequest;
+import com.domino.smerp.item.dto.request.UpdateItemRequest;
 import com.domino.smerp.item.dto.request.UpdateItemStatusRequest;
 import jakarta.persistence.Column;
 import jakarta.persistence.ConstraintMode;
@@ -26,8 +26,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.Where;
-
+import org.hibernate.annotations.SQLRestriction;
 
 @Entity
 @Getter
@@ -35,7 +34,7 @@ import org.hibernate.annotations.Where;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Table(name = "item")
-@Where(clause = "is_deleted = false")
+@SQLRestriction("is_deleted = false")
 public class Item {
 
   @Id
@@ -96,7 +95,7 @@ public class Item {
   private boolean isDeleted = false;
 
   // 품목 수정
-  public void updateItem(ItemRequest request, ItemStatus itemStatus) {
+  public void updateItem(UpdateItemRequest request, ItemStatus itemStatus) {
     if (itemStatus != null) this.itemStatus = itemStatus;
     if (request.getName() != null) this.name = request.getName();
     if (request.getSpecification() != null) this.specification = request.getSpecification();
@@ -122,6 +121,7 @@ public class Item {
     this.isDeleted = true;
   }
 
+  // TODO: BaseEntity 상속
   @PrePersist
   private void onPrePersist() {
     this.createdDate = Instant.now();

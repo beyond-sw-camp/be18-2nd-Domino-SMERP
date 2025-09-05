@@ -4,35 +4,32 @@ import com.domino.smerp.item.Item;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import java.math.BigDecimal;
 import java.time.Instant;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 @Getter
 @Builder
 public class ItemResponse {
 
-  private Long itemId;
-  private Long itemStatusId;
-  private String itemStatusName;
-  private String name;
-  private String specification;
-  private String unit;
-  private BigDecimal inboundUnitPrice;
-  private BigDecimal outboundUnitPrice;
+  private final Long itemId;
+  private final Long itemStatusId;
+  private final String itemStatusName;
+  private final String name;
+  private final String specification;
+  private final String unit;
+  private final BigDecimal inboundUnitPrice;
+  private final BigDecimal outboundUnitPrice;
   @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "UTC")
-  private Instant createdDate;
+  private final Instant createdDate;
   @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "UTC")
-  private Instant updatedDate;
-  private String itemAct;
-  private Integer safetyStock;
-  private String safetyStockAct;
-  private String rfid;
-  private String groupName1;
-  private String groupName2;
-  private String groupName3;
+  private final Instant updatedDate;
+  private final String itemAct;
+  private final Integer safetyStock;
+  private final String safetyStockAct;
+  private final String rfid;
+  private final String groupName1;
+  private final String groupName2;
+  private final String groupName3;
 
   // 정적 팩토리 메서드 (Entity → DTO)
   public static ItemResponse fromEntity(Item item) {

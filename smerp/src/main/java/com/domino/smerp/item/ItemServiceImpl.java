@@ -4,7 +4,8 @@ import com.domino.smerp.common.exception.CustomException;
 import com.domino.smerp.common.exception.ErrorCode;
 import com.domino.smerp.item.constants.ItemAct;
 import com.domino.smerp.item.constants.SafetyStockAct;
-import com.domino.smerp.item.dto.request.ItemRequest;
+import com.domino.smerp.item.dto.request.CreateItemRequest;
+import com.domino.smerp.item.dto.request.UpdateItemRequest;
 import com.domino.smerp.item.dto.request.UpdateItemStatusRequest;
 import com.domino.smerp.item.dto.response.ItemResponse;
 import java.util.List;
@@ -23,8 +24,13 @@ public class ItemServiceImpl implements ItemService {
   // 품목 생성
   @Override
   @Transactional
-  public ItemResponse createItem(final ItemRequest request) {
+  public ItemResponse createItem(final CreateItemRequest request) {
     ItemStatus itemStatus = findItemStatusById(request.getItemStatusId());
+
+    if(itemRepository.existsByRfid(request.getRfid())) {
+      throw new CustomException(ErrorCode.DUPLICATE_RFID);
+    }
+
 
     Item item = Item.builder()
                     .itemStatus(itemStatus)
@@ -73,7 +79,7 @@ public class ItemServiceImpl implements ItemService {
   // 품목 수정(품목 구분 포함)
   @Override
   @Transactional
-  public ItemResponse updateItem(final Long itemId, final ItemRequest request) {
+  public ItemResponse updateItem(final Long itemId, final UpdateItemRequest request) {
     Item item = findItemById(itemId);
 
     ItemStatus itemStatus = null;
@@ -100,7 +106,7 @@ public class ItemServiceImpl implements ItemService {
 
     try {
       item.updateStatus(request);
-      
+
     // 안전재고 / 사용여부 ENUM값 체크
     } catch (IllegalArgumentException e) {
       if (e.getMessage().contains("ItemAct")) {

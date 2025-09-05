@@ -1,8 +1,10 @@
 package com.domino.smerp.item;
 
-import com.domino.smerp.item.dto.request.ItemRequest;
+import com.domino.smerp.item.dto.request.CreateItemRequest;
+import com.domino.smerp.item.dto.request.UpdateItemRequest;
 import com.domino.smerp.item.dto.request.UpdateItemStatusRequest;
 import com.domino.smerp.item.dto.response.ItemResponse;
+import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -23,7 +25,8 @@ public class ItemController {
   private final ItemService itemService;
 
   @PostMapping
-  public ResponseEntity<ItemResponse> createItem(@RequestBody final ItemRequest request) {
+  public ResponseEntity<ItemResponse> createItem(final @Valid @RequestBody CreateItemRequest request) {
+    
     return ResponseEntity.ok(itemService.createItem(request));
   }
 
@@ -39,13 +42,13 @@ public class ItemController {
 
   @PatchMapping("/{item-id}")
   public ResponseEntity<ItemResponse> updateItem(@PathVariable("item-id") final Long itemId,
-      @RequestBody final ItemRequest request) {
+      final @Valid @RequestBody UpdateItemRequest request) {
     return ResponseEntity.ok(itemService.updateItem(itemId, request));
   }
 
   @PatchMapping("/{item-id}/status")
   public ResponseEntity<ItemResponse> updateItemStatus(@PathVariable("item-id") final Long itemId,
-      @RequestBody final UpdateItemStatusRequest request) {
+     final @Valid @RequestBody UpdateItemStatusRequest request) {
     return ResponseEntity.ok(itemService.updateItemStatus(itemId, request));
   }
 
