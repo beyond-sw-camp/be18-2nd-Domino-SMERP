@@ -9,6 +9,9 @@ import java.util.List;
 @Repository
 public interface ItemRepository extends JpaRepository<Item, Long> {
 
+  boolean existsByRfid(String rfid);
+
+
     /* 추후 구현 예정
     // 품목명으로 조회
     List<Item> findByName(String name);
@@ -25,6 +28,5 @@ public interface ItemRepository extends JpaRepository<Item, Long> {
     */
 
 }
-
 
 
