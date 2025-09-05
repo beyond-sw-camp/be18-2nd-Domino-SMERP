@@ -4,6 +4,7 @@ import com.domino.smerp.user.dto.request.CreateUserRequest;
 import com.domino.smerp.user.dto.request.UpdateUserRequest;
 import com.domino.smerp.user.dto.response.UserListResponse;
 import com.domino.smerp.user.dto.response.UserResponse;
+import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -25,30 +26,36 @@ public class UserController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public void createUser(@RequestBody CreateUserRequest request) {
+    public void createUser(@Valid @RequestBody CreateUserRequest request) {
+
         userService.createUser(request);
     }
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
     public List<UserListResponse> showAllUsers() {
+
         return userService.findAllUsers();
     }
 
     @GetMapping("/{userId}")
     public UserResponse findUserById(@PathVariable Long userId) {
+
         return userService.findUserById(userId);
     }
 
     @DeleteMapping("/{userId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteUser(@PathVariable Long userId) {
+
         userService.deleteUser(userId);
     }
 
     @PatchMapping("/{userId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void updateUser(@PathVariable Long userId, @RequestBody UpdateUserRequest request) {
+    public void updateUser(@PathVariable Long userId,
+        @Valid @RequestBody UpdateUserRequest request) {
+
         userService.updateUser(userId, request);
     }
 }
