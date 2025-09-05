@@ -10,7 +10,6 @@ import com.domino.smerp.user.dto.request.CreateUserRequest;
 import com.domino.smerp.user.dto.request.UpdateUserRequest;
 import com.domino.smerp.user.dto.response.UserListResponse;
 import com.domino.smerp.user.dto.response.UserResponse;
-import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
