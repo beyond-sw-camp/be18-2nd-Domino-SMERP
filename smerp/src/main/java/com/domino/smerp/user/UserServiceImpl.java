@@ -29,7 +29,7 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public void createUser(CreateUserRequest request) {
-        String encryptedSsn = ssnEncryptor.SsnEncrypt(request.getSsn());
+        String encryptedSsn = ssnEncryptor.encryptSsn(request.getSsn());
         if (userRepository.existsByEmail(request.getEmail())) {
             throw new CustomException(ErrorCode.DUPLICATE_EMAIL);
         }
@@ -57,10 +57,9 @@ public class UserServiceImpl implements UserService {
                         .ssn(encryptedSsn)
                         .loginId(request.getLoginId())
                         .password(passwordEncoder.encode(request.getPassword()))
-                        .hireDate(LocalDate.parse(request.getHireDate()))
+                        .hireDate(request.getHireDate())
                         .fireDate(
-                            request.getFireDate() != null ? LocalDate.parse(request.getFireDate())
-                                : null)
+                            request.getFireDate() != null ? request.getFireDate() : null)
                         .deptTitle(request.getDeptTitle())
                         .role(UserRole.valueOf(request.getRole()))
                         .client(client)
@@ -107,7 +106,7 @@ public class UserServiceImpl implements UserService {
                            .email(user.getEmail())
                            .phone(user.getPhone())
                            .address(user.getAddress())
-                           .ssn(ssnEncryptor.SsnDecrypt(user.getSsn()))
+                           .ssn(ssnEncryptor.decryptSsn(user.getSsn()))
                            .hireDate(user.getHireDate())
                            .fireDate(user.getFireDate())
                            .loginId(user.getLoginId())

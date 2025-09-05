@@ -10,13 +10,13 @@ import org.springframework.stereotype.Component;
 public class SsnEncryptor {
     private final AesBytesEncryptor aesBytesEncryptor;
 
-    public String SsnEncrypt(String ssn) {
+    public String encryptSsn(String ssn) {
 
         byte[] encrypt = aesBytesEncryptor.encrypt(ssn.getBytes());
         return Base64.getEncoder().encodeToString(encrypt);
     }
 
-    public String SsnDecrypt(String ssn) {
+    public String decryptSsn(String ssn) {
 
         byte[] decode = Base64.getDecoder().decode(ssn);
         return new String(aesBytesEncryptor.decrypt(decode));
