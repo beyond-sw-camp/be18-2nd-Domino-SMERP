@@ -9,14 +9,15 @@ import java.time.LocalDate;
 @Getter
 @Builder
 public class SalesOrderResponse {
-    private Long soId;
-    private Long orderId;
-    private Integer qty;
-    private Double surtax;
-    private Double price;
-    private String remark;
-    private String status;          // ✅ String 유지
-    private LocalDate createdDate;
+
+    private final Long soId;
+    private final Long orderId;
+    private final Integer qty;
+    private final Double surtax;
+    private final Double price;
+    private final String remark;
+    private final String status;          // ✅ String 유지
+    private final LocalDate createdDate;
 
     public static SalesOrderResponse from(SalesOrder salesOrder) {
         return SalesOrderResponse.builder()

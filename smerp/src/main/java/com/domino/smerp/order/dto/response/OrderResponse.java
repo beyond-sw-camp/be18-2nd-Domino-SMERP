@@ -2,8 +2,10 @@ package com.domino.smerp.order.dto.response;
 
 import com.domino.smerp.order.Order;
 import com.domino.smerp.itemorder.dto.response.ItemOrderResponse;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -11,14 +13,17 @@ import java.util.stream.Collectors;
 
 @Getter
 @Builder
+@AllArgsConstructor
+@NoArgsConstructor(force = true)  // ✅ Jackson 직렬화/역직렬화 지원
 public class OrderResponse {
-    private Long orderId;
-    private String clientName;
-    private String userName;
-    private String status;
-    private LocalDate deliveryDate;
-    private String remark;
-    private List<ItemOrderResponse> items; // ✅ 품목 리스트 추가
+
+    private final Long orderId;
+    private final String clientName;
+    private final String userName;
+    private final String status;
+    private final LocalDate deliveryDate;
+    private final String remark;
+    private final List<ItemOrderResponse> items; // ✅ 불변 리스트
 
     public static OrderResponse from(Order order) {
         return OrderResponse.builder()
@@ -30,7 +35,7 @@ public class OrderResponse {
                 .remark(order.getRemark())
                 .items(order.getOrderItems().stream()
                         .map(ItemOrderResponse::from)
-                        .collect(Collectors.toList())) // ✅ 품목 매핑
+                        .collect(Collectors.toList()))
                 .build();
     }
 }
