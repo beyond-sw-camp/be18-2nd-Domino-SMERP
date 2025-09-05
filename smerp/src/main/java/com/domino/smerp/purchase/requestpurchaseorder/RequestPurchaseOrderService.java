@@ -19,3 +19,4 @@ public interface RequestPurchaseOrderService {
 
   void softDelete(final Long rpoId);
 }
+
