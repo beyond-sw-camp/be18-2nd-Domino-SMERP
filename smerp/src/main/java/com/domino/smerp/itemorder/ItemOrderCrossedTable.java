@@ -6,16 +6,17 @@ import jakarta.persistence.*;
 import lombok.*;
 
 @Entity
-@Table(name = "item_order_crossed_table")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor(access = AccessLevel.PRIVATE)
+@AllArgsConstructor
 @Builder
+@Table(name = "item_order_crossed_table")
 public class ItemOrderCrossedTable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long itemOrderId;
+    @Column(name = "item_order_id")
+    private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_id", nullable = false)
@@ -26,5 +27,10 @@ public class ItemOrderCrossedTable {
     private Item item;
 
     @Column(nullable = false)
-    private Integer qty;
+    private int qty;
+
+    // 편의 메서드
+    public void assignOrder(Order order) {
+        this.order = order;
+    }
 }

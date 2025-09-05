@@ -1,6 +1,8 @@
 package com.domino.smerp.itemorder;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
-public interface ItemOrderRepository extends JpaRepository<com.domino.smerp.itemorder.ItemOrderCrossedTable, Long> {
+@Repository
+public interface ItemOrderRepository extends JpaRepository<ItemOrderCrossedTable, Long> {
 }
