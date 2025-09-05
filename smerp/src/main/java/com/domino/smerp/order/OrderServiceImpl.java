@@ -10,7 +10,8 @@ import com.domino.smerp.itemorder.ItemOrderCrossedTable;
 import com.domino.smerp.itemorder.dto.request.ItemOrderRequest;
 import com.domino.smerp.order.constants.OrderStatus;
 import com.domino.smerp.order.dto.request.OrderRequest;
-import com.domino.smerp.order.dto.request.UpdateOrderStatusRequest;
+import com.domino.smerp.order.dto.request.UpdateOrderRequest;
+import com.domino.smerp.order.dto.response.OrderCreateResponse;
 import com.domino.smerp.order.dto.response.OrderResponse;
 import com.domino.smerp.user.User;
 import com.domino.smerp.user.UserRepository;
@@ -32,16 +33,16 @@ public class OrderServiceImpl implements OrderService {
     private final ItemRepository itemRepository;
 
     @Override
-    public OrderResponse createOrder(OrderRequest request) {
+    public OrderCreateResponse createOrder(OrderRequest request) {
         // 거래처 확인
         Client client = clientRepository.findById(request.getClientId())
                 .orElseThrow(() -> new CustomException(ErrorCode.CLIENT_NOT_FOUND));
 
-        // 사용자 확인
+        // 영업 담당자 확인
         User user = userRepository.findById(request.getUserId())
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
-        // 🚨 품목 필수 검증
+        // 품목 필수 검증
         if (request.getItems() == null || request.getItems().isEmpty()) {
             throw new CustomException(ErrorCode.ITEMS_REQUIRED);
         }
@@ -56,12 +57,13 @@ public class OrderServiceImpl implements OrderService {
                 .client(client)
                 .user(user)
                 .status(status)
+                .orderDate(request.getOrderDate())
                 .deliveryDate(request.getDeliveryDate())
                 .remark(request.getRemark())
                 .createdDate(LocalDate.now())
                 .build();
 
-        // 품목 리스트 매핑 → 교차 테이블 생성
+        // 품목 매핑 → 교차 테이블 생성
         for (ItemOrderRequest itemReq : request.getItems()) {
             Item item = itemRepository.findById(itemReq.getItemId())
                     .orElseThrow(() -> new CustomException(ErrorCode.ITEM_NOT_FOUND));
@@ -72,11 +74,12 @@ public class OrderServiceImpl implements OrderService {
                     .qty(itemReq.getQty())
                     .build();
 
-            order.addOrderItem(orderItem); // 연관관계 편의 메서드
+            order.addOrderItem(orderItem);
         }
 
-        // CascadeType.ALL 이므로 order만 저장해도 orderItems 함께 저장됨
-        return OrderResponse.from(orderRepository.save(order));
+        Order savedOrder = orderRepository.save(order);
+        
+        return OrderCreateResponse.from(savedOrder);
     }
 
     @Override
@@ -96,7 +99,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public OrderResponse updateOrderStatus(Long orderId, UpdateOrderStatusRequest request) {
+    public OrderResponse updateOrderStatus(Long orderId, UpdateOrderRequest request) {
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new CustomException(ErrorCode.ORDER_NOT_FOUND));
 

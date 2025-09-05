@@ -37,17 +37,21 @@ public class Order {
     @Builder.Default
     private OrderStatus status = OrderStatus.PENDING;   // ✅ 기본값 PENDING
 
-    @Column(name = "created_date", nullable = false)
-    private LocalDate createdDate;
 
-    @Column(name = "updated_date")
-    private LocalDate updatedDate;
+    @Column(name = "order_date", nullable = false)
+    private LocalDate orderDate;   // ✅ 주문 일자 추가
 
     @Column(name = "delivery_date", nullable = false)
     private LocalDate deliveryDate;
 
     @Column(name = "remark")
     private String remark;
+
+    @Column(name = "created_date", nullable = false)
+    private LocalDate createdDate;
+
+    @Column(name = "updated_date")
+    private LocalDate updatedDate;
 
     // ✅ 교차 테이블 연관관계
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)

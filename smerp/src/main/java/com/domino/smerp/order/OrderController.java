@@ -1,9 +1,12 @@
 package com.domino.smerp.order;
 
 import com.domino.smerp.order.dto.request.OrderRequest;
-import com.domino.smerp.order.dto.request.UpdateOrderStatusRequest;
+import com.domino.smerp.order.dto.request.UpdateOrderRequest;
+import com.domino.smerp.order.dto.response.OrderCreateResponse;
 import com.domino.smerp.order.dto.response.OrderResponse;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,8 +20,9 @@ public class OrderController {
     private final OrderService orderService;
 
     @PostMapping
-    public ResponseEntity<OrderResponse> createOrder(@RequestBody OrderRequest request) {
-        return ResponseEntity.ok(orderService.createOrder(request));
+    public ResponseEntity<OrderCreateResponse> createOrder(@Valid @RequestBody OrderRequest request) {
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(orderService.createOrder(request));
     }
 
     @GetMapping
@@ -34,7 +38,7 @@ public class OrderController {
     @PatchMapping("/{orderId}/status")
     public ResponseEntity<OrderResponse> updateOrderStatus(
             @PathVariable Long orderId,
-            @RequestBody UpdateOrderStatusRequest request) {
+            @RequestBody UpdateOrderRequest request) {
         return ResponseEntity.ok(orderService.updateOrderStatus(orderId, request));
     }
 

@@ -15,10 +15,11 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor(force = true)   // ✅ Jackson 역직렬화 가능하게
 public class OrderRequest {
-    private final Long clientId;
-    private final Long userId;
-    private final OrderStatus status;
-    private final LocalDate deliveryDate;
-    private final String remark;
-    private final List<ItemOrderRequest> items;
+    private final LocalDate orderDate;     // 주문일자
+    private final Long clientId;           // 거래처 ID
+    private final Long userId;         // 영업 담당자 ID
+    private final LocalDate deliveryDate;  // 납기일자
+    private final String remark;           // 비고
+    private final OrderStatus status;      // 상태값 (선택)
+    private final List<ItemOrderRequest> items; // 품목 리스트
 }

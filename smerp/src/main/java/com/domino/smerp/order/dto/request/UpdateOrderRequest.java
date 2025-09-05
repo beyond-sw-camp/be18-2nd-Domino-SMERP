@@ -10,6 +10,6 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor(force = true)  // ✅ Jackson 역직렬화 지원
-public class UpdateOrderStatusRequest {
+public class UpdateOrderRequest {
     private final OrderStatus status;   // ✅ Enum으로 변경
 }
