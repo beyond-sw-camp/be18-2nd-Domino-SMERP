@@ -44,10 +44,12 @@ public class Warehouse {
   private String zipcode;
 
   //생성일자
-  @Column(nullable = false)
-  private LocalDateTime createdAt;
+  @Builder.Default
+  @Column(name = "created_at", nullable = false, updatable = false)
+  private LocalDateTime createdAt = LocalDateTime.now();
 
   //수정일자
+  @Column(name = "updated_at")
   private LocalDateTime updatedAt;
 
   @OneToMany(cascade = CascadeType.ALL, mappedBy = "warehouse", orphanRemoval = true)
