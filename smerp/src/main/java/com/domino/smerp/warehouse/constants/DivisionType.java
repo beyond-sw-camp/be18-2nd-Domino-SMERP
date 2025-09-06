@@ -1,4 +1,4 @@
-package com.domino.smerp.warehouse;
+package com.domino.smerp.warehouse.constants;
 
 public enum DivisionType {
   WAREHOUSE,
