@@ -1,6 +1,5 @@
 package com.domino.smerp.warehouse.service;
 
-import com.domino.smerp.location.service.LocationService;
 import com.domino.smerp.warehouse.Warehouse;
 import com.domino.smerp.warehouse.WarehouseRepository;
 import com.domino.smerp.warehouse.dto.WarehouseRequest;
@@ -18,7 +17,7 @@ public class WarehouseServiceImpl implements WarehouseService {
 
   private final WarehouseRepository warehouseRepository;
 
-  private final LocationService locationService;
+  //private final LocationService locationService;
 
   @Override
   public WarehouseResponse getWarehouseById(Long id) {
@@ -68,7 +67,7 @@ public class WarehouseServiceImpl implements WarehouseService {
     warehouseRepository.save(warehouse);
 
     //기본 위치 생성해줘야함
-    locationService.createLocation(warehouse.getId());
+    //locationService.createLocation(warehouse.getId());
 
     return toWarehouseResponse(warehouse);
   }

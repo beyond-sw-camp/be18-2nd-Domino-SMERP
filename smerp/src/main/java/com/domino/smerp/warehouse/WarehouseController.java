@@ -1,7 +1,5 @@
 package com.domino.smerp.warehouse;
 
-import com.domino.smerp.location.dto.response.LocationListResponse;
-import com.domino.smerp.location.service.LocationService;
 import com.domino.smerp.warehouse.dto.WarehouseRequest;
 import com.domino.smerp.warehouse.dto.WarehouseResponse;
 import com.domino.smerp.warehouse.service.WarehouseService;
@@ -23,7 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class WarehouseController {
 
   private final WarehouseService warehouseService;
-  private final LocationService locationService;
+  //private final LocationService locationService;
 
   //창고 생성
   @PostMapping
@@ -33,6 +31,7 @@ public class WarehouseController {
     return ResponseEntity.status(201).body(warehouseResponse);
   }
 
+  /*
   //창고 위치 중 unfilled 조회
   @GetMapping("/{warehouse-id}/unfilled")
   public ResponseEntity<LocationListResponse> getUnFilledLocations(
@@ -41,6 +40,7 @@ public class WarehouseController {
 
     return ResponseEntity.status(200).body(locationListResponse);
   }
+   */
 
   //창고 목록 조회
   @GetMapping
