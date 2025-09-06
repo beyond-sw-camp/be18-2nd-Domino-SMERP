@@ -1,8 +1,10 @@
-package com.domino.smerp.client;
+package com.domino.smerp.item;
+
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface ClientRepository extends JpaRepository<Client, Long> {
+public interface ItemStatusRepository extends JpaRepository<ItemStatus, Long> {
+
 }

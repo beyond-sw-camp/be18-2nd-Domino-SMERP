@@ -1,5 +1,9 @@
 package com.domino.smerp.client;
 
+import com.domino.smerp.client.constants.TradeType;
+import com.domino.smerp.client.dto.request.UpdateClientRequest;
+import com.domino.smerp.client.dto.response.ClientResponse;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -19,5 +23,67 @@ public class Client {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long clientId;
 
-    private String name;
+    @Column(nullable = false)
+    private String businessNumber;
+
+    @Column(nullable = false)
+    private String companyName;
+
+    @Column(nullable = false)
+    private String phone;
+
+    @Column(nullable = false)
+    private String ceoName;
+
+    @Column(nullable = false)
+    private String ceoPhone;
+
+    @Column(nullable = false)
+    private String name1st;
+
+    @Column(nullable = false)
+    private String phone1st;
+
+    @Column(nullable = false)
+    private String job1st;
+
+    private String name2nd;
+
+    private String phone2nd;
+
+    private String job2nd;
+
+    private String name3rd;
+
+    private String phone3rd;
+
+    private String job3rd;
+
+    @Column(nullable = false)
+    private String address;
+
+    @Column(nullable = false)
+    private String zipCode;
+
+    @Column(nullable = false)
+    private TradeType status;
+
+    public void updateClient(UpdateClientRequest request) {
+        if (request.getCompanyName() != null) this.companyName = request.getCompanyName();
+        if (request.getPhone() != null) this.phone = request.getPhone();
+        if (request.getCeoName() != null) this.ceoName = request.getCeoName();
+        if (request.getCeoPhone() != null) this.ceoPhone = request.getCeoPhone();
+        if (request.getName1st() != null) this.name1st = request.getName1st();
+        if (request.getPhone1st() != null) this.phone1st = request.getPhone1st();
+        if (request.getJob1st() != null) this.job1st = request.getJob1st();
+        if (request.getName2nd() != null) this.name2nd = request.getName2nd();
+        if (request.getPhone2nd() != null) this.phone2nd = request.getPhone2nd();
+        if (request.getJob2nd() != null) this.job2nd = request.getJob2nd();
+        if (request.getName3rd() != null) this.name3rd = request.getName3rd();
+        if (request.getPhone3rd() != null) this.phone3rd = request.getPhone3rd();
+        if (request.getJob3rd() != null) this.job3rd = request.getJob3rd();
+        if (request.getAddress() != null) this.address = request.getAddress();
+        if (request.getZipCode() != null) this.zipCode = request.getZipCode();
+        if (request.getStatus() != null) this.status = request.getStatus();
+    }
 }

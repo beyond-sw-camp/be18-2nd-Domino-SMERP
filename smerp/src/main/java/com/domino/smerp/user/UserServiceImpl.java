@@ -2,6 +2,9 @@ package com.domino.smerp.user;
 
 import com.domino.smerp.client.Client;
 import com.domino.smerp.client.ClientRepository;
+import com.domino.smerp.common.encrypt.SsnEncryptor;
+import com.domino.smerp.common.exception.CustomException;
+import com.domino.smerp.common.exception.ErrorCode;
 import com.domino.smerp.user.constants.UserRole;
 import com.domino.smerp.user.dto.request.CreateUserRequest;
 import com.domino.smerp.user.dto.request.UpdateUserRequest;
@@ -11,6 +14,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,29 +23,30 @@ import org.springframework.transaction.annotation.Transactional;
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final ClientRepository clientRepository;
+    private final PasswordEncoder passwordEncoder;
+    private final SsnEncryptor ssnEncryptor;
 
     @Override
     @Transactional
     public void createUser(CreateUserRequest request) {
+        String encryptedSsn = ssnEncryptor.SsnEncrypt(request.getSsn());
         if (userRepository.existsByEmail(request.getEmail())) {
-            throw new IllegalArgumentException("중복된 이메일");
+            throw new CustomException(ErrorCode.DUPLICATE_EMAIL);
         }
         if (userRepository.existsByPhone(request.getPhone())) {
-            throw new IllegalArgumentException("중복된 전화번호");
+            throw new CustomException(ErrorCode.DUPLICATE_PHONE);
         }
         if (userRepository.existsByLoginId(request.getLoginId())) {
-            throw new IllegalArgumentException("중복된 아이디");
+            throw new CustomException(ErrorCode.DUPLICATE_LOGINID);
         }
-        if (userRepository.existsBySsn(request.getSsn())) {
-            throw new IllegalArgumentException("중복된 주민번호");
+        if (userRepository.existsBySsn(encryptedSsn)) {
+            throw new CustomException(ErrorCode.DUPLICATE_SSN);
         }
 
         Client client = null;
-
         if (request.getClientId() != null) {
             client = clientRepository.findById(request.getClientId())
-                                     .orElseThrow(
-                                         () -> new IllegalArgumentException("없는 클라이언트"));
+                                     .orElseThrow(() -> new CustomException(ErrorCode.CLIENT_NOT_FOUND));
         }
 
         User user = User.builder()
@@ -49,9 +54,9 @@ public class UserServiceImpl implements UserService {
                         .email(request.getEmail())
                         .phone(request.getPhone())
                         .address(request.getAddress())
-                        .ssn(request.getSsn())
+                        .ssn(encryptedSsn)
                         .loginId(request.getLoginId())
-                        .password(request.getPassword())
+                        .password(passwordEncoder.encode(request.getPassword()))
                         .hireDate(LocalDate.parse(request.getHireDate()))
                         .fireDate(
                             request.getFireDate() != null ? LocalDate.parse(request.getFireDate())
@@ -92,7 +97,7 @@ public class UserServiceImpl implements UserService {
     @Transactional(readOnly = true)
     public UserResponse findUserById(Long userId) {
         User user = userRepository.findById(userId)
-                                  .orElseThrow(() -> new IllegalArgumentException("해당유저 없음"));
+                                  .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
         Client client = user.getClient();
 
@@ -102,20 +107,20 @@ public class UserServiceImpl implements UserService {
                            .email(user.getEmail())
                            .phone(user.getPhone())
                            .address(user.getAddress())
-                           .ssn(user.getSsn())
+                           .ssn(ssnEncryptor.SsnDecrypt(user.getSsn()))
                            .hireDate(user.getHireDate())
                            .fireDate(user.getFireDate())
                            .loginId(user.getLoginId())
                            .deptTitle(user.getDeptTitle())
                            .role(user.getRole())
-                           .clientName(client != null ? client.getName() : "거래처 아님")
+                           .clientName(client != null ? client.getCompanyName() : "거래처 아님")
                            .build();
     }
 
     @Override
     @Transactional
     public void updateUser(Long userId,UpdateUserRequest request) {
-        User user = userRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("해당유저 없음"));
+        User user = userRepository.findById(userId).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
         user.updateUser(request);
     }
 }
