@@ -51,7 +51,7 @@ public class OrderServiceImpl implements OrderService {
     public OrderCreateResponse createOrder(OrderRequest request) {
         Client client = clientRepository.findById(request.getClientId())
                 .orElseThrow(() -> new CustomException(ErrorCode.CLIENT_NOT_FOUND));
-        User user = userRepository.findById(request.getUserId())
+        User user = userRepository.findby
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
         if (request.getItems() == null || request.getItems().isEmpty()) {

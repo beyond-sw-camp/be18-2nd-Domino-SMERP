@@ -17,7 +17,7 @@ import java.util.List;
 public class OrderRequest {
     private final LocalDate orderDate;     // 주문일자
     private final Long clientId;           // 거래처 ID
-    private final Long userId;         // 영업 담당자 ID
+    private final String empNo;         // 사번
     private final LocalDate deliveryDate;  // 납기일자
     private final String remark;           // 비고
     private final OrderStatus status;      // 상태값 (선택)
