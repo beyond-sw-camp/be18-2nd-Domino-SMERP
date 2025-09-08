@@ -79,7 +79,7 @@ public class Order extends BaseEntity {
         this.documentNo = newDocumentNo;
     }
 
-    // === 전체 업데이트 메서드 ===
+    // === 전체 업데이트 메서드 === null 확인으로 수정
     public void updateAll(Instant orderDate,
                           Instant deliveryDate,
                           String remark,

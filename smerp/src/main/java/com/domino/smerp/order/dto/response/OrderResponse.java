@@ -1,8 +1,7 @@
 package com.domino.smerp.order.dto.response;
 
-import com.domino.smerp.order.Order;
 import com.domino.smerp.itemorder.ItemOrderCrossedTable;
-import com.fasterxml.jackson.annotation.JsonFormat;
+import com.domino.smerp.order.Order;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -19,7 +18,7 @@ public class OrderResponse {
     private final Long clientId;      // 거래처 ID
     private final String status;      // 주문 상태
     private final Instant deliveryDate; // 납기 일정
-    private final Long userId;        // 구매 담당자 ID
+    private final String userName;        // 구매 담당자 ID
     private final Long itemId;        // 품목 ID
     private final BigDecimal totalAmount; // 공급 가격 (수량 * outbound_unit_price)
     private final String remark;      // 비고
@@ -39,9 +38,11 @@ public class OrderResponse {
         return OrderResponse.builder()
                 .documentNo(order.getDocumentNo())
                 .clientId(order.getClient().getClientId())
+                // 거래처 누락시 NPE 방지
+                // client -> !=  null ? order.getClient().getCompanyName()
                 .status(order.getStatus().name())
                 .deliveryDate(order.getDeliveryDate())
-                .userId(order.getUser().getUserId())
+                .userName(order.getUser().getName())
                 .itemId(firstItem != null ? firstItem.getItem().getItemId() : null)
                 .totalAmount(total)
                 .remark(order.getRemark())

@@ -1,5 +1,6 @@
 package com.domino.smerp.order;
 
+import com.domino.smerp.client.Client;
 import com.domino.smerp.client.ClientRepository;
 import com.domino.smerp.common.exception.CustomException;
 import com.domino.smerp.common.exception.ErrorCode;
@@ -25,7 +26,6 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-@Transactional
 public class OrderServiceImpl implements OrderService {
 
     private final OrderRepository orderRepository;
@@ -47,17 +47,18 @@ public class OrderServiceImpl implements OrderService {
      * 주문 등록
      */
     @Override
+    @Transactional
     public OrderCreateResponse createOrder(OrderRequest request) {
-        var client = clientRepository.findById(request.getClientId())
+        Client client = clientRepository.findById(request.getClientId())
                 .orElseThrow(() -> new CustomException(ErrorCode.CLIENT_NOT_FOUND));
-        var user = userRepository.findById(request.getUserId())
+        User user = userRepository.findById(request.getUserId())
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
         if (request.getItems() == null || request.getItems().isEmpty()) {
             throw new CustomException(ErrorCode.ITEMS_REQUIRED);
         }
 
-        var status = (request.getStatus() != null) ? request.getStatus() : OrderStatus.PENDING;
+        OrderStatus status = (request.getStatus() != null) ? request.getStatus() : OrderStatus.PENDING;
 
         // ✅ LocalDate → Instant (UTC 변환)
         Instant orderDateInstant = request.getOrderDate() != null
@@ -68,7 +69,7 @@ public class OrderServiceImpl implements OrderService {
                 ? request.getDeliveryDate().atStartOfDay(ZoneOffset.UTC).toInstant()
                 : null;
 
-        var order = Order.builder()
+        Order order = Order.builder()
                 .client(client)
                 .user(user)
                 .status(status)
@@ -86,7 +87,7 @@ public class OrderServiceImpl implements OrderService {
             Item item = itemRepository.findById(itemReq.getItemId())
                     .orElseThrow(() -> new CustomException(ErrorCode.ITEM_NOT_FOUND));
 
-            var orderItem = ItemOrderCrossedTable.builder()
+            ItemOrderCrossedTable orderItem = ItemOrderCrossedTable.builder()
                     .order(order)
                     .item(item)
                     .qty(itemReq.getQty())
@@ -124,6 +125,7 @@ public class OrderServiceImpl implements OrderService {
      * 주문 전체 수정 (PUT)
      */
     @Override
+    @Transactional
     public OrderResponse updateOrder(Long orderId, UpdateOrderRequest request) {
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new CustomException(ErrorCode.ORDER_NOT_FOUND));
@@ -178,6 +180,7 @@ public class OrderServiceImpl implements OrderService {
      * 주문 삭제
      */
     @Override
+    @Transactional
     public OrderDeleteResponse deleteOrder(Long orderId) {
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new CustomException(ErrorCode.ORDER_NOT_FOUND));
