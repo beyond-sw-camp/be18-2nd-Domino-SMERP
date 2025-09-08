@@ -7,7 +7,7 @@ import lombok.Builder;
 import lombok.Getter;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
+import java.time.Instant;
 
 @Getter
 @Builder
@@ -17,7 +17,7 @@ public class OrderResponse {
     private final Long orderId;       // 주문 ID
     private final Long clientId;      // 거래처 ID
     private final String status;      // 주문 상태
-    private final LocalDate deliveryDate; // 납기 일정
+    private final Instant deliveryDate; // 납기 일정
     private final Long userId;        // 구매 담당자 ID
     private final Long itemId;        // 품목 ID
     private final BigDecimal totalAmount; // 공급 가격 (수량 * outbound_unit_price)

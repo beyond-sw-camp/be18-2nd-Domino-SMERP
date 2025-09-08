@@ -18,7 +18,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
+import java.time.Instant;
+import java.time.ZoneId;
 import java.util.List;
 
 @Service
@@ -51,10 +52,18 @@ public class OrderServiceImpl implements OrderService {
                 .client(client)
                 .user(user)
                 .status(status)
-                .orderDate(request.getOrderDate())
-                .deliveryDate(request.getDeliveryDate())
+                .orderDate(
+                        request.getOrderDate()
+                                .atStartOfDay(ZoneId.systemDefault())
+                                .toInstant()
+                )
+                .deliveryDate(
+                        request.getDeliveryDate()
+                                .atStartOfDay(ZoneId.systemDefault())
+                                .toInstant()
+                )
                 .remark(request.getRemark())
-                .createdDate(LocalDate.now())
+                .createdDate(Instant.now())
                 .build();
 
         for (ItemOrderRequest itemReq : request.getItems()) {
@@ -126,13 +135,18 @@ public class OrderServiceImpl implements OrderService {
 
         // 엔티티에 전체 업데이트 적용
         order.updateAll(
-                request.getOrderDate(),
-                request.getDeliveryDate(),
+                request.getOrderDate()
+                        .atStartOfDay(ZoneId.systemDefault())
+                        .toInstant(),
+                request.getDeliveryDate()
+                        .atStartOfDay(ZoneId.systemDefault())
+                        .toInstant(),
                 request.getRemark(),
                 request.getStatus(),
                 newUser,
                 newOrderItems
         );
+
 
         return OrderResponse.from(orderRepository.save(order));
     }

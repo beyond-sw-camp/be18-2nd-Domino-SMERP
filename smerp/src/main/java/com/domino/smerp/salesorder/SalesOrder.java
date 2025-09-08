@@ -5,6 +5,7 @@ import com.domino.smerp.salesorder.constants.SalesOrderStatus;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 
 @Entity
@@ -21,17 +22,17 @@ public class SalesOrder {
     private Long soId;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "order_id", nullable = false)
+    @JoinColumn(name = "order_id", nullable = false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
     private Order order;
 
     @Column(nullable = false)
     private Integer qty;
 
     @Column(nullable = false)
-    private Double surtax;
+    private BigDecimal surtax;
 
     @Column(nullable = false)
-    private Double price;
+    private BigDecimal price;
 
     private String remark;
 

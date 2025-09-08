@@ -7,9 +7,11 @@ import com.domino.smerp.user.User;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.time.LocalDate;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
+
+;
 
 @Entity
 @Table(name = "orders")
@@ -25,11 +27,11 @@ public class Order {
     private Long orderId;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "client_id", nullable = false)
+    @JoinColumn(name = "client_id", nullable = false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
     private Client client;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false)
+    @JoinColumn(name = "user_id", nullable = false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
     private User user;
 
     @Enumerated(EnumType.STRING)
@@ -38,19 +40,19 @@ public class Order {
     private OrderStatus status = OrderStatus.PENDING;
 
     @Column(name = "order_date", nullable = false)
-    private LocalDate orderDate;
+    private Instant orderDate;
 
     @Column(name = "delivery_date", nullable = false)
-    private LocalDate deliveryDate;
+    private Instant deliveryDate;
 
     @Column(name = "remark")
     private String remark;
 
     @Column(name = "created_date", nullable = false)
-    private LocalDate createdDate;
+    private Instant createdDate;
 
     @Column(name = "updated_date")
-    private LocalDate updatedDate;
+    private Instant updatedDate;
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
@@ -63,8 +65,8 @@ public class Order {
     }
 
     // === 전체 업데이트 메서드 ===
-    public void updateAll(LocalDate orderDate,
-                          LocalDate deliveryDate,
+    public void updateAll(Instant orderDate,
+                          Instant deliveryDate,
                           String remark,
                           OrderStatus status,
                           User newUser,
@@ -80,6 +82,6 @@ public class Order {
             newOrderItems.forEach(this::addOrderItem);
         }
 
-        this.updatedDate = LocalDate.now();
+        this.updatedDate = Instant.now();
     }
 }

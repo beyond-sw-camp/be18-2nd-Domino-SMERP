@@ -6,6 +6,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
+
 @Getter
 @Builder
 @AllArgsConstructor
@@ -14,8 +16,8 @@ public class SalesOrderRequest {
 
     private final Long orderId;
     private final Integer qty;
-    private final Double surtax;
-    private final Double price;
+    private final BigDecimal surtax;
+    private final BigDecimal price;
     private final String remark;
     private final SalesOrderStatus status;   // ✅ Enum으로 변경
 }
