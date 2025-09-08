@@ -10,6 +10,8 @@ import com.domino.smerp.user.dto.request.CreateUserRequest;
 import com.domino.smerp.user.dto.request.UpdateUserRequest;
 import com.domino.smerp.user.dto.response.UserListResponse;
 import com.domino.smerp.user.dto.response.UserResponse;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
@@ -50,6 +52,8 @@ public class UserServiceImpl implements UserService {
                                          () -> new CustomException(ErrorCode.CLIENT_NOT_FOUND));
         }
 
+        String empNo = generateEmpNo(request.getHireDate());
+
         User user = User.builder()
                         .name(request.getName())
                         .email(request.getEmail())
@@ -63,6 +67,7 @@ public class UserServiceImpl implements UserService {
                             request.getFireDate() != null ? request.getFireDate() : null)
                         .deptTitle(request.getDeptTitle())
                         .role(UserRole.valueOf(request.getRole()))
+                        .empNo(empNo)
                         .client(client)
                         .build();
 
@@ -91,7 +96,9 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public void deleteUser(final Long UserId) {
-        User user  = userRepository.findById(UserId).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+
+        User user = userRepository.findById(UserId)
+                                  .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
         userRepository.deleteById(UserId);
     }
 
@@ -116,6 +123,7 @@ public class UserServiceImpl implements UserService {
                            .loginId(user.getLoginId())
                            .deptTitle(user.getDeptTitle())
                            .role(user.getRole())
+                           .empNo(user.getEmpNo())
                            .clientName(client != null ? client.getCompanyName() : "거래처 아님")
                            .build();
     }
@@ -127,5 +135,19 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.findById(userId)
                                   .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
         user.updateUser(request);
+    }
+
+    private String generateEmpNo(LocalDate hireDate) {
+
+        String yearMonth = hireDate.format(DateTimeFormatter.ofPattern("yyyyMM"));
+
+        String lastEmpNo = userRepository.findLastEmpNoByYearMonth(yearMonth);
+
+        int nextSeq = 1;
+        if (lastEmpNo != null) {
+            nextSeq = Integer.parseInt(lastEmpNo.substring(6)) + 1;
+        }
+
+        return String.format("%s%03d", yearMonth, nextSeq);
     }
 }
