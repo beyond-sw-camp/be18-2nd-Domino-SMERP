@@ -26,7 +26,7 @@ public class UserController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public void createUser(@Valid @RequestBody CreateUserRequest request) {
+    public void createUser(@Valid @RequestBody final CreateUserRequest request) {
 
         userService.createUser(request);
     }
@@ -39,22 +39,22 @@ public class UserController {
     }
 
     @GetMapping("/{userId}")
-    public UserResponse findUserById(@PathVariable Long userId) {
+    public UserResponse findUserById(@PathVariable final Long userId) {
 
         return userService.findUserById(userId);
     }
 
     @DeleteMapping("/{userId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteUser(@PathVariable Long userId) {
+    public void deleteUser(@PathVariable final Long userId) {
 
         userService.deleteUser(userId);
     }
 
     @PatchMapping("/{userId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void updateUser(@PathVariable Long userId,
-        @Valid @RequestBody UpdateUserRequest request) {
+    public void updateUser(@PathVariable final Long userId,
+        @Valid @RequestBody final UpdateUserRequest request) {
 
         userService.updateUser(userId, request);
     }
