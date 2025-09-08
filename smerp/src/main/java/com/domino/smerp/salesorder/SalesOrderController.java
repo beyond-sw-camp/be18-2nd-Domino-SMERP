@@ -1,7 +1,7 @@
 package com.domino.smerp.salesorder;
 
-import com.domino.smerp.salesorder.SalesOrderService;
 import com.domino.smerp.salesorder.dto.request.SalesOrderRequest;
+import com.domino.smerp.salesorder.dto.response.SalesOrderCreateResponse;
 import com.domino.smerp.salesorder.dto.response.SalesOrderResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -17,7 +17,7 @@ public class SalesOrderController {
     private final SalesOrderService salesOrderService;
 
     @PostMapping
-    public ResponseEntity<SalesOrderResponse> createSalesOrder(@RequestBody SalesOrderRequest request) {
+    public ResponseEntity<SalesOrderCreateResponse> createSalesOrder(@RequestBody SalesOrderRequest request) {
         return ResponseEntity.ok(salesOrderService.createSalesOrder(request));
     }
 

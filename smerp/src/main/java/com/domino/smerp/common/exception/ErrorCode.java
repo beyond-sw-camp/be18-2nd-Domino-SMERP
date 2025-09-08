@@ -1,7 +1,6 @@
 package com.domino.smerp.common.exception;
 
 import lombok.Getter;
-import org.springframework.boot.logging.LogLevel;
 import org.springframework.http.HttpStatus;
 
 @Getter
@@ -30,8 +29,11 @@ public enum ErrorCode {
     INVALID_UNIT_PRICE(HttpStatus.BAD_REQUEST, "INVALID_UNIT_PRICE", "단가는 0 이상이어야 합니다."),
     ITEM_DELETE_CONFLICT(HttpStatus.CONFLICT, "ITEM_DELETE_CONFLICT", "다른 데이터에서 참조 중이라 품목을 삭제할 수 없습니다.(수불이력)"), // 소프트 딜리트 예정
     DUPLICATE_ITEM(HttpStatus.CONFLICT, "DUPLICATE_ITEM", "이미 존재하는 품목입니다."),
-    DUPLICATE_RFID(HttpStatus.CONFLICT, "DUPLICATE_RFID", "이미 등록된 RFID입니다.");
+    DUPLICATE_RFID(HttpStatus.CONFLICT, "DUPLICATE_RFID", "이미 등록된 RFID입니다."),
 
+    // order - 주문과 관련된 예외 정보
+    ORDER_NOT_FOUND(HttpStatus.NOT_FOUND, "ORDER_NOT_FOUND", "존재하지 않는 주문입니다."),
+    ITEMS_REQUIRED(HttpStatus.BAD_REQUEST, "ITEMS_REQUIRED", "주문에는 최소 1개 이상의 품목이 필요합니다.");
 
     private final HttpStatus status;
     private final String code;

@@ -1,11 +1,14 @@
 package com.domino.smerp.order;
 
 import com.domino.smerp.client.Client;
+import com.domino.smerp.common.BaseEntity;
 import com.domino.smerp.itemorder.ItemOrderCrossedTable;
 import com.domino.smerp.order.constants.OrderStatus;
 import com.domino.smerp.user.User;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.SQLRestriction;
 
 import java.time.Instant;
 import java.util.ArrayList;
@@ -14,12 +17,14 @@ import java.util.List;
 ;
 
 @Entity
-@Table(name = "orders")
+@Table(name = "`order`")
 @Getter
+@SQLDelete(sql = "UPDATE `order` SET is_deleted = true WHERE order_id = ?")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Builder
-public class Order {
+@SQLRestriction("is_deleted = false")
+public class Order extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -48,11 +53,9 @@ public class Order {
     @Column(name = "remark")
     private String remark;
 
-    @Column(name = "created_date", nullable = false)
-    private Instant createdDate;
-
-    @Column(name = "updated_date")
-    private Instant updatedDate;
+    @Builder.Default
+    @Column(name = "is_deleted", nullable = false)
+    private boolean isDeleted = false;
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
@@ -82,6 +85,5 @@ public class Order {
             newOrderItems.forEach(this::addOrderItem);
         }
 
-        this.updatedDate = Instant.now();
     }
 }

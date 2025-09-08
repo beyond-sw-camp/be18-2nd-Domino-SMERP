@@ -1,5 +1,6 @@
 package com.domino.smerp.salesorder;
 
+import com.domino.smerp.common.BaseEntity;
 import com.domino.smerp.order.Order;
 import com.domino.smerp.salesorder.constants.SalesOrderStatus;
 import jakarta.persistence.*;
@@ -14,7 +15,7 @@ import java.time.LocalDate;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Builder
-public class SalesOrder {
+public class SalesOrder extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -28,10 +29,10 @@ public class SalesOrder {
     @Column(nullable = false)
     private Integer qty;
 
-    @Column(nullable = false)
+    @Column(nullable = false, precision = 12, scale = 2)
     private BigDecimal surtax;
 
-    @Column(nullable = false)
+    @Column(nullable = false, precision = 12, scale = 2)
     private BigDecimal price;
 
     private String remark;
@@ -40,13 +41,7 @@ public class SalesOrder {
     @Column(nullable = false)
     private SalesOrderStatus status = SalesOrderStatus.APPROVED;  // ✅ 기본값 설정
 
-    @Column(nullable = false)
-    private LocalDate createdDate;
-
-    private LocalDate updatedDate;
-
     public void updateStatus(SalesOrderStatus status) {
         this.status = status;
-        this.updatedDate = LocalDate.now();
     }
 }

@@ -11,6 +11,7 @@ import com.domino.smerp.order.constants.OrderStatus;
 import com.domino.smerp.order.dto.request.OrderRequest;
 import com.domino.smerp.order.dto.request.UpdateOrderRequest;
 import com.domino.smerp.order.dto.response.OrderCreateResponse;
+import com.domino.smerp.order.dto.response.OrderDeleteResponse;
 import com.domino.smerp.order.dto.response.OrderResponse;
 import com.domino.smerp.user.User;
 import com.domino.smerp.user.UserRepository;
@@ -18,7 +19,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.Instant;
 import java.time.ZoneId;
 import java.util.List;
 
@@ -63,7 +63,6 @@ public class OrderServiceImpl implements OrderService {
                                 .toInstant()
                 )
                 .remark(request.getRemark())
-                .createdDate(Instant.now())
                 .build();
 
         for (ItemOrderRequest itemReq : request.getItems()) {
@@ -155,10 +154,13 @@ public class OrderServiceImpl implements OrderService {
      * 주문 삭제
      */
     @Override
-    public void deleteOrder(Long orderId) {
-        if (!orderRepository.existsById(orderId)) {
-            throw new CustomException(ErrorCode.ORDER_NOT_FOUND);
-        }
-        orderRepository.deleteById(orderId);
+    public OrderDeleteResponse deleteOrder(Long orderId) {
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new CustomException(ErrorCode.ORDER_NOT_FOUND));
+
+        orderRepository.delete(order); // @SQLDelete 덕분에 soft delete 됨
+
+        return OrderDeleteResponse.from(order);
     }
+
 }

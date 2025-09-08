@@ -4,12 +4,12 @@ import com.domino.smerp.order.Order;
 import com.domino.smerp.order.OrderRepository;
 import com.domino.smerp.salesorder.constants.SalesOrderStatus;
 import com.domino.smerp.salesorder.dto.request.SalesOrderRequest;
+import com.domino.smerp.salesorder.dto.response.SalesOrderCreateResponse;
 import com.domino.smerp.salesorder.dto.response.SalesOrderResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -21,7 +21,7 @@ public class SalesOrderServiceImpl implements SalesOrderService {
     private final OrderRepository orderRepository;
 
     @Override
-    public SalesOrderResponse createSalesOrder(SalesOrderRequest request) {
+    public SalesOrderCreateResponse createSalesOrder(SalesOrderRequest request) {
         Order order = orderRepository.findById(request.getOrderId())
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 주문 ID: " + request.getOrderId()));
 
@@ -32,10 +32,9 @@ public class SalesOrderServiceImpl implements SalesOrderService {
                 .price(request.getPrice())
                 .remark(request.getRemark())
                 .status(SalesOrderStatus.APPROVED)   // ✅ 강제로 APPROVED 지정
-                .createdDate(LocalDate.now())
                 .build();
 
-        return SalesOrderResponse.from(salesOrderRepository.save(salesOrder));
+        return SalesOrderCreateResponse.from(salesOrderRepository.save(salesOrder));
     }
 
     @Override

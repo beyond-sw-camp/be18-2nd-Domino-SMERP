@@ -3,6 +3,7 @@ package com.domino.smerp.order;
 import com.domino.smerp.order.dto.request.OrderRequest;
 import com.domino.smerp.order.dto.request.UpdateOrderRequest;
 import com.domino.smerp.order.dto.response.OrderCreateResponse;
+import com.domino.smerp.order.dto.response.OrderDeleteResponse;
 import com.domino.smerp.order.dto.response.OrderResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -45,9 +46,8 @@ public class OrderController {
     }
 
     // ✅ 삭제 (soft-delete 고려 시 patch로 유지 가능)
-    @PatchMapping("/{orderId}/delete")
-    public ResponseEntity<Void> deleteOrder(@PathVariable Long orderId) {
-        orderService.deleteOrder(orderId);
-        return ResponseEntity.noContent().build();
+    @DeleteMapping("/{orderId}") // 또는 @PatchMapping("/{orderId}/delete")
+    public ResponseEntity<OrderDeleteResponse> deleteOrder(@PathVariable Long orderId) {
+        return ResponseEntity.ok(orderService.deleteOrder(orderId));
     }
 }

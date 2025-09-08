@@ -5,7 +5,7 @@ import lombok.Builder;
 import lombok.Getter;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
+import java.time.Instant;
 
 @Getter
 @Builder
@@ -18,7 +18,7 @@ public class SalesOrderResponse {
     private final BigDecimal price;
     private final String remark;
     private final String status;          // ✅ String 유지
-    private final LocalDate createdDate;
+    private final Instant createdDate;
 
     public static SalesOrderResponse from(SalesOrder salesOrder) {
         return SalesOrderResponse.builder()
@@ -29,7 +29,7 @@ public class SalesOrderResponse {
                 .price(salesOrder.getPrice())
                 .remark(salesOrder.getRemark())
                 .status(salesOrder.getStatus().name())   // ✅ Enum → String 변환
-                .createdDate(salesOrder.getCreatedDate())
+                .createdDate(salesOrder.getCreatedAt())
                 .build();
     }
 }
