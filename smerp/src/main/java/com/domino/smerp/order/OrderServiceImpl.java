@@ -19,9 +19,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.ZoneId;
-import java.time.LocalDate;
-import java.time.Instant;
+import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
@@ -39,7 +37,7 @@ public class OrderServiceImpl implements OrderService {
      * 전표번호 생성 (yyyy/MM/dd-순번)
      */
     private String generateDocumentNo(Instant baseInstant) {
-        LocalDate baseDate = baseInstant.atZone(ZoneId.systemDefault()).toLocalDate();
+        LocalDate baseDate = baseInstant.atZone(ZoneOffset.UTC).toLocalDate(); // ✅ UTC 기준
         String datePart = baseDate.format(DateTimeFormatter.ofPattern("yyyy/MM/dd"));
         long count = orderRepository.countByDocumentNoStartingWith(datePart);
         return datePart + "-" + (count + 1);
@@ -61,19 +59,20 @@ public class OrderServiceImpl implements OrderService {
 
         var status = (request.getStatus() != null) ? request.getStatus() : OrderStatus.PENDING;
 
+        // ✅ LocalDate → Instant (UTC 변환)
         Instant orderDateInstant = request.getOrderDate() != null
-                ? request.getOrderDate().atStartOfDay(ZoneId.systemDefault()).toInstant()
+                ? request.getOrderDate().atStartOfDay(ZoneOffset.UTC).toInstant()
+                : null;
+
+        Instant deliveryDateInstant = request.getDeliveryDate() != null
+                ? request.getDeliveryDate().atStartOfDay(ZoneOffset.UTC).toInstant()
                 : null;
 
         var order = Order.builder()
                 .client(client)
                 .user(user)
                 .status(status)
-                .deliveryDate(
-                        request.getDeliveryDate()
-                                .atStartOfDay(ZoneId.systemDefault())
-                                .toInstant()
-                )
+                .deliveryDate(deliveryDateInstant)
                 .remark(request.getRemark())
                 .documentNo("TEMP") // 이후 updateDocumentInfo로 교체
                 .build();
@@ -149,19 +148,23 @@ public class OrderServiceImpl implements OrderService {
                 })
                 .toList();
 
+        // ✅ LocalDate → Instant (UTC 변환)
         Instant newOrderDateInstant = request.getOrderDate() != null
-                ? request.getOrderDate().atStartOfDay(ZoneId.systemDefault()).toInstant()
+                ? request.getOrderDate().atStartOfDay(ZoneOffset.UTC).toInstant()
                 : null;
 
+        Instant newDeliveryDateInstant = request.getDeliveryDate() != null
+                ? request.getDeliveryDate().atStartOfDay(ZoneOffset.UTC).toInstant()
+                : null;
+
+        // ✅ 전표번호 재생성
         Instant baseInstant = (newOrderDateInstant != null) ? newOrderDateInstant : order.getCreatedAt();
         String newDocumentNo = generateDocumentNo(baseInstant);
         order.updateDocumentInfo(newOrderDateInstant, newDocumentNo);
 
         order.updateAll(
                 newOrderDateInstant,
-                request.getDeliveryDate()
-                        .atStartOfDay(ZoneId.systemDefault())
-                        .toInstant(),
+                newDeliveryDateInstant,
                 request.getRemark(),
                 request.getStatus(),
                 newUser,
