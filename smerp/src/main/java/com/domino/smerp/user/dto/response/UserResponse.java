@@ -22,5 +22,6 @@ public class UserResponse {
     private final String deptTitle;
     private final UserRole role;
     private final String clientName;
+    private final String empNo;
 
 }
