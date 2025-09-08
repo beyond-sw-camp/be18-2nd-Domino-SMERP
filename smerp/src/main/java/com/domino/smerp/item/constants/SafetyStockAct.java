@@ -1,5 +1,7 @@
 package com.domino.smerp.item.constants;
 
+import com.domino.smerp.common.exception.CustomException;
+import com.domino.smerp.common.exception.ErrorCode;
 import java.util.Arrays;
 
 public enum SafetyStockAct {
@@ -20,6 +22,6 @@ public enum SafetyStockAct {
     return Arrays.stream(values())
         .filter(act -> act.description.equals(label) || act.name().equalsIgnoreCase(label))
         .findFirst()
-        .orElseThrow(() -> new IllegalArgumentException("잘못된 상태: " + label));
+        .orElseThrow(() -> new CustomException(ErrorCode.INVALID_SAFETY_STOCK_ACT));
   }
 }
