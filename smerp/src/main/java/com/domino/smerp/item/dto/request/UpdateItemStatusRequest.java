@@ -18,4 +18,3 @@ public class UpdateItemStatusRequest {
   private final String safetyStockAct; // 안전재고 사용 여부
 
 }
-

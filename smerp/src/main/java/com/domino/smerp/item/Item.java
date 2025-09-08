@@ -1,5 +1,6 @@
 package com.domino.smerp.item;
 
+import com.domino.smerp.common.BaseEntity;
 import com.domino.smerp.item.constants.ItemAct;
 import com.domino.smerp.item.constants.SafetyStockAct;
 import com.domino.smerp.item.dto.request.UpdateItemRequest;
@@ -16,8 +17,6 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.PrePersist;
-import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
 import java.math.BigDecimal;
 import java.time.Instant;
@@ -35,7 +34,7 @@ import org.hibernate.annotations.SQLRestriction;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Table(name = "item")
 @SQLRestriction("is_deleted = false")
-public class Item {
+public class Item extends BaseEntity {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -61,12 +60,6 @@ public class Item {
   @Column(name = "outbound_unit_price", precision = 12, scale = 2)
   private BigDecimal outboundUnitPrice;
 
-  @Column(name = "created_date", nullable = false, updatable = false)
-  private Instant createdDate;
-
-  @Column(name = "updated_date")
-  private Instant updatedDate;
-
   @Enumerated(EnumType.STRING)
   @Column(name = "item_act", nullable = false)
   private ItemAct itemAct;
@@ -78,7 +71,7 @@ public class Item {
   @Column(name = "safety_stock_act", nullable = false)
   private SafetyStockAct safetyStockAct;
 
-  @Column(name = "rfid", nullable = false, unique = true,length = 30)
+  @Column(name = "rfid", nullable = false, unique = true, length = 30)
   private String rfid;
 
   @Column(name = "group_name1", length = 50)
@@ -96,24 +89,50 @@ public class Item {
 
   // 품목 수정
   public void updateItem(UpdateItemRequest request, ItemStatus itemStatus) {
-    if (itemStatus != null) this.itemStatus = itemStatus;
-    if (request.getName() != null) this.name = request.getName();
-    if (request.getSpecification() != null) this.specification = request.getSpecification();
-    if (request.getUnit() != null) this.unit = request.getUnit();
-    if (request.getInboundUnitPrice() != null) this.inboundUnitPrice = request.getInboundUnitPrice();
-    if (request.getOutboundUnitPrice() != null) this.outboundUnitPrice = request.getOutboundUnitPrice();
-    if (request.getRfid() != null) this.rfid = request.getRfid();
-    if (request.getGroupName1() != null) this.groupName1 = request.getGroupName1();
-    if (request.getGroupName2() != null) this.groupName2 = request.getGroupName2();
-    if (request.getGroupName3() != null) this.groupName3 = request.getGroupName3();
+    if (itemStatus != null) {
+      this.itemStatus = itemStatus;
+    }
+    if (request.getName() != null) {
+      this.name = request.getName();
+    }
+    if (request.getSpecification() != null) {
+      this.specification = request.getSpecification();
+    }
+    if (request.getUnit() != null) {
+      this.unit = request.getUnit();
+    }
+    if (request.getInboundUnitPrice() != null) {
+      this.inboundUnitPrice = request.getInboundUnitPrice();
+    }
+    if (request.getOutboundUnitPrice() != null) {
+      this.outboundUnitPrice = request.getOutboundUnitPrice();
+    }
+    if (request.getRfid() != null) {
+      this.rfid = request.getRfid();
+    }
+    if (request.getGroupName1() != null) {
+      this.groupName1 = request.getGroupName1();
+    }
+    if (request.getGroupName2() != null) {
+      this.groupName2 = request.getGroupName2();
+    }
+    if (request.getGroupName3() != null) {
+      this.groupName3 = request.getGroupName3();
+    }
   }
 
 
   // 품목 사용/비사용, 안전 재고를 다룹니다.
   public void updateStatus(UpdateItemStatusRequest request) {
-    if (request.getItemAct() != null) {this.itemAct = ItemAct.fromLabel(request.getItemAct());}
-    if (request.getSafetyStock() != null) {this.safetyStock = request.getSafetyStock();}
-    if (request.getSafetyStockAct() != null) {this.safetyStockAct = SafetyStockAct.fromLabel(request.getSafetyStockAct());}
+    if (request.getItemAct() != null) {
+      this.itemAct = ItemAct.fromLabel(request.getItemAct());
+    }
+    if (request.getSafetyStock() != null) {
+      this.safetyStock = request.getSafetyStock();
+    }
+    if (request.getSafetyStockAct() != null) {
+      this.safetyStockAct = SafetyStockAct.fromLabel(request.getSafetyStockAct());
+    }
   }
 
   // 품목 삭제 (소프트딜리트)
@@ -121,14 +140,4 @@ public class Item {
     this.isDeleted = true;
   }
 
-  // TODO: BaseEntity 상속
-  @PrePersist
-  private void onPrePersist() {
-    this.createdDate = Instant.now();
-  }
-
-  @PreUpdate
-  private void onPreUpdate() {
-    this.updatedDate = Instant.now();
-  }
 }

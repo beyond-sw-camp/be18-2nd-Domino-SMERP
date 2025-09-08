@@ -20,9 +20,9 @@ public class ItemResponse {
   private final BigDecimal inboundUnitPrice;
   private final BigDecimal outboundUnitPrice;
   @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "UTC")
-  private final Instant createdDate;
+  private final Instant createdAt;
   @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "UTC")
-  private final Instant updatedDate;
+  private final Instant updatedAt;
   private final String itemAct;
   private final Integer safetyStock;
   private final String safetyStockAct;
@@ -34,23 +34,23 @@ public class ItemResponse {
   // 정적 팩토리 메서드 (Entity → DTO)
   public static ItemResponse fromEntity(Item item) {
     return ItemResponse.builder()
-                        .itemId(item.getItemId())
-                        .itemStatusId(item.getItemStatus().getItemStatusId())
-                        .itemStatusName(item.getItemStatus().getStatus().getDescription())
-                        .name(item.getName())
-                        .specification(item.getSpecification())
-                        .unit(item.getUnit())
-                        .inboundUnitPrice(item.getInboundUnitPrice())
-                        .outboundUnitPrice(item.getOutboundUnitPrice())
-                        .createdDate(item.getCreatedDate())
-                        .updatedDate(item.getUpdatedDate())
-                        .itemAct(item.getItemAct().getDescription())
-                        .safetyStock(item.getSafetyStock())
-                        .safetyStockAct(item.getSafetyStockAct().getDescription())
-                        .rfid(item.getRfid())
-                        .groupName1(item.getGroupName1())
-                        .groupName2(item.getGroupName2())
-                        .groupName3(item.getGroupName3())
-                        .build();
+        .itemId(item.getItemId())
+        .itemStatusId(item.getItemStatus().getItemStatusId())
+        .itemStatusName(item.getItemStatus().getStatus().getDescription())
+        .name(item.getName())
+        .specification(item.getSpecification())
+        .unit(item.getUnit())
+        .inboundUnitPrice(item.getInboundUnitPrice())
+        .outboundUnitPrice(item.getOutboundUnitPrice())
+        .createdAt(item.getCreatedAt())
+        .updatedAt(item.getUpdatedAt())
+        .itemAct(item.getItemAct().getDescription())
+        .safetyStock(item.getSafetyStock())
+        .safetyStockAct(item.getSafetyStockAct().getDescription())
+        .rfid(item.getRfid())
+        .groupName1(item.getGroupName1())
+        .groupName2(item.getGroupName2())
+        .groupName3(item.getGroupName3())
+        .build();
   }
 }

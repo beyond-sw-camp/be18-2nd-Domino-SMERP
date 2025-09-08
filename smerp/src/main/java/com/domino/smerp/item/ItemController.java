@@ -26,7 +26,7 @@ public class ItemController {
 
   @PostMapping
   public ResponseEntity<ItemResponse> createItem(final @Valid @RequestBody CreateItemRequest request) {
-    
+
     return ResponseEntity.ok(itemService.createItem(request));
   }
 
@@ -48,7 +48,7 @@ public class ItemController {
 
   @PatchMapping("/{item-id}/status")
   public ResponseEntity<ItemResponse> updateItemStatus(@PathVariable("item-id") final Long itemId,
-     final @Valid @RequestBody UpdateItemStatusRequest request) {
+      final @Valid @RequestBody UpdateItemStatusRequest request) {
     return ResponseEntity.ok(itemService.updateItemStatus(itemId, request));
   }
 
