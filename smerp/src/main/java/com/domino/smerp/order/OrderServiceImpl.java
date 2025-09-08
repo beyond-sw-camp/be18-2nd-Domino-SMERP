@@ -49,9 +49,9 @@ public class OrderServiceImpl implements OrderService {
     @Override
     @Transactional
     public OrderCreateResponse createOrder(OrderRequest request) {
-        Client client = clientRepository.findById(request.getClientId())
+        Client client = clientRepository.findByCompanyName(request.getCompanyName())
                 .orElseThrow(() -> new CustomException(ErrorCode.CLIENT_NOT_FOUND));
-        User user = userRepository.findby
+        User user = userRepository.findByEmpNo(request.getEmpNo())
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
         if (request.getItems() == null || request.getItems().isEmpty()) {

@@ -15,7 +15,7 @@ import java.time.Instant;
 public class OrderResponse {
 
     private final String documentNo;       // 주문 ID
-    private final Long clientId;      // 거래처 ID
+    private final String companyName;      // 거래처 ID
     private final String status;      // 주문 상태
     private final Instant deliveryDate; // 납기 일정
     private final String userName;        // 구매 담당자 ID
@@ -37,7 +37,7 @@ public class OrderResponse {
 
         return OrderResponse.builder()
                 .documentNo(order.getDocumentNo())
-                .clientId(order.getClient().getClientId())
+                .companyName(order.getClient().getCompanyName())
                 // 거래처 누락시 NPE 방지
                 // client -> !=  null ? order.getClient().getCompanyName()
                 .status(order.getStatus().name())

@@ -16,7 +16,7 @@ import java.util.List;
 @NoArgsConstructor(force = true)   // ✅ Jackson 역직렬화 가능하게
 public class OrderRequest {
     private final LocalDate orderDate;     // 주문일자
-    private final Long clientId;           // 거래처 ID
+    private final String companyName;           // 거래처 ID
     private final String empNo;         // 사번
     private final LocalDate deliveryDate;  // 납기일자
     private final String remark;           // 비고
