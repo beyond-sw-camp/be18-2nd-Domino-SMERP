@@ -27,7 +27,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public void createUser(CreateUserRequest request) {
+    public void createUser(final CreateUserRequest request) {
+
         String encryptedSsn = ssnEncryptor.encryptSsn(request.getSsn());
         if (userRepository.existsByEmail(request.getEmail())) {
             throw new CustomException(ErrorCode.DUPLICATE_EMAIL);
@@ -45,7 +46,8 @@ public class UserServiceImpl implements UserService {
         Client client = null;
         if (request.getClientId() != null) {
             client = clientRepository.findById(request.getClientId())
-                                     .orElseThrow(() -> new CustomException(ErrorCode.CLIENT_NOT_FOUND));
+                                     .orElseThrow(
+                                         () -> new CustomException(ErrorCode.CLIENT_NOT_FOUND));
         }
 
         User user = User.builder()
@@ -71,6 +73,7 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional(readOnly = true)
     public List<UserListResponse> findAllUsers() {
+
         List<User> allUser = userRepository.findAll();
 
         return allUser.stream()
@@ -87,13 +90,15 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public void deleteUser(Long UserId) {
+    public void deleteUser(final Long UserId) {
+
         userRepository.deleteById(UserId);
     }
 
     @Override
     @Transactional(readOnly = true)
-    public UserResponse findUserById(Long userId) {
+    public UserResponse findUserById(final Long userId) {
+
         User user = userRepository.findById(userId)
                                   .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
@@ -117,8 +122,10 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public void updateUser(Long userId,UpdateUserRequest request) {
-        User user = userRepository.findById(userId).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+    public void updateUser(final Long userId, final UpdateUserRequest request) {
+
+        User user = userRepository.findById(userId)
+                                  .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
         user.updateUser(request);
     }
 }
