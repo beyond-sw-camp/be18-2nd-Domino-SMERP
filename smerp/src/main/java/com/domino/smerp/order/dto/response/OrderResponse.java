@@ -14,7 +14,7 @@ import java.time.Instant;
 @AllArgsConstructor
 public class OrderResponse {
 
-    private final Long orderId;       // 주문 ID
+    private final String documentNo;       // 주문 ID
     private final Long clientId;      // 거래처 ID
     private final String status;      // 주문 상태
     private final Instant deliveryDate; // 납기 일정
@@ -36,7 +36,7 @@ public class OrderResponse {
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
 
         return OrderResponse.builder()
-                .orderId(order.getOrderId())
+                .documentNo(order.getDocumentNo())
                 .clientId(order.getClient().getClientId())
                 .status(order.getStatus().name())
                 .deliveryDate(order.getDeliveryDate())

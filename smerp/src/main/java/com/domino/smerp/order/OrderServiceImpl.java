@@ -20,6 +20,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.ZoneId;
+import java.time.LocalDate;
+import java.time.Instant;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Service
@@ -31,6 +34,16 @@ public class OrderServiceImpl implements OrderService {
     private final ClientRepository clientRepository;
     private final UserRepository userRepository;
     private final ItemRepository itemRepository;
+
+    /**
+     * 전표번호 생성 (yyyy/MM/dd-순번)
+     */
+    private String generateDocumentNo(Instant baseInstant) {
+        LocalDate baseDate = baseInstant.atZone(ZoneId.systemDefault()).toLocalDate();
+        String datePart = baseDate.format(DateTimeFormatter.ofPattern("yyyy/MM/dd"));
+        long count = orderRepository.countByDocumentNoStartingWith(datePart);
+        return datePart + "-" + (count + 1);
+    }
 
     /**
      * 주문 등록
@@ -48,22 +61,27 @@ public class OrderServiceImpl implements OrderService {
 
         var status = (request.getStatus() != null) ? request.getStatus() : OrderStatus.PENDING;
 
+        Instant orderDateInstant = request.getOrderDate() != null
+                ? request.getOrderDate().atStartOfDay(ZoneId.systemDefault()).toInstant()
+                : null;
+
         var order = Order.builder()
                 .client(client)
                 .user(user)
                 .status(status)
-                .orderDate(
-                        request.getOrderDate()
-                                .atStartOfDay(ZoneId.systemDefault())
-                                .toInstant()
-                )
                 .deliveryDate(
                         request.getDeliveryDate()
                                 .atStartOfDay(ZoneId.systemDefault())
                                 .toInstant()
                 )
                 .remark(request.getRemark())
+                .documentNo("TEMP") // 이후 updateDocumentInfo로 교체
                 .build();
+
+        // ✅ updatedAt = orderDate or null, documentNo 생성
+        Instant baseInstant = (orderDateInstant != null) ? orderDateInstant : Instant.now();
+        String documentNo = generateDocumentNo(baseInstant);
+        order.updateDocumentInfo(orderDateInstant, documentNo);
 
         for (ItemOrderRequest itemReq : request.getItems()) {
             Item item = itemRepository.findById(itemReq.getItemId())
@@ -118,7 +136,6 @@ public class OrderServiceImpl implements OrderService {
             throw new CustomException(ErrorCode.ITEMS_REQUIRED);
         }
 
-        // 새로운 orderItems 생성
         List<ItemOrderCrossedTable> newOrderItems = request.getItems().stream()
                 .map(itemReq -> {
                     Item item = itemRepository.findById(itemReq.getItemId())
@@ -132,11 +149,16 @@ public class OrderServiceImpl implements OrderService {
                 })
                 .toList();
 
-        // 엔티티에 전체 업데이트 적용
+        Instant newOrderDateInstant = request.getOrderDate() != null
+                ? request.getOrderDate().atStartOfDay(ZoneId.systemDefault()).toInstant()
+                : null;
+
+        Instant baseInstant = (newOrderDateInstant != null) ? newOrderDateInstant : order.getCreatedAt();
+        String newDocumentNo = generateDocumentNo(baseInstant);
+        order.updateDocumentInfo(newOrderDateInstant, newDocumentNo);
+
         order.updateAll(
-                request.getOrderDate()
-                        .atStartOfDay(ZoneId.systemDefault())
-                        .toInstant(),
+                newOrderDateInstant,
                 request.getDeliveryDate()
                         .atStartOfDay(ZoneId.systemDefault())
                         .toInstant(),
@@ -145,7 +167,6 @@ public class OrderServiceImpl implements OrderService {
                 newUser,
                 newOrderItems
         );
-
 
         return OrderResponse.from(orderRepository.save(order));
     }
@@ -158,9 +179,8 @@ public class OrderServiceImpl implements OrderService {
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new CustomException(ErrorCode.ORDER_NOT_FOUND));
 
-        orderRepository.delete(order); // @SQLDelete 덕분에 soft delete 됨
+        orderRepository.delete(order); // @SQLDelete soft delete
 
         return OrderDeleteResponse.from(order);
     }
-
 }

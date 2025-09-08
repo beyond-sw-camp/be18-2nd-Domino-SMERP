@@ -14,8 +14,6 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
-;
-
 @Entity
 @Table(name = "`order`")
 @Getter
@@ -44,18 +42,18 @@ public class Order extends BaseEntity {
     @Builder.Default
     private OrderStatus status = OrderStatus.PENDING;
 
-    @Column(name = "order_date", nullable = false)
-    private Instant orderDate;
-
     @Column(name = "delivery_date", nullable = false)
     private Instant deliveryDate;
 
-    @Column(name = "remark")
+    @Column(name = "remark", length = 100)
     private String remark;
 
     @Builder.Default
     @Column(name = "is_deleted", nullable = false)
     private boolean isDeleted = false;
+
+    @Column(name = "document_no", nullable = false, length = 30)
+    private String documentNo;
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
@@ -67,6 +65,20 @@ public class Order extends BaseEntity {
         orderItem.assignOrder(this);
     }
 
+    // === 전표번호와 updatedAt 갱신 ===
+    public void updateDocumentInfo(Instant baseDate, String newDocumentNo) {
+        if (baseDate != null) {
+            try {
+                var field = BaseEntity.class.getDeclaredField("updatedAt");
+                field.setAccessible(true);
+                field.set(this, baseDate);
+            } catch (Exception e) {
+                throw new RuntimeException("updatedAt 갱신 실패", e);
+            }
+        }
+        this.documentNo = newDocumentNo;
+    }
+
     // === 전체 업데이트 메서드 ===
     public void updateAll(Instant orderDate,
                           Instant deliveryDate,
@@ -74,7 +86,6 @@ public class Order extends BaseEntity {
                           OrderStatus status,
                           User newUser,
                           List<ItemOrderCrossedTable> newOrderItems) {
-        this.orderDate = orderDate;
         this.deliveryDate = deliveryDate;
         this.remark = remark;
         this.status = status;
@@ -84,6 +95,5 @@ public class Order extends BaseEntity {
         if (newOrderItems != null) {
             newOrderItems.forEach(this::addOrderItem);
         }
-
     }
 }
