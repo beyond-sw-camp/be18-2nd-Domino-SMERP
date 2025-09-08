@@ -18,10 +18,10 @@ public interface RequestPurchaseOrderRepository extends JpaRepository<RequestPur
   List<RequestPurchaseOrder> findByUser_UserId(Long userId);
 
   // item_id 조회 (교차테이블 기준)
-  List<RequestPurchaseOrder> findByItemRpoCrossedTables_Item_ItemId(Long itemId);
+  List<RequestPurchaseOrder> findByItemRpoCrossedTablesItemItemId(Long itemId);
 
   // qty 조회 (교차테이블 기준)
-  List<RequestPurchaseOrder> findByItemRpoCrossedTables_Qty(int qty);
+  List<RequestPurchaseOrder> findByItemRpoCrossedTablesQty(int qty);
 
   // remark 조회 (LIKE 검색)
   List<RequestPurchaseOrder> findByRemarkContaining(String keyword);

@@ -1,7 +1,7 @@
 package com.domino.smerp.purchase.requestpurchaseorder.dto.response;
 
 import com.domino.smerp.item.Item;
-import com.domino.smerp.purchase.requestpurchaseorder.ItemRpoCrossedTable;
+import com.domino.smerp.purchase.itemrpocrossedtable.ItemRpoCrossedTable;
 import com.domino.smerp.purchase.requestpurchaseorder.RequestPurchaseOrder;
 import java.time.Instant;
 import java.util.List;
@@ -69,7 +69,7 @@ public class RequestPurchaseOrderResponse {
       return RequestPurchaseOrderLineResponse.builder()
           .lineId(entity.getItemRpoId())
           .itemId(item.getItemId())
-          .itemName(item.getItemName())
+          .itemName(item.getName())
           .qty(entity.getQty())
           .build();
     }

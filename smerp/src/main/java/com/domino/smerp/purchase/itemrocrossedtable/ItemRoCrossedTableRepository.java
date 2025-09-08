@@ -9,8 +9,9 @@ import org.springframework.stereotype.Repository;
 public interface ItemRoCrossedTableRepository extends JpaRepository<ItemRoCrossedTable, Long> {
 
   // 특정 발주 전표에 속한 라인 조회
-  List<ItemRoCrossedTable> findByRequestOrder_RoId(Long roId);
+  List<ItemRoCrossedTable> findByRequestOrderRoId(Long roId);
 
   // 발주 안에서 특정 품목 존재 여부 확인
   Optional<ItemRoCrossedTable> findByRequestOrder_RoIdAndItem_ItemId(Long roId, Long itemId);
+
 }

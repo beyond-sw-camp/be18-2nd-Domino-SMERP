@@ -8,7 +8,6 @@ import java.time.Instant;
 
 @Getter
 @Builder
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class RequestOrderRequest {
 
@@ -31,7 +30,6 @@ public class RequestOrderRequest {
   // ===== 라인 요청 DTO =====
   @Getter
   @Builder
-  @NoArgsConstructor(access = AccessLevel.PROTECTED)
   @AllArgsConstructor(access = AccessLevel.PRIVATE)
   public static class RequestOrderLineRequest {
     @NotNull

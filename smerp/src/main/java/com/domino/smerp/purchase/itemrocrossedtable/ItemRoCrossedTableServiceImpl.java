@@ -6,6 +6,7 @@ import com.domino.smerp.purchase.requestorder.RequestOrder;
 import com.domino.smerp.purchase.requestorder.RequestOrderRepository;
 import com.domino.smerp.purchase.requestorder.dto.request.RequestOrderRequest;
 import com.domino.smerp.purchase.requestorder.dto.response.RequestOrderResponse;
+import com.domino.smerp.purchase.requestorder.dto.response.RequestOrderResponse.RequestOrderLineResponse;
 import jakarta.persistence.EntityNotFoundException;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -45,10 +46,10 @@ public class ItemRoCrossedTableServiceImpl implements ItemRoCrossedTableService 
 
   @Override
   @Transactional(readOnly = true)
-  public List<RequestOrderResponse.RequestOrderLineResponse> getLinesByRoId(final Long roId) {
-    return itemRoCrossedTableRepository.findByRequestOrder_RoId(roId)
+  public List<RequestOrderLineResponse> getLinesByRoId(final Long roId) {
+    return itemRoCrossedTableRepository.findByRequestOrderRoId(roId)
         .stream()
-        .map(RequestOrderResponse.RequestOrderLineResponse::from)
+        .map(RequestOrderLineResponse::from)
         .toList();
   }
 

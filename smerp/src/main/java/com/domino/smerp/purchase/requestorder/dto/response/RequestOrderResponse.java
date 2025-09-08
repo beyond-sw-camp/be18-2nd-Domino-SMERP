@@ -63,7 +63,7 @@ public class RequestOrderResponse {
       return RequestOrderLineResponse.builder()
           .lineId(entity.getItemRoId())
           .itemId(item.getItemId())
-          .itemName(item.getItemName())
+          .itemName(item.getName())
           .qty(entity.getQty())
           .build();
     }
