@@ -1,33 +1,34 @@
 package com.domino.smerp.purchase.requestpurchaseorder;
 
-import com.domino.smerp.purchase.itemrpocrossedtable.ItemRpoCrossedTable;
 import com.domino.smerp.purchase.requestpurchaseorder.constants.RequestPurchaseOrderStatus;
-import com.domino.smerp.user;
-import jakarta.persistence.CascadeType;
+import com.domino.smerp.user.User;
 import jakarta.persistence.Column;
+import jakarta.persistence.ConstraintMode;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
+import jakarta.persistence.ForeignKey;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Index;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.List;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+/**
+ * 구매요청(RequestPurchaseOrder) 엔티티
+ */
 @Entity
 @Getter
 @Builder
@@ -37,8 +38,9 @@ import lombok.NoArgsConstructor;
     name = "request_purchase_order",
     indexes = {
         @Index(name = "idx_rpo_user_id", columnList = "user_id"),
-        @Index(name = "idx_rpo_delivery_at", columnList = "delivery_at"),
-        @Index(name = "idx_rpo_status", columnList = "status")
+        @Index(name = "idx_rpo_delivery_date", columnList = "delivery_date"),
+        @Index(name = "idx_rpo_status", columnList = "status"),
+        @Index(name = "idx_rpo_is_deleted", columnList = "is_deleted")
     }
 )
 public class RequestPurchaseOrder {
@@ -46,79 +48,107 @@ public class RequestPurchaseOrder {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = "rpo_id", nullable = false)
-  private Long rpoId; // 구매요청 PK
+  private Long rpoId;
 
   @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "user_id", nullable = false)
+  @JoinColumn(
+      name = "user_id",
+      nullable = false,
+      foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT)
+  )
   private User user; // 사용자 FK
 
-  @Column(name = "created_at", nullable = false, updatable = false)
-  private Instant createdAt; // 생성일시 (UTC)
+  @Column(name = "created_date", nullable = false, updatable = false)
+  private Instant createdDate;
 
-  @Column(name = "updated_at")
-  private Instant updatedAt; // 수정일시 (UTC)
+  @Column(name = "updated_date")
+  private Instant updatedDate;
 
-  @Column(name = "delivery_at", nullable = false)
-  private Instant deliveryAt; // 납기요청일시 (UTC)
+  @Column(name = "delivery_date", nullable = false)
+  private Instant deliveryDate;
 
   @Size(max = 100)
   @Column(name = "remark", length = 100)
-  private String remark; // 비고
+  private String remark;
 
+  @NotNull
   @Enumerated(EnumType.STRING)
   @Column(name = "status", nullable = false, length = 20)
-  private RequestPurchaseOrderStatus status; // 상태 (기본: PENDING)
+  private RequestPurchaseOrderStatus status;
 
-  @OneToMany(mappedBy = "requestPurchaseOrder", cascade = CascadeType.ALL, orphanRemoval = true)
-  private List<ItemRpoCrossedTable> items = new ArrayList<>();
+  // ====== Soft Delete 관련 ======
+  @Column(name = "is_deleted", nullable = false)
+  private boolean isDeleted;
+
+  @Column(name = "deleted_at")
+  private Instant deletedAt; // 삭제 요청 시간
+
+  @Column(name = "document_no", length = 30, nullable = false)
+  private String documentNo; // 전표번호
 
   // ====== Lifecycle ======
   @PrePersist
   void onCreate() {
     Instant now = Instant.now();
-    this.createdAt = now;
-    if (this.deliveryAt == null) {
-      this.deliveryAt = now;
+    this.createdDate = now;
+    if (this.deliveryDate == null) {
+      this.deliveryDate = now;
     }
     if (this.status == null) {
       this.status = RequestPurchaseOrderStatus.PENDING;
     }
-    if (this.updatedAt == null) {
-      this.updatedAt = this.createdAt;
+    if (this.updatedDate == null) {
+      this.updatedDate = this.createdDate;
     }
+    this.isDeleted = false;
   }
 
   // ====== 도메인 메서드 ======
-  public void changeDeliveryAt(final Instant deliveryAt) {
-    this.deliveryAt = deliveryAt;
+  public void updateDeliveryDate(final Instant deliveryDate) {
+    this.deliveryDate = deliveryDate;
   }
 
-  public void changeRemark(final String remark) {
+  public void updateRemark(final String remark) {
     this.remark = remark;
   }
 
-  public void changeDocumentDate(final Instant docDate) {
-    this.updatedAt = docDate;
+  public void updateDocumentDate(final Instant docDate) {
+    this.updatedDate = docDate;
   }
 
-  public void markApproved() {
+  public void updateStatusToApproved() {
     this.status = RequestPurchaseOrderStatus.APPROVED;
   }
 
-  public void markCompleted() {
+  public void updateStatusToCompleted() {
     this.status = RequestPurchaseOrderStatus.COMPLETED;
   }
 
-  public void markReturned(final String reason) {
+  public void updateStatusToReturned(final String reason) {
     this.status = RequestPurchaseOrderStatus.RETURNED;
     appendRemark(reason);
   }
 
-  public void revertToPending(final String reason) {
+  public void updateStatusToPending(final String reason) {
     this.status = RequestPurchaseOrderStatus.PENDING;
     appendRemark(reason);
   }
 
+  // ====== Soft Delete ======
+  public void markAsDeleted() {
+    this.isDeleted = true;
+    this.deletedAt = Instant.now();
+  }
+
+  public boolean isEligibleForPermanentDeletion() {
+    if (!this.isDeleted || this.deletedAt == null) {
+      return false;
+    }
+    Instant now = Instant.now();
+    return now.isAfter(this.deletedAt.plusSeconds(60L * 60 * 168)); // 7일(168시간)
+  }
+
+  // ====== private util ======
   private void appendRemark(final String msg) {
     if (msg == null || msg.isBlank()) {
       return;
@@ -129,9 +159,5 @@ public class RequestPurchaseOrder {
       String joined = this.remark + " | " + msg;
       this.remark = joined.length() <= 100 ? joined : joined.substring(0, 100);
     }
-  }
-
-  public void addItem(final ItemRpoCrossedTable item) {
-    this.items.add(item);
   }
 }

@@ -1,38 +1,33 @@
 package com.domino.smerp.purchase.requestorder;
 
 import com.domino.smerp.client.Client;
-import com.domino.smerp.purchase.itemrocrossedtable.ItemRoCrossedTable;
 import com.domino.smerp.purchase.requestorder.constants.RequestOrderStatus;
 import com.domino.smerp.purchase.requestpurchaseorder.RequestPurchaseOrder;
 import com.domino.smerp.user.User;
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
+import jakarta.persistence.ConstraintMode;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
+import jakarta.persistence.ForeignKey;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Index;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.List;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-/**
- * 발주(RequestOrder) 엔티티 - 매니저 권한으로 구매요청(RequestPurchaseOrder)을 불러와 확정하는 전표
- */
 @Entity
 @Getter
 @Builder
@@ -43,8 +38,7 @@ import lombok.NoArgsConstructor;
     indexes = {
         @Index(name = "idx_ro_user_id", columnList = "user_id"),
         @Index(name = "idx_ro_client_id", columnList = "client_id"),
-        @Index(name = "idx_ro_rpo_id", columnList = "rpo_id"),
-        @Index(name = "idx_ro_delivery_at", columnList = "delivery_at"),
+        @Index(name = "idx_ro_delivery_date", columnList = "delivery_date"),
         @Index(name = "idx_ro_status", columnList = "status")
     }
 )
@@ -53,100 +47,78 @@ public class RequestOrder {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = "ro_id", nullable = false)
-  private Long roId; // 발주 PK
+  private Long roId;
 
   @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "rpo_id", nullable = false)
-  private RequestPurchaseOrder requestPurchaseOrder; // 구매요청 FK
+  @JoinColumn(
+      name = "rpo_id",
+      foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT)
+  )
+  private RequestPurchaseOrder requestPurchaseOrder;
 
   @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "client_id", nullable = false)
-  private Client client; // 거래처 FK
+  @JoinColumn(
+      name = "client_id",
+      nullable = false,
+      foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT)
+  )
+  private Client client;
 
   @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "user_id", nullable = false)
-  private User user; // 작성자(매니저) FK
+  @JoinColumn(
+      name = "user_id",
+      nullable = false,
+      foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT)
+  )
+  private User user;
 
-  @Column(name = "created_at", nullable = false, updatable = false)
-  private Instant createdAt; // 생성일시 (UTC)
+  @NotNull
+  @Enumerated(EnumType.STRING)
+  @Column(name = "status", nullable = false, length = 20)
+  private RequestOrderStatus status;
 
-  @Column(name = "updated_at")
-  private Instant updatedAt; // 수정일시 (UTC)
+  @Column(name = "created_date", nullable = false, updatable = false)
+  private Instant createdDate;
 
-  @Column(name = "delivery_at", nullable = false)
-  private Instant deliveryAt; // 납기요청일시 (UTC)
+  @Column(name = "updated_date")
+  private Instant updatedDate;
+
+  @Column(name = "delivery_date", nullable = false)
+  private Instant deliveryDate;
 
   @Size(max = 100)
   @Column(name = "remark", length = 100)
-  private String remark; // 비고
+  private String remark;
 
-  @Enumerated(EnumType.STRING)
-  @Column(name = "status", nullable = false, length = 20)
-  private RequestOrderStatus status; // 상태 (PENDING, APPROVED, COMPLETED, RETURNED)
-
-  @OneToMany(mappedBy = "requestOrder", cascade = CascadeType.ALL, orphanRemoval = true)
-  private List<ItemRoCrossedTable> items = new ArrayList<>();
-
-  // ====== Lifecycle ======
   @PrePersist
   void onCreate() {
     Instant now = Instant.now();
-    this.createdAt = now;
-    if (this.deliveryAt == null) {
-      this.deliveryAt = now;
+    this.createdDate = now;
+    if (this.deliveryDate == null) {
+      this.deliveryDate = now;
     }
     if (this.status == null) {
       this.status = RequestOrderStatus.PENDING;
     }
-    if (this.updatedAt == null) {
-      this.updatedAt = this.createdAt;
+    if (this.updatedDate == null) {
+      this.updatedDate = this.createdDate;
     }
   }
 
   // ====== 도메인 메서드 ======
-  public void changeDeliveryAt(final Instant deliveryAt) {
-    this.deliveryAt = deliveryAt;
+  public void updateDeliveryDate(final Instant deliveryDate) {
+    this.deliveryDate = deliveryDate;
   }
 
-  public void changeRemark(final String remark) {
+  public void updateRemark(final String remark) {
     this.remark = remark;
   }
 
-  public void changeDocumentDate(final Instant docDate) {
-    this.updatedAt = docDate;
+  public void updateStatus(final RequestOrderStatus status) {
+    this.status = status;
   }
 
-  public void markApproved() {
-    this.status = RequestOrderStatus.APPROVED;
-  }
-
-  public void markCompleted() {
-    this.status = RequestOrderStatus.COMPLETED;
-  }
-
-  public void markReturned(final String reason) {
-    this.status = RequestOrderStatus.RETURNED;
-    appendRemark(reason);
-  }
-
-  public void revertToPending(final String reason) {
-    this.status = RequestOrderStatus.PENDING;
-    appendRemark(reason);
-  }
-
-  private void appendRemark(final String msg) {
-    if (msg == null || msg.isBlank()) {
-      return;
-    }
-    if (this.remark == null || this.remark.isBlank()) {
-      this.remark = msg;
-    } else {
-      String joined = this.remark + " | " + msg;
-      this.remark = joined.length() <= 100 ? joined : joined.substring(0, 100);
-    }
-  }
-
-  public void addItem(final ItemRoCrossedTable item) {
-    this.items.add(item);
+  public void updateDocumentDate(final Instant docDate) {
+    this.updatedDate = docDate;
   }
 }

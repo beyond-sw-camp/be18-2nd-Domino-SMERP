@@ -1,19 +1,11 @@
 package com.domino.smerp.purchase.requestorder.dto.request;
 
-import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import java.time.Instant;
-import java.util.List;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
-/**
- * 발주(RequestOrder) 등록/수정 Request DTO
- */
+import java.time.Instant;
+
 @Getter
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -21,36 +13,30 @@ import lombok.NoArgsConstructor;
 public class RequestOrderRequest {
 
   @NotNull
-  private Long userId; // 작성자 ID
+  private final Long userId;
 
   @NotNull
-  private Long clientId; // 거래처 ID
+  private final Long clientId;
 
-  private Long rpoId; // 구매요청 ID (없을 수도 있음)
+  private final Long rpoId;
 
   @NotNull
-  private Instant deliveryAt; // 납기 요청일시 (UTC)
+  private final Instant deliveryDate;
 
   @Size(max = 100)
-  private String remark; // 비고
+  private final String remark;
 
-  @NotNull
-  private String status; // 상태 (pending, approved, completed, returned)
+  private final String status;
 
-  @NotNull
-  private List<RequestOrderLineRequest> items; // 품목 라인 리스트
-
-  // ====== 내부 DTO: 품목 라인 ======
+  // ===== 라인 요청 DTO =====
   @Getter
   @Builder
   @NoArgsConstructor(access = AccessLevel.PROTECTED)
   @AllArgsConstructor(access = AccessLevel.PRIVATE)
   public static class RequestOrderLineRequest {
-
     @NotNull
-    private Long itemId; // 품목 ID
-
-    @Min(1)
-    private int qty; // 수량
+    private final Long itemId;
+    @NotNull
+    private final int qty;
   }
 }

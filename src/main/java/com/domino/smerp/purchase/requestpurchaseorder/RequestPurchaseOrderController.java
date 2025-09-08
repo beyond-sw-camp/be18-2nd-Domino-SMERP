@@ -25,69 +25,73 @@ public class RequestPurchaseOrderController {
 
   private final RequestPurchaseOrderService requestPurchaseOrderService;
 
-  /**
-   * 구매요청 등록
-   */
+  // ===== 헤더 =====
+
   @PostMapping
-  public ResponseEntity<RequestPurchaseOrderResponse> createRequestPurchaseOrder(
+  public ResponseEntity<RequestPurchaseOrderResponse> create(
       @RequestBody final RequestPurchaseOrderRequest request) {
-    RequestPurchaseOrderResponse response = requestPurchaseOrderService.create(request);
-    return ResponseEntity.status(201).body(response);
+    return ResponseEntity.status(201).body(requestPurchaseOrderService.create(request));
   }
 
-  /**
-   * 구매요청 목록 조회 (페이징)
-   */
   @GetMapping
-  public ResponseEntity<List<RequestPurchaseOrderResponse>> getRequestPurchaseOrders(
-      @RequestParam(required = false) final String status,
-      @RequestParam(defaultValue = "0") final int page,
-      @RequestParam(defaultValue = "10") final int size) {
-    List<RequestPurchaseOrderResponse> responses =
-        requestPurchaseOrderService.getAll(status, page, size);
-    return ResponseEntity.ok(responses);
+  public ResponseEntity<List<RequestPurchaseOrderResponse>> getAll() {
+    return ResponseEntity.ok(requestPurchaseOrderService.getAll());
   }
 
-  /**
-   * 구매요청 상세 조회
-   */
   @GetMapping("/{rpoId}")
-  public ResponseEntity<RequestPurchaseOrderResponse> getRequestPurchaseOrder(
-      @PathVariable final Long rpoId) {
-    RequestPurchaseOrderResponse response = requestPurchaseOrderService.getById(rpoId);
-    return ResponseEntity.ok(response);
+  public ResponseEntity<RequestPurchaseOrderResponse> getById(@PathVariable final Long rpoId) {
+    return ResponseEntity.ok(requestPurchaseOrderService.getById(rpoId));
   }
 
-  /**
-   * 구매요청 수정
-   */
   @PatchMapping("/{rpoId}")
-  public ResponseEntity<RequestPurchaseOrderResponse> updateRequestPurchaseOrder(
+  public ResponseEntity<RequestPurchaseOrderResponse> update(
       @PathVariable final Long rpoId,
       @RequestBody final RequestPurchaseOrderRequest request) {
-    RequestPurchaseOrderResponse response = requestPurchaseOrderService.update(rpoId, request);
-    return ResponseEntity.ok(response);
+    return ResponseEntity.ok(requestPurchaseOrderService.update(rpoId, request));
   }
 
-  /**
-   * 구매요청 상태 변경
-   */
   @PatchMapping("/{rpoId}/status")
   public ResponseEntity<RequestPurchaseOrderResponse> updateStatus(
       @PathVariable final Long rpoId,
       @RequestParam final String status,
       @RequestParam(required = false) final String reason) {
-    RequestPurchaseOrderResponse response = requestPurchaseOrderService.updateStatus(rpoId, status,
-        reason);
-    return ResponseEntity.ok(response);
+    return ResponseEntity.ok(requestPurchaseOrderService.updateStatus(rpoId, status, reason));
   }
 
-  /**
-   * 구매요청 소프트 삭제
-   */
   @DeleteMapping("/{rpoId}")
-  public ResponseEntity<Void> deleteRequestPurchaseOrder(@PathVariable final Long rpoId) {
+  public ResponseEntity<Void> softDelete(@PathVariable final Long rpoId) {
     requestPurchaseOrderService.softDelete(rpoId);
     return ResponseEntity.noContent().build(); // 204
+  }
+
+  // ===== 라인 =====
+
+  @PostMapping("/{rpoId}/items")
+  public ResponseEntity<RequestPurchaseOrderResponse.RequestPurchaseOrderLineResponse> addLine(
+      @PathVariable final Long rpoId,
+      @RequestBody final RequestPurchaseOrderRequest.RequestPurchaseOrderLineRequest request) {
+    return ResponseEntity.status(201).body(requestPurchaseOrderService.addLine(rpoId, request));
+  }
+
+  @GetMapping("/{rpoId}/items")
+  public ResponseEntity<List<RequestPurchaseOrderResponse.RequestPurchaseOrderLineResponse>> getLines(
+      @PathVariable final Long rpoId) {
+    return ResponseEntity.ok(requestPurchaseOrderService.getLinesByRpoId(rpoId));
+  }
+
+  @PatchMapping("/{rpoId}/items/{lineId}")
+  public ResponseEntity<RequestPurchaseOrderResponse.RequestPurchaseOrderLineResponse> updateLine(
+      @PathVariable final Long rpoId,
+      @PathVariable final Long lineId,
+      @RequestBody final RequestPurchaseOrderRequest.RequestPurchaseOrderLineRequest request) {
+    return ResponseEntity.ok(requestPurchaseOrderService.updateLine(rpoId, lineId, request));
+  }
+
+  @DeleteMapping("/{rpoId}/items/{lineId}")
+  public ResponseEntity<Void> deleteLine(
+      @PathVariable final Long rpoId,
+      @PathVariable final Long lineId) {
+    requestPurchaseOrderService.deleteLine(rpoId, lineId);
+    return ResponseEntity.noContent().build();
   }
 }

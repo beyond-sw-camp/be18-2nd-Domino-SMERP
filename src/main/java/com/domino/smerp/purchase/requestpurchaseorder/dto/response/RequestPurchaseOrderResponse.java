@@ -1,10 +1,10 @@
 package com.domino.smerp.purchase.requestpurchaseorder.dto.response;
 
-import com.domino.smerp.purchase.itemrpocrossedtable.dto.response.ItemRpoCrossedTableResponse;
+import com.domino.smerp.item.Item;
+import com.domino.smerp.purchase.requestpurchaseorder.ItemRpoCrossedTable;
 import com.domino.smerp.purchase.requestpurchaseorder.RequestPurchaseOrder;
 import java.time.Instant;
 import java.util.List;
-import java.util.stream.Collectors;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -12,7 +12,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 /**
- * 구매요청 조회/상세 Response DTO
+ * 구매요청(RequestPurchaseOrder) Response DTO
  */
 @Getter
 @Builder
@@ -20,27 +20,58 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class RequestPurchaseOrderResponse {
 
-  private Long rpoId; // 구매요청 PK
-  private Long userId; // 사용자 ID
-  private Instant createdAt; // 생성일시
-  private Instant updatedAt; // 수정일시
-  private Instant deliveryAt; // 납기일시
-  private String remark; // 비고
-  private String status; // 상태
-  private List<ItemRpoCrossedTableResponse> items; // 품목 라인 리스트
+  private Long rpoId;
+  private Long userId;
+  private Instant createdDate;
+  private Instant updatedDate;
+  private Instant deliveryDate;
+  private String remark;
+  private String status;
+  private String documentNo;
+  private boolean isDeleted;
+  private Instant deletedAt;
 
-  public static RequestPurchaseOrderResponse from(RequestPurchaseOrder entity) {
+  private List<RequestPurchaseOrderLineResponse> lines;
+
+  public static RequestPurchaseOrderResponse from(
+      final RequestPurchaseOrder entity,
+      final List<ItemRpoCrossedTable> items
+  ) {
     return RequestPurchaseOrderResponse.builder()
         .rpoId(entity.getRpoId())
         .userId(entity.getUser().getUserId())
-        .createdAt(entity.getCreatedAt())
-        .updatedAt(entity.getUpdatedAt())
-        .deliveryAt(entity.getDeliveryAt())
+        .createdDate(entity.getCreatedDate())
+        .updatedDate(entity.getUpdatedDate())
+        .deliveryDate(entity.getDeliveryDate())
         .remark(entity.getRemark())
         .status(entity.getStatus().name())
-        .items(entity.getItems().stream()
-            .map(ItemRpoCrossedTableResponse::from)
-            .collect(Collectors.toList()))
+        .documentNo(entity.getDocumentNo())
+        .isDeleted(entity.isDeleted())
+        .deletedAt(entity.getDeletedAt())
+        .lines(items.stream().map(RequestPurchaseOrderLineResponse::from).toList())
         .build();
+  }
+
+  // ===== 라인 응답 DTO =====
+  @Getter
+  @Builder
+  @NoArgsConstructor(access = AccessLevel.PROTECTED)
+  @AllArgsConstructor(access = AccessLevel.PRIVATE)
+  public static class RequestPurchaseOrderLineResponse {
+
+    private Long lineId;
+    private Long itemId;
+    private String itemName;
+    private int qty;
+
+    public static RequestPurchaseOrderLineResponse from(final ItemRpoCrossedTable entity) {
+      Item item = entity.getItem();
+      return RequestPurchaseOrderLineResponse.builder()
+          .lineId(entity.getItemRpoId())
+          .itemId(item.getItemId())
+          .itemName(item.getItemName())
+          .qty(entity.getQty())
+          .build();
+    }
   }
 }

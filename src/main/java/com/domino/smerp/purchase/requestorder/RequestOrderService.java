@@ -6,15 +6,26 @@ import java.util.List;
 
 public interface RequestOrderService {
 
-  RequestOrderResponse create(final RequestOrderRequest request);
+  RequestOrderResponse create(RequestOrderRequest request);
 
-  List<RequestOrderResponse> getAll(final String status, final int page, final int size);
+  List<RequestOrderResponse> getAll();
 
-  RequestOrderResponse getById(final Long roId);
+  RequestOrderResponse getById(Long roId);
 
-  RequestOrderResponse update(final Long roId, final RequestOrderRequest request);
+  RequestOrderResponse update(Long roId, RequestOrderRequest request);
 
-  RequestOrderResponse updateStatus(final Long roId, final String status, final String reason);
+  RequestOrderResponse updateStatus(Long roId, String status);
 
-  void softDelete(final Long roId);
+  void delete(Long roId);
+
+  // 라인
+  RequestOrderResponse.RequestOrderLineResponse addLine(Long roId,
+      RequestOrderRequest.RequestOrderLineRequest request);
+
+  List<RequestOrderResponse.RequestOrderLineResponse> getLines(Long roId);
+
+  RequestOrderResponse.RequestOrderLineResponse updateLine(Long roId, Long lineId,
+      RequestOrderRequest.RequestOrderLineRequest request);
+
+  void deleteLine(Long roId, Long lineId);
 }

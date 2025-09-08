@@ -2,8 +2,6 @@ package com.domino.smerp.purchase.itemrpocrossedtable;
 
 import com.domino.smerp.item.Item;
 import com.domino.smerp.item.ItemRepository;
-import com.domino.smerp.purchase.itemrpocrossedtable.dto.request.ItemRpoCrossedTableRequest;
-import com.domino.smerp.purchase.itemrpocrossedtable.dto.response.ItemRpoCrossedTableResponse;
 import com.domino.smerp.purchase.requestpurchaseorder.RequestPurchaseOrder;
 import com.domino.smerp.purchase.requestpurchaseorder.RequestPurchaseOrderRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -14,7 +12,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
-@Transactional
 public class ItemRpoCrossedTableServiceImpl implements ItemRpoCrossedTableService {
 
   private final ItemRpoCrossedTableRepository itemRpoCrossedTableRepository;
@@ -22,54 +19,44 @@ public class ItemRpoCrossedTableServiceImpl implements ItemRpoCrossedTableServic
   private final ItemRepository itemRepository;
 
   @Override
-  public ItemRpoCrossedTableResponse addLine(final Long rpoId,
-      final ItemRpoCrossedTableRequest request) {
+  @Transactional
+  public ItemRpoCrossedTable create(Long rpoId, Long itemId, int qty) {
     RequestPurchaseOrder rpo = requestPurchaseOrderRepository.findById(rpoId)
         .orElseThrow(() -> new EntityNotFoundException("구매요청을 찾을 수 없습니다. id=" + rpoId));
 
-    Item item = itemRepository.findById(request.getItemId())
-        .orElseThrow(() -> new EntityNotFoundException("품목을 찾을 수 없습니다. id=" + request.getItemId()));
+    Item item = itemRepository.findById(itemId)
+        .orElseThrow(() -> new EntityNotFoundException("품목을 찾을 수 없습니다. id=" + itemId));
 
     ItemRpoCrossedTable entity = ItemRpoCrossedTable.builder()
         .requestPurchaseOrder(rpo)
         .item(item)
-        .qty(request.getQty())
+        .qty(qty)
         .build();
 
-    return ItemRpoCrossedTableResponse.from(itemRpoCrossedTableRepository.save(entity));
+    return itemRpoCrossedTableRepository.save(entity);
   }
 
   @Override
   @Transactional(readOnly = true)
-  public List<ItemRpoCrossedTableResponse> getLinesByRpoId(final Long rpoId) {
-    return itemRpoCrossedTableRepository.findByRequestPurchaseOrder_RpoId(rpoId)
-        .stream()
-        .map(ItemRpoCrossedTableResponse::from)
-        .toList();
+  public List<ItemRpoCrossedTable> getByRpoId(Long rpoId) {
+    return itemRpoCrossedTableRepository.findByRequestPurchaseOrderRpoId(rpoId);
   }
 
   @Override
-  public ItemRpoCrossedTableResponse updateLine(final Long rpoId, final Long lineId,
-      final ItemRpoCrossedTableRequest request) {
+  @Transactional
+  public ItemRpoCrossedTable updateQty(Long lineId, int qty) {
     ItemRpoCrossedTable entity = itemRpoCrossedTableRepository.findById(lineId)
-        .orElseThrow(() -> new EntityNotFoundException("라인을 찾을 수 없습니다. id=" + lineId));
+        .orElseThrow(() -> new EntityNotFoundException("구매요청 라인을 찾을 수 없습니다. id=" + lineId));
 
-    if (!entity.getRequestPurchaseOrder().getRpoId().equals(rpoId)) {
-      throw new IllegalArgumentException("해당 RPO에 속하지 않는 라인입니다.");
-    }
-
-    entity.updateQty(request.getQty());
-    return ItemRpoCrossedTableResponse.from(entity);
+    entity.updateQty(qty);
+    return entity;
   }
 
   @Override
-  public void deleteLine(final Long rpoId, final Long lineId) {
+  @Transactional
+  public void delete(Long lineId) {
     ItemRpoCrossedTable entity = itemRpoCrossedTableRepository.findById(lineId)
-        .orElseThrow(() -> new EntityNotFoundException("라인을 찾을 수 없습니다. id=" + lineId));
-
-    if (!entity.getRequestPurchaseOrder().getRpoId().equals(rpoId)) {
-      throw new IllegalArgumentException("해당 RPO에 속하지 않는 라인입니다.");
-    }
+        .orElseThrow(() -> new EntityNotFoundException("구매요청 라인을 찾을 수 없습니다. id=" + lineId));
 
     itemRpoCrossedTableRepository.delete(entity);
   }
