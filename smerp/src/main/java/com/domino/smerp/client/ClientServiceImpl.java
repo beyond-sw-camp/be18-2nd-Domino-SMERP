@@ -16,7 +16,7 @@ public class ClientServiceImpl implements ClientService {
 
     @Override
     @Transactional
-    public void createClient(CreateClientRequest request) {
+    public void createClient(final CreateClientRequest request) {
 
         Client client = Client.builder()
                               .businessNumber(request.getBusinessNumber())
@@ -43,7 +43,7 @@ public class ClientServiceImpl implements ClientService {
 
     @Override
     @Transactional
-    public void deleteClient(Long clientId) {
+    public void deleteClient(final Long clientId) {
 
         clientRepository.deleteById(clientId);
     }
@@ -68,7 +68,7 @@ public class ClientServiceImpl implements ClientService {
 
     @Override
     @Transactional(readOnly = true)
-    public ClientResponse findClient(Long clientId) {
+    public ClientResponse findClient(final Long clientId) {
 
         Client client = clientRepository.findById(clientId)
                                         .orElseThrow(
@@ -97,7 +97,7 @@ public class ClientServiceImpl implements ClientService {
 
     @Override
     @Transactional
-    public void updateClient(Long clientId, UpdateClientRequest request) {
+    public void updateClient(final Long clientId, final UpdateClientRequest request) {
         Client client = clientRepository.findById(clientId).orElseThrow(() -> new IllegalArgumentException("해당유저 없음"));
         client.updateClient(request);
     }
