@@ -9,7 +9,7 @@ import lombok.Getter;
 
 @Getter
 @Builder
-public class ItemResponse {
+public class ItemDetailResponse {
 
   private final Long itemId;
   private final Long itemStatusId;
@@ -31,9 +31,8 @@ public class ItemResponse {
   private final String groupName2;
   private final String groupName3;
 
-  // 정적 팩토리 메서드 (Entity → DTO)
-  public static ItemResponse fromEntity(Item item) {
-    return ItemResponse.builder()
+  public static ItemDetailResponse fromEntity(Item item) {
+    return ItemDetailResponse.builder()
         .itemId(item.getItemId())
         .itemStatusId(item.getItemStatus().getItemStatusId())
         .itemStatusName(item.getItemStatus().getStatus().getDescription())

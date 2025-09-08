@@ -3,6 +3,7 @@ package com.domino.smerp.item;
 import com.domino.smerp.common.BaseEntity;
 import com.domino.smerp.item.constants.ItemAct;
 import com.domino.smerp.item.constants.SafetyStockAct;
+import com.domino.smerp.item.dto.request.CreateItemRequest;
 import com.domino.smerp.item.dto.request.UpdateItemRequest;
 import com.domino.smerp.item.dto.request.UpdateItemStatusRequest;
 import jakarta.persistence.Column;
@@ -19,7 +20,6 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import java.math.BigDecimal;
-import java.time.Instant;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -86,6 +86,27 @@ public class Item extends BaseEntity {
   @Builder.Default
   @Column(name = "is_deleted", nullable = false)
   private boolean isDeleted = false;
+
+
+  // 품목 생성
+  public static Item create(CreateItemRequest request, ItemStatus itemStatus) {
+    return Item.builder()
+        .itemStatus(itemStatus)
+        .name(request.getName())
+        .specification(request.getSpecification())
+        .unit(request.getUnit())
+        .inboundUnitPrice(request.getInboundUnitPrice())
+        .outboundUnitPrice(request.getOutboundUnitPrice())
+        .itemAct(ItemAct.fromLabel(request.getItemAct()))
+        .safetyStock(request.getSafetyStock())
+        .safetyStockAct(SafetyStockAct.fromLabel(request.getSafetyStockAct()))
+        .rfid(request.getRfid())
+        .groupName1(request.getGroupName1())
+        .groupName2(request.getGroupName2())
+        .groupName3(request.getGroupName3())
+        .build();
+  }
+
 
   // 품목 수정
   public void updateItem(UpdateItemRequest request, ItemStatus itemStatus) {
