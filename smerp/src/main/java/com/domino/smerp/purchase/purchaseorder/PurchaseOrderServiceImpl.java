@@ -8,7 +8,6 @@ import com.domino.smerp.purchase.purchaseorder.dto.response.PurchaseOrderGetDeta
 import com.domino.smerp.purchase.purchaseorder.dto.response.PurchaseOrderGetListResponse;
 import com.domino.smerp.purchase.purchaseorder.dto.response.PurchaseOrderUpdateResponse;
 import jakarta.persistence.EntityNotFoundException;
-import java.time.Instant;
 import java.time.LocalDate;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -67,7 +66,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
     return purchaseOrderRepository.findAll(pageable)
         .map(entity -> PurchaseOrderGetListResponse.builder()
             .poId(entity.getPoId())
-            .roId(entity.getRequestOrder().getRoId())
+//            .roId(entity.getRequestOrder().getRoId())
             .qty(entity.getQty())
             .remark(entity.getRemark())
             .documentNo(entity.getDocumentNo())
@@ -86,7 +85,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
 
     return PurchaseOrderGetDetailResponse.builder()
         .poId(entity.getPoId())
-        .roId(entity.getRequestOrder().getRoId())
+//        .roId(entity.getRequestOrder().getRoId())
         .qty(entity.getQty())
         .surtax(entity.getSurtax())
         .price(entity.getPrice())
