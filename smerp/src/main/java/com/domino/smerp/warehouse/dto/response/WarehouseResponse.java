@@ -1,4 +1,4 @@
-package com.domino.smerp.warehouse.dto;
+package com.domino.smerp.warehouse.dto.response;
 
 import com.domino.smerp.warehouse.constants.DivisionType;
 import lombok.AccessLevel;
@@ -9,7 +9,8 @@ import lombok.Getter;
 @Getter
 @Builder
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-public class WarehouseRequest {
+
+public class WarehouseResponse {
 
   private final Long id;
 
@@ -17,7 +18,7 @@ public class WarehouseRequest {
 
   private final DivisionType divisionType;
 
-  private final Boolean active; //수정시 null 가능, getActive
+  private final boolean active;
 
   private final String address;
 
