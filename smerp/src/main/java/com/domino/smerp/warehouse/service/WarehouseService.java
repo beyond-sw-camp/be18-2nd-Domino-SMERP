@@ -2,20 +2,23 @@ package com.domino.smerp.warehouse.service;
 
 import com.domino.smerp.warehouse.Warehouse;
 import com.domino.smerp.warehouse.dto.WarehouseRequest;
-import com.domino.smerp.warehouse.dto.WarehouseResponse;
+import com.domino.smerp.warehouse.dto.response.WarehouseIdListResponse;
+import com.domino.smerp.warehouse.dto.response.WarehouseResponse;
 import java.util.List;
 
 public interface WarehouseService {
 
-  WarehouseResponse getWarehouseById(Long id);
+  WarehouseResponse getWarehouseById(final Long id);
 
   List<WarehouseResponse> getAllWarehouses();
 
-  void deleteWarehouse(Long id);
+  void deleteWarehouse(final Long id);
 
-  WarehouseResponse updateWarehouse(Long id, WarehouseRequest warehouseRequest);
+  WarehouseResponse updateWarehouse(final Long id, final WarehouseRequest warehouseRequest);
 
-  WarehouseResponse createWarehouse(WarehouseRequest warehouseRequest);
+  WarehouseResponse createWarehouse(final WarehouseRequest warehouseRequest);
 
-  WarehouseResponse toWarehouseResponse(Warehouse warehouse);
+  WarehouseIdListResponse getAllUnFilledWarehouses();
+
+  WarehouseResponse toWarehouseResponse(final Warehouse warehouse);
 }
