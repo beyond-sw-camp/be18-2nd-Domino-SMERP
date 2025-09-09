@@ -21,9 +21,9 @@ public class ItemListResponse {
   public static ItemListResponse fromEntity(Item item) {
     return ItemListResponse.builder()
         .itemId(item.getItemId())
+        .itemStatusName(item.getItemStatus().getStatus().getDescription())
         .name(item.getName())
         .unit(item.getUnit())
-        .itemStatusName(item.getItemStatus().getStatus().getDescription())
         .rfid(item.getRfid())
         .itemAct(item.getItemAct().getDescription())
         .groupName1(item.getGroupName1())
