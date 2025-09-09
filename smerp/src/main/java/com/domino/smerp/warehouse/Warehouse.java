@@ -1,7 +1,9 @@
 package com.domino.smerp.warehouse;
 
+import com.domino.smerp.location.Location;
 import com.domino.smerp.warehouse.constants.DivisionType;
 import com.domino.smerp.warehouse.dto.WarehouseRequest;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -9,17 +11,21 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Builder
-@AllArgsConstructor
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Getter
 @Table(name = "warehouse")
 public class Warehouse {
@@ -54,11 +60,8 @@ public class Warehouse {
   @Column(name = "updated_at")
   private LocalDateTime updatedAt;
 
-  /*
   @OneToMany(cascade = CascadeType.ALL, mappedBy = "warehouse", orphanRemoval = true)
   private List<Location> locations = new ArrayList<>();
-
-   */
 
   //Boolean - null, false, true
   public void update(WarehouseRequest warehouseRequest) {
