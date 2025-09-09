@@ -64,8 +64,8 @@ public class Item extends BaseEntity {
   @Column(name = "item_act", nullable = false)
   private ItemAct itemAct;
 
-  @Column(name = "safety_stock", nullable = false)
-  private Integer safetyStock;
+  @Column(name = "safety_stock", nullable = false, precision = 12, scale = 3)
+  private BigDecimal safetyStock;
 
   @Enumerated(EnumType.STRING)
   @Column(name = "safety_stock_act", nullable = false)

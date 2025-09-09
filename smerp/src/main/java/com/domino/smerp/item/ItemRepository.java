@@ -1,6 +1,7 @@
 package com.domino.smerp.item;
 
 import com.domino.smerp.item.constants.ItemAct;
+import com.domino.smerp.item.constants.ItemStatusStatus;
 import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
@@ -10,6 +11,9 @@ import org.springframework.stereotype.Repository;
 public interface ItemRepository extends JpaRepository<Item, Long> , JpaSpecificationExecutor<Item> {
 
   boolean existsByRfid(final String rfid);
+
+  // 품목 구분별 조회
+  List<Item> findByItemStatus_Status(ItemStatusStatus status);
 
   /*
   // 품목명 검색 (부분일치, 대소문자 무시)

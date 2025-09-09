@@ -5,6 +5,7 @@ import com.domino.smerp.item.dto.request.UpdateItemRequest;
 import com.domino.smerp.item.dto.request.UpdateItemStatusRequest;
 import com.domino.smerp.item.dto.response.ItemDetailResponse;
 import com.domino.smerp.item.dto.response.ItemListResponse;
+import com.domino.smerp.item.dto.response.ItemStatusResponse;
 import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -25,6 +27,7 @@ public class ItemController {
 
   private final ItemService itemService;
 
+  // 품목 생성
   @PostMapping
   public ResponseEntity<ItemDetailResponse> createItem(
       final @Valid @RequestBody CreateItemRequest request) {
@@ -32,30 +35,43 @@ public class ItemController {
     return ResponseEntity.ok(itemService.createItem(request));
   }
 
+  // 품목 목록 조회
   @GetMapping
-  public ResponseEntity<List<ItemListResponse>> getItems() {
-    return ResponseEntity.ok(itemService.getItems());
+  public ResponseEntity<List<ItemListResponse>> getItems(
+      @RequestParam(value = "status", required = false) String statusName) {
+
+    if (statusName == null) {
+      return ResponseEntity.ok(itemService.getItems());
+    } else {
+      return ResponseEntity.ok(itemService.getItemsByStatusName(statusName));
+    }
   }
 
+
+
+  // 품목 상세 조회
   @GetMapping("/{item-id}")
   public ResponseEntity<ItemDetailResponse> getItemById(
       @PathVariable("item-id") final Long itemId) {
     return ResponseEntity.ok(itemService.getItemById(itemId));
   }
 
+  // 품목 수정
   @PatchMapping("/{item-id}")
   public ResponseEntity<ItemDetailResponse> updateItem(@PathVariable("item-id") final Long itemId,
       final @Valid @RequestBody UpdateItemRequest request) {
     return ResponseEntity.ok(itemService.updateItem(itemId, request));
   }
 
+  // 품목 사용여부, 안전재고 수정
   @PatchMapping("/{item-id}/status")
-  public ResponseEntity<ItemDetailResponse> updateItemStatus(
+  public ResponseEntity<ItemStatusResponse> updateItemStatus(
       @PathVariable("item-id") final Long itemId,
       final @Valid @RequestBody UpdateItemStatusRequest request) {
     return ResponseEntity.ok(itemService.updateItemStatus(itemId, request));
   }
 
+  // 품목 삭제
   @DeleteMapping("/{item-id}")
   public ResponseEntity<Void> deleteItem(@PathVariable("item-id") final Long itemId) {
     itemService.deleteItem(itemId);

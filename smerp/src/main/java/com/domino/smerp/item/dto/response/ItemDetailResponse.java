@@ -24,7 +24,7 @@ public class ItemDetailResponse {
   @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "UTC")
   private final Instant updatedAt;
   private final String itemAct;
-  private final Integer safetyStock;
+  private final BigDecimal safetyStock;
   private final String safetyStockAct;
   private final String rfid;
   private final String groupName1;

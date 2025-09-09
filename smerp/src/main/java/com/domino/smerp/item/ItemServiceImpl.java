@@ -2,11 +2,14 @@ package com.domino.smerp.item;
 
 import com.domino.smerp.common.exception.CustomException;
 import com.domino.smerp.common.exception.ErrorCode;
+import com.domino.smerp.item.constants.ItemStatusStatus;
 import com.domino.smerp.item.dto.request.CreateItemRequest;
 import com.domino.smerp.item.dto.request.UpdateItemRequest;
 import com.domino.smerp.item.dto.request.UpdateItemStatusRequest;
 import com.domino.smerp.item.dto.response.ItemDetailResponse;
 import com.domino.smerp.item.dto.response.ItemListResponse;
+import com.domino.smerp.item.dto.response.ItemStatusResponse;
+import java.math.BigDecimal;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -47,6 +50,24 @@ public class ItemServiceImpl implements ItemService {
         .toList();
   }
 
+  // 품목 구분 조회
+  @Override
+  @Transactional(readOnly = true)
+  public List<ItemListResponse> getItemsByStatusName(final String statusName) {
+    ItemStatusStatus statusEnum;
+    try {
+      statusEnum = ItemStatusStatus.fromLabel(statusName);
+    } catch (IllegalArgumentException e) {
+      throw new CustomException(ErrorCode.ITEM_STATUS_NOT_FOUND);
+    }
+
+    return itemRepository.findByItemStatus_Status(statusEnum)
+        .stream()
+        .map(ItemListResponse::fromEntity)
+        .toList();
+  }
+
+
   // 품목 상세 조회
   @Override
   @Transactional(readOnly = true)
@@ -76,12 +97,13 @@ public class ItemServiceImpl implements ItemService {
   // 품목 안전재고 / 사용여부 수정
   @Override
   @Transactional
-  public ItemDetailResponse updateItemStatus(final Long itemId,
+  public ItemStatusResponse updateItemStatus(final Long itemId,
       final UpdateItemStatusRequest request) {
     Item item = findItemById(itemId);
 
     // 안전재고수량 음수 체크
-    if (request.getSafetyStock() != null && request.getSafetyStock() < 0) {
+    if (request.getSafetyStock() != null
+        && request.getSafetyStock().compareTo(BigDecimal.ZERO) < 0) {
       throw new CustomException(ErrorCode.INVALID_SAFETY_STOCK);
     }
 
@@ -100,7 +122,7 @@ public class ItemServiceImpl implements ItemService {
     }
 
     Item updatedItem = itemRepository.save(item);
-    return ItemDetailResponse.fromEntity(updatedItem);
+    return ItemStatusResponse.fromEntity(updatedItem);
   }
 
   // 품목 삭제
