@@ -1,25 +1,29 @@
 package com.domino.smerp.purchase.purchaseorder;
 
+import com.domino.smerp.common.BaseEntity;
 import com.domino.smerp.purchase.requestorder.RequestOrder;
 import jakarta.persistence.Column;
+import jakarta.persistence.ConstraintMode;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
+import jakarta.persistence.ForeignKey;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.Index;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
-import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Size;
 import java.math.BigDecimal;
 import java.time.Instant;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Comment;
 
 /**
  * 구매(PurchaseOrder) 엔티티 - 발주(RequestOrder)와 1:1 매핑 - 발주 없는 구매는 존재할 수 없음
@@ -30,12 +34,12 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Table(
-    name = "purchase_order",
-    indexes = {
-        @Index(name = "idx_po_ro_id", columnList = "ro_id")
-    }
+    name = "purchase_order"
+//    indexes = {
+//        @Index(name = "idx_po_ro_id", columnList = "ro_id")
+//    }
 )
-public class PurchaseOrder {
+public class PurchaseOrder extends BaseEntity {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -43,17 +47,17 @@ public class PurchaseOrder {
   private Long poId; // 구매 PK
 
   @OneToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "ro_id", nullable = false, unique = true)
-  private RequestOrder requestOrder; // 발주 전표 (1:1)
-
-  @Column(name = "created_date", nullable = false, updatable = false)
-  private Instant createdDate; // 생성일자 (UTC)
-
-  @Column(name = "updated_date")
-  private Instant updatedDate; // 수정일자 (UTC)
+  @JoinColumn(
+      name = "ro_id",
+      nullable = false,
+      unique = true,
+      foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT)
+  )
+  @Comment("발주 FK")
+  private RequestOrder requestOrder;
 
   @Column(name = "qty", nullable = false)
-  private int qty; // 수량 (발주와 다를 수 있음)
+  private BigDecimal qty; // 수량 (발주와 다를 수 있음)
 
   @Column(name = "surtax", nullable = false, precision = 12, scale = 2)
   private BigDecimal surtax; // 부가세
@@ -65,18 +69,15 @@ public class PurchaseOrder {
   @Column(name = "remark", length = 100)
   private String remark; // 비고
 
-  // ====== Lifecycle ======
-  @PrePersist
-  void onCreate() {
-    Instant now = Instant.now();
-    this.createdDate = now;
-    if (this.updatedDate == null) {
-      this.updatedDate = this.createdDate;
-    }
-  }
+  @Builder.Default
+  @Column(name = "is_deleted", nullable = false)
+  private boolean isDeleted = false; // 소프트 삭제 여부
+
+  @Column(name = "document_no", nullable = false, length = 30)
+  private String documentNo; // 전표 번호
 
   // ====== 도메인 메서드 ======
-  public void updateQty(final int qty) {
+  public void updateQty(final BigDecimal qty) {
     this.qty = qty;
   }
 
@@ -92,7 +93,13 @@ public class PurchaseOrder {
     this.remark = remark;
   }
 
-  public void updateDocumentDate(final Instant docDate) {
-    this.updatedDate = docDate;
+  // Soft Delete
+  public void delete() {this.isDeleted = true;}
+
+  public void updateDocumentNo(LocalDate newDate, int newSequence) {
+    this.documentNo = String.format("%s-%d",
+        newDate.format(DateTimeFormatter.ofPattern("yyyy/MM/dd")),
+        newSequence);
+    this.updatedAt = Instant.now();
   }
 }
