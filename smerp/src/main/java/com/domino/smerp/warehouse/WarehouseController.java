@@ -1,7 +1,8 @@
 package com.domino.smerp.warehouse;
 
 import com.domino.smerp.warehouse.dto.WarehouseRequest;
-import com.domino.smerp.warehouse.dto.WarehouseResponse;
+import com.domino.smerp.warehouse.dto.response.WarehouseIdListResponse;
+import com.domino.smerp.warehouse.dto.response.WarehouseResponse;
 import com.domino.smerp.warehouse.service.WarehouseService;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -29,6 +30,14 @@ public class WarehouseController {
       @RequestBody WarehouseRequest warehouseRequest) {
     WarehouseResponse warehouseResponse = warehouseService.createWarehouse(warehouseRequest);
     return ResponseEntity.status(201).body(warehouseResponse);
+  }
+
+  //빈 위치 있는 창고 조회
+  @GetMapping("/warehouses/unfilled")
+  public ResponseEntity<WarehouseIdListResponse> getUnFilledWarehouseIds(){
+    WarehouseIdListResponse warehouseIdListResponse = warehouseService.getAllUnFilledWarehouses();
+
+    return ResponseEntity.status(200).body(warehouseIdListResponse);
   }
 
   /*
