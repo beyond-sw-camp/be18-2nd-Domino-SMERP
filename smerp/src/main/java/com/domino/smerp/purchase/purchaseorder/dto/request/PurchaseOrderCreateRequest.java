@@ -7,7 +7,7 @@ import lombok.Getter;
 
 @Getter
 @Builder
-@AllArgsConstructor(access = lombok.AccessLevel.PRIVATE)
+@AllArgsConstructor
 public class PurchaseOrderCreateRequest {
 
   private final Long roId;

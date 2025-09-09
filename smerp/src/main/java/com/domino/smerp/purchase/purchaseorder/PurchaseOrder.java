@@ -15,7 +15,6 @@ import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Size;
 import java.math.BigDecimal;
-import java.time.Instant;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import lombok.AccessLevel;
@@ -33,12 +32,8 @@ import org.hibernate.annotations.Comment;
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-@Table(
-    name = "purchase_order"
-//    indexes = {
-//        @Index(name = "idx_po_ro_id", columnList = "ro_id")
-//    }
-)
+@Table(name = "purchase_order")
+// @Table(name = "purchase_order" ,indexes = {@Index(name = "idx_po_ro_id", columnList = "ro_id")})
 public class PurchaseOrder extends BaseEntity {
 
   @Id
@@ -47,12 +42,7 @@ public class PurchaseOrder extends BaseEntity {
   private Long poId; // 구매 PK
 
   @OneToOne(fetch = FetchType.LAZY)
-  @JoinColumn(
-      name = "ro_id",
-      nullable = false,
-      unique = true,
-      foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT)
-  )
+  @JoinColumn(name = "ro_id", nullable = false, unique = true, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
   @Comment("발주 FK")
   private RequestOrder requestOrder;
 
@@ -100,6 +90,5 @@ public class PurchaseOrder extends BaseEntity {
     this.documentNo = String.format("%s-%d",
         newDate.format(DateTimeFormatter.ofPattern("yyyy/MM/dd")),
         newSequence);
-    this.updatedAt = Instant.now();
   }
 }
