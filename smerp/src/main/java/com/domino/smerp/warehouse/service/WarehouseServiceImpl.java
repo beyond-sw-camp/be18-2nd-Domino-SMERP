@@ -3,13 +3,14 @@ package com.domino.smerp.warehouse.service;
 import com.domino.smerp.warehouse.Warehouse;
 import com.domino.smerp.warehouse.WarehouseRepository;
 import com.domino.smerp.warehouse.dto.WarehouseRequest;
-import com.domino.smerp.warehouse.dto.WarehouseResponse;
+import com.domino.smerp.warehouse.dto.response.WarehouseIdListResponse;
+import com.domino.smerp.warehouse.dto.response.WarehouseResponse;
 import jakarta.persistence.EntityNotFoundException;
-import jakarta.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @RequiredArgsConstructor
 @Service
@@ -20,7 +21,8 @@ public class WarehouseServiceImpl implements WarehouseService {
   //private final LocationService locationService;
 
   @Override
-  public WarehouseResponse getWarehouseById(Long id) {
+  @Transactional(readOnly = true)
+  public WarehouseResponse getWarehouseById(final Long id) {
 
     //id 없는 경우
     Warehouse warehouse = warehouseRepository.findById(id)
@@ -30,6 +32,7 @@ public class WarehouseServiceImpl implements WarehouseService {
   }
 
   @Override
+  @Transactional(readOnly = true)
   public List<WarehouseResponse> getAllWarehouses() {
 
     //empty인 경우 화면에 보임 - 정상 동작이므로 예외 처리 x
@@ -45,7 +48,7 @@ public class WarehouseServiceImpl implements WarehouseService {
 
   @Override
   @Transactional
-  public void deleteWarehouse(Long id) {
+  public void deleteWarehouse(final Long id) {
 
     warehouseRepository.findById(id)
         .orElseThrow(() -> new EntityNotFoundException("No warehouse of id"));
@@ -55,7 +58,7 @@ public class WarehouseServiceImpl implements WarehouseService {
 
   @Override
   @Transactional
-  public WarehouseResponse createWarehouse(WarehouseRequest warehouseRequest) {
+  public WarehouseResponse createWarehouse(final WarehouseRequest warehouseRequest) {
 
     //name 이미 있는 경우 안됨
     if (warehouseRepository.existsByName(warehouseRequest.getName())) {
@@ -74,7 +77,7 @@ public class WarehouseServiceImpl implements WarehouseService {
 
   @Override
   @Transactional
-  public WarehouseResponse updateWarehouse(Long id, WarehouseRequest warehouseRequest) {
+  public WarehouseResponse updateWarehouse(final Long id, final WarehouseRequest warehouseRequest) {
 
     Warehouse warehouse = warehouseRepository.findById(id)
         .orElseThrow(() -> new EntityNotFoundException("No warehouse of id"));
@@ -92,7 +95,23 @@ public class WarehouseServiceImpl implements WarehouseService {
   }
 
   @Override
-  public WarehouseResponse toWarehouseResponse(Warehouse warehouse) {
+  @Transactional(readOnly = true)
+  public WarehouseIdListResponse getAllUnFilledWarehouses() {
+    List<Long> warehouseIds = new ArrayList<>();
+
+    warehouseRepository.findWarehousesWithFilledFalseLocations().forEach(warehouse -> {
+          warehouseIds.add(warehouse.getId());
+        });
+
+    WarehouseIdListResponse warehouseIdListResponse = WarehouseIdListResponse.builder()
+        .warehouseIds(warehouseIds)
+        .build();
+
+    return warehouseIdListResponse;
+  }
+
+  @Override
+  public WarehouseResponse toWarehouseResponse(final Warehouse warehouse) {
     WarehouseResponse warehouseResponse = WarehouseResponse.builder()
         .id(warehouse.getId())
         .divisionType(warehouse.getDivisionType())
