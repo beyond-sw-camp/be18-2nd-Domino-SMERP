@@ -1,10 +1,8 @@
 package com.domino.smerp.order;
 
-import com.domino.smerp.order.dto.request.OrderRequest;
+import com.domino.smerp.order.dto.request.CreateOrderRequest;
 import com.domino.smerp.order.dto.request.UpdateOrderRequest;
-import com.domino.smerp.order.dto.response.OrderCreateResponse;
-import com.domino.smerp.order.dto.response.OrderDeleteResponse;
-import com.domino.smerp.order.dto.response.OrderResponse;
+import com.domino.smerp.order.dto.response.*;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -20,34 +18,37 @@ public class OrderController {
 
     private final OrderService orderService;
 
+    // 주문 등록 (POST)
     @PostMapping
-    public ResponseEntity<OrderCreateResponse> createOrder(@Valid @RequestBody OrderRequest request) {
+    public ResponseEntity<CreateOrderResponse> createOrder(@Valid @RequestBody CreateOrderRequest request) {
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(orderService.createOrder(request));
     }
 
+    // 주문 목록 조회 (GET)
     @GetMapping
-    public ResponseEntity<List<OrderResponse>> getOrders() {
+    public ResponseEntity<List<ListOrderResponse>> getOrders() {
         return ResponseEntity.ok(orderService.getOrders());
     }
 
+    // 주문 상세 조회 (GET)
     @GetMapping("/{orderId}")
-    public ResponseEntity<OrderResponse> getOrder(@PathVariable Long orderId) {
-        return ResponseEntity.ok(orderService.getOrderById(orderId));
+    public ResponseEntity<DetailOrderResponse> getOrderDetail(@PathVariable Long orderId) {
+        return ResponseEntity.ok(orderService.getDetailOrder(orderId));
     }
 
-    // ✅ 주문 전체 수정 (PUT)
-    @PutMapping("/{orderId}")
-    public ResponseEntity<OrderResponse> updateOrder(
+    // 주문 전체 수정 (PATCH)
+    @PatchMapping("/{orderId}")
+    public ResponseEntity<UpdateOrderResponse> updateOrder(
             @PathVariable Long orderId,
             @RequestBody @Valid UpdateOrderRequest request
     ) {
         return ResponseEntity.ok(orderService.updateOrder(orderId, request));
     }
 
-    // ✅ 삭제 (soft-delete 고려 시 patch로 유지 가능)
+    // 삭제 (soft-delete 고려 시 patch로 유지 가능)
     @DeleteMapping("/{orderId}") // 또는 @PatchMapping("/{orderId}/delete")
-    public ResponseEntity<OrderDeleteResponse> deleteOrder(@PathVariable Long orderId) {
+    public ResponseEntity<DeleteOrderResponse> deleteOrder(@PathVariable Long orderId) {
         return ResponseEntity.ok(orderService.deleteOrder(orderId));
     }
 }

@@ -8,19 +8,21 @@ import com.domino.smerp.item.Item;
 import com.domino.smerp.item.ItemRepository;
 import com.domino.smerp.itemorder.ItemOrderCrossedTable;
 import com.domino.smerp.itemorder.dto.request.ItemOrderRequest;
+import com.domino.smerp.itemorder.dto.response.DetailItemOrderResponse;
 import com.domino.smerp.order.constants.OrderStatus;
-import com.domino.smerp.order.dto.request.OrderRequest;
+import com.domino.smerp.order.dto.request.CreateOrderRequest;
 import com.domino.smerp.order.dto.request.UpdateOrderRequest;
-import com.domino.smerp.order.dto.response.OrderCreateResponse;
-import com.domino.smerp.order.dto.response.OrderDeleteResponse;
-import com.domino.smerp.order.dto.response.OrderResponse;
+import com.domino.smerp.order.dto.response.*;
 import com.domino.smerp.user.User;
 import com.domino.smerp.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.*;
+import java.math.BigDecimal;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
@@ -33,55 +35,53 @@ public class OrderServiceImpl implements OrderService {
     private final UserRepository userRepository;
     private final ItemRepository itemRepository;
 
-    /**
-     * 전표번호 생성 (yyyy/MM/dd-순번)
-     */
-    private String generateDocumentNo(Instant baseInstant) {
-        LocalDate baseDate = baseInstant.atZone(ZoneOffset.UTC).toLocalDate(); // ✅ UTC 기준
-        String datePart = baseDate.format(DateTimeFormatter.ofPattern("yyyy/MM/dd"));
+    private Client getClientByCompanyName(String companyName) {
+        return clientRepository.findByCompanyName(companyName)
+                .orElseThrow(() -> new CustomException(ErrorCode.CLIENT_NOT_FOUND));
+    }
+
+    private User getUserByEmpNo(String empNo) {
+        return userRepository.findByEmpNo(empNo)
+                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+    }
+
+    //전표번호 생성 (yyyy/MM/dd-순번)
+    private String generateDocumentNo(LocalDate documentDate) {
+        String datePart = documentDate.format(DateTimeFormatter.ofPattern("yyyy/MM/dd"));
         long count = orderRepository.countByDocumentNoStartingWith(datePart);
         return datePart + "-" + (count + 1);
     }
 
-    /**
-     * 주문 등록
-     */
+    // 주문 등록
     @Override
     @Transactional
-    public OrderCreateResponse createOrder(OrderRequest request) {
-        Client client = clientRepository.findByCompanyName(request.getCompanyName())
-                .orElseThrow(() -> new CustomException(ErrorCode.CLIENT_NOT_FOUND));
-        User user = userRepository.findByEmpNo(request.getEmpNo())
-                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
-
-        if (request.getItems() == null || request.getItems().isEmpty()) {
-            throw new CustomException(ErrorCode.ITEMS_REQUIRED);
-        }
+    public CreateOrderResponse createOrder(CreateOrderRequest request) {
+        // 거래처, 담당자 조회
+        Client client = getClientByCompanyName(request.getCompanyName());
+        User user = getUserByEmpNo(request.getEmpNo());
 
         OrderStatus status = (request.getStatus() != null) ? request.getStatus() : OrderStatus.PENDING;
 
-        // ✅ LocalDate → Instant (UTC 변환)
-        Instant orderDateInstant = request.getOrderDate() != null
-                ? request.getOrderDate().atStartOfDay(ZoneOffset.UTC).toInstant()
-                : null;
+        // 주문일자(documentDate) 기반 documentNo 생성
+        LocalDate documentDate = request.getDocumentDate();
+        if (documentDate == null) {
+            throw new CustomException(ErrorCode.INVALID_REQUEST); // 주문일자 없으면 예외
+        }
+        String documentNo = generateDocumentNo(documentDate);
 
         Instant deliveryDateInstant = request.getDeliveryDate() != null
                 ? request.getDeliveryDate().atStartOfDay(ZoneOffset.UTC).toInstant()
                 : null;
 
+        // client, user 모두 반영
         Order order = Order.builder()
                 .client(client)
                 .user(user)
                 .status(status)
                 .deliveryDate(deliveryDateInstant)
                 .remark(request.getRemark())
-                .documentNo("TEMP") // 이후 updateDocumentInfo로 교체
+                .documentNo(documentNo)
                 .build();
-
-        // ✅ updatedAt = orderDate or null, documentNo 생성
-        Instant baseInstant = (orderDateInstant != null) ? orderDateInstant : Instant.now();
-        String documentNo = generateDocumentNo(baseInstant);
-        order.updateDocumentInfo(orderDateInstant, documentNo);
 
         for (ItemOrderRequest itemReq : request.getItems()) {
             Item item = itemRepository.findById(itemReq.getItemId())
@@ -96,46 +96,71 @@ public class OrderServiceImpl implements OrderService {
             order.addOrderItem(orderItem);
         }
 
-        return OrderCreateResponse.from(orderRepository.save(order));
+        return CreateOrderResponse.from(orderRepository.save(order));
     }
 
-    /**
-     * 주문 목록 조회
-     */
+    // 주문 목록 조회
     @Override
     @Transactional(readOnly = true)
-    public List<OrderResponse> getOrders() {
+    public List<ListOrderResponse> getOrders() {
         return orderRepository.findAll().stream()
-                .map(OrderResponse::from)
+                .map(ListOrderResponse::from)
                 .toList();
     }
 
-    /**
-     * 주문 단건 조회
-     */
+    // 주문 상세 조회
     @Override
     @Transactional(readOnly = true)
-    public OrderResponse getOrderById(Long orderId) {
-        return orderRepository.findById(orderId)
-                .map(OrderResponse::from)
-                .orElseThrow(() -> new CustomException(ErrorCode.ORDER_NOT_FOUND));
-    }
-
-    /**
-     * 주문 전체 수정 (PUT)
-     */
-    @Override
-    @Transactional
-    public OrderResponse updateOrder(Long orderId, UpdateOrderRequest request) {
+    public DetailOrderResponse getDetailOrder(Long orderId) {
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new CustomException(ErrorCode.ORDER_NOT_FOUND));
 
-        User newUser = userRepository.findById(request.getUserId())
-                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+        List<DetailItemOrderResponse> itemResponses = order.getOrderItems().stream()
+                .map(itemOrder -> {
+                    Item item = itemOrder.getItem();
+                    BigDecimal supplyAmount = itemOrder.getQty()
+                            .multiply(item.getOutboundUnitPrice());
+                    BigDecimal tax = supplyAmount.multiply(BigDecimal.valueOf(0.1));
+                    BigDecimal totalAmount = supplyAmount.add(tax);
 
-        if (request.getItems() == null || request.getItems().isEmpty()) {
-            throw new CustomException(ErrorCode.ITEMS_REQUIRED);
-        }
+                    return DetailItemOrderResponse.builder()
+                            .itemCode(item.getItemId())
+                            .itemName(item.getName())
+                            .specification(item.getSpecification())
+                            .qty(itemOrder.getQty())
+                            .unit(item.getUnit())
+                            .unitPrice(item.getOutboundUnitPrice())
+                            .supplyAmount(supplyAmount)
+                            .tax(tax)
+                            .totalAmount(totalAmount)
+                            .deliveryDate(order.getDeliveryDate()
+                                    .atZone(ZoneOffset.UTC).toLocalDate())
+                            .note(order.getRemark())
+                            .build();
+                })
+                .toList();
+
+        return DetailOrderResponse.builder()
+                .documentNo(order.getDocumentNo())
+                .orderDate(order.getCreatedAt().atZone(ZoneOffset.UTC).toLocalDate())
+                .companyName(order.getClient().getCompanyName())
+                .deliveryDate(order.getDeliveryDate()
+                        .atZone(ZoneOffset.UTC).toLocalDate())
+                .userName(order.getUser().getName())
+                .remark(order.getRemark())
+                .status(order.getStatus().name())
+                .items(itemResponses)
+                .build();
+    }
+
+    // 주문 변경
+    @Override
+    @Transactional
+    public UpdateOrderResponse updateOrder(Long orderId, UpdateOrderRequest request) {
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new CustomException(ErrorCode.ORDER_NOT_FOUND));
+
+        User user = getUserByEmpNo(request.getEmpNo());
 
         List<ItemOrderCrossedTable> newOrderItems = request.getItems().stream()
                 .map(itemReq -> {
@@ -150,43 +175,55 @@ public class OrderServiceImpl implements OrderService {
                 })
                 .toList();
 
-        // ✅ LocalDate → Instant (UTC 변환)
-        Instant newOrderDateInstant = request.getOrderDate() != null
-                ? request.getOrderDate().atStartOfDay(ZoneOffset.UTC).toInstant()
-                : null;
-
+        // 납기일 변환
         Instant newDeliveryDateInstant = request.getDeliveryDate() != null
                 ? request.getDeliveryDate().atStartOfDay(ZoneOffset.UTC).toInstant()
                 : null;
 
-        // ✅ 전표번호 재생성
-        Instant baseInstant = (newOrderDateInstant != null) ? newOrderDateInstant : order.getCreatedAt();
-        String newDocumentNo = generateDocumentNo(baseInstant);
-        order.updateDocumentInfo(newOrderDateInstant, newDocumentNo);
+        // documentDate 변경 시 새 documentNo 생성
+        String newDocumentNo = order.getDocumentNo(); // 기본값: 기존 번호 유지
 
+        if (request.getDocumentDate() != null) {
+            String newDatePart = request.getDocumentDate().format(DateTimeFormatter.ofPattern("yyyy/MM/dd"));
+            String oldDatePart = order.getDocumentNo().split("-")[0]; // ex) "2025/09/09"
+
+            // 날짜가 바뀐 경우에만 새 번호 생성
+            if (!newDatePart.equals(oldDatePart)) {
+                newDocumentNo = generateDocumentNo(request.getDocumentDate());
+            }
+        }
+
+        // 주문 전체 업데이트
         order.updateAll(
-                newOrderDateInstant,
+                request.getDocumentDate() != null
+                        ? request.getDocumentDate().atStartOfDay(ZoneOffset.UTC).toInstant()
+                        : order.getCreatedAt(),   // documentDate → Instant 변환
                 newDeliveryDateInstant,
                 request.getRemark(),
                 request.getStatus(),
-                newUser,
+                user,
                 newOrderItems
         );
 
-        return OrderResponse.from(orderRepository.save(order));
+        // 전표번호 갱신
+        order.updateDocumentInfo(order.getCreatedAt(), newDocumentNo);
+
+        return UpdateOrderResponse.from(orderRepository.save(order));
     }
 
-    /**
-     * 주문 삭제
-     */
+
+
+     // 주문 삭제
+
     @Override
     @Transactional
-    public OrderDeleteResponse deleteOrder(Long orderId) {
+    public DeleteOrderResponse deleteOrder(Long orderId) {
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new CustomException(ErrorCode.ORDER_NOT_FOUND));
 
-        orderRepository.delete(order); // @SQLDelete soft delete
-
-        return OrderDeleteResponse.from(order);
+        orderRepository.delete(order);
+        return DeleteOrderResponse.from(order);
     }
+
+
 }

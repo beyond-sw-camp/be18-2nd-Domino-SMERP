@@ -13,10 +13,11 @@ import java.util.List;
 @Getter
 @Builder
 @AllArgsConstructor
-@NoArgsConstructor(force = true)
+@NoArgsConstructor(force = true) // Jackson 역직렬화 가능하게
 public class UpdateOrderRequest {
-    private final Long clientId; // ✅ 추가
-    private final LocalDate orderDate;
+    private String companyName; // 거래처명
+    private String empNo;       // 사번
+    private final LocalDate documentDate;     // 주문일자
     private final LocalDate deliveryDate;
     private final String remark;
     private final OrderStatus status;

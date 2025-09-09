@@ -5,6 +5,8 @@ import com.domino.smerp.order.Order;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.math.BigDecimal;
+
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -27,7 +29,7 @@ public class ItemOrderCrossedTable {
     private Item item;
 
     @Column(nullable = false)
-    private int qty;
+    private BigDecimal qty;
 
     // 편의 메서드
     public void assignOrder(Order order) {

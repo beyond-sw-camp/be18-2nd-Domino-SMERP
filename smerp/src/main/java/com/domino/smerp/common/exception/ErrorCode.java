@@ -33,7 +33,8 @@ public enum ErrorCode {
 
     // order - 주문과 관련된 예외 정보
     ORDER_NOT_FOUND(HttpStatus.NOT_FOUND, "ORDER_NOT_FOUND", "존재하지 않는 주문입니다."),
-    ITEMS_REQUIRED(HttpStatus.BAD_REQUEST, "ITEMS_REQUIRED", "주문에는 최소 1개 이상의 품목이 필요합니다.");
+    ITEMS_REQUIRED(HttpStatus.BAD_REQUEST, "ITEMS_REQUIRED", "주문에는 최소 1개 이상의 품목이 필요합니다."),
+    INVALID_REQUEST(HttpStatus.BAD_REQUEST, "INVALID_REQUEST", "잘못된 요청입니다.");
 
     private final HttpStatus status;
     private final String code;

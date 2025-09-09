@@ -9,16 +9,17 @@ import lombok.Getter;
 @Getter
 @Builder
 @AllArgsConstructor
-public class OrderCreateResponse {
-    private final String documentNo;   // ✅ 전표 번호로 변경
+public class UpdateOrderResponse {
+    private final String documentNo;   // 전표 번호로 변경
     private final OrderStatus status;
     private final String message;
 
-    public static OrderCreateResponse from(Order order) {
-        return OrderCreateResponse.builder()
-                .documentNo(order.getDocumentNo())   // ✅ 전표번호 세팅
+    public static UpdateOrderResponse from(Order order) {
+        return UpdateOrderResponse.builder()
+                .documentNo(order.getDocumentNo())   // 전표번호 세팅
                 .status(order.getStatus())
-                .message("주문 등록이 완료됐습니다.")
+                .message("주문 수정이 완료됐습니다")
                 .build();
     }
+
 }

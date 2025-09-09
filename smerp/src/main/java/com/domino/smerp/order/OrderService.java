@@ -1,18 +1,16 @@
 package com.domino.smerp.order;
 
-import com.domino.smerp.order.dto.request.OrderRequest;
+import com.domino.smerp.order.dto.request.CreateOrderRequest;
 import com.domino.smerp.order.dto.request.UpdateOrderRequest;
-import com.domino.smerp.order.dto.response.OrderCreateResponse;
-import com.domino.smerp.order.dto.response.OrderDeleteResponse;
-import com.domino.smerp.order.dto.response.OrderResponse;
+import com.domino.smerp.order.dto.response.*;
 
 import java.util.List;
 
 public interface OrderService {
-    OrderCreateResponse createOrder(OrderRequest request);
-    List<OrderResponse> getOrders();
-    OrderResponse getOrderById(Long orderId);
-    OrderResponse updateOrder(Long orderId, UpdateOrderRequest request); // ✅ PUT 전체 수정
-    OrderDeleteResponse deleteOrder(Long orderId);
+    CreateOrderResponse createOrder(CreateOrderRequest request);
+    List<ListOrderResponse> getOrders();
+    DetailOrderResponse getDetailOrder(Long orderId);
+    UpdateOrderResponse updateOrder(Long orderId, UpdateOrderRequest request); // PATCH 전체 수정
+    DeleteOrderResponse deleteOrder(Long orderId);
 }
 

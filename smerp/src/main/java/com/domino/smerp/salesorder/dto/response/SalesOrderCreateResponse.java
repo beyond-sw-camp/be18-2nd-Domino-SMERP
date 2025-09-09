@@ -1,8 +1,5 @@
 package com.domino.smerp.salesorder.dto.response;
 
-import com.domino.smerp.order.Order;
-import com.domino.smerp.order.constants.OrderStatus;
-import com.domino.smerp.order.dto.response.OrderCreateResponse;
 import com.domino.smerp.salesorder.SalesOrder;
 import com.domino.smerp.salesorder.constants.SalesOrderStatus;
 import lombok.AllArgsConstructor;

@@ -10,6 +10,7 @@ import lombok.*;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLRestriction;
 
+import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
@@ -59,27 +60,32 @@ public class Order extends BaseEntity {
     @Builder.Default
     private List<ItemOrderCrossedTable> orderItems = new ArrayList<>();
 
-    // === 연관관계 편의 메서드 ===
+    // 연관관계 편의 메서드
     public void addOrderItem(ItemOrderCrossedTable orderItem) {
         this.orderItems.add(orderItem);
         orderItem.assignOrder(this);
     }
 
-    // === 전표번호와 updatedAt 갱신 ===
+    // 총 공급가 계산
+    public BigDecimal getTotalAmount() {
+        return orderItems.stream()
+                .map(itemOrder -> itemOrder.getQty()
+                        .multiply(itemOrder.getItem().getOutboundUnitPrice()))
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+    }
+
+    // 첫번째 품목 가져오기
+    public ItemOrderCrossedTable getFirstItem() {
+        return orderItems.stream()
+                .findFirst()
+                .orElse(null);
+    }
+
     public void updateDocumentInfo(Instant baseDate, String newDocumentNo) {
-        if (baseDate != null) {
-            try {
-                var field = BaseEntity.class.getDeclaredField("updatedAt");
-                field.setAccessible(true);
-                field.set(this, baseDate);
-            } catch (Exception e) {
-                throw new RuntimeException("updatedAt 갱신 실패", e);
-            }
-        }
         this.documentNo = newDocumentNo;
     }
 
-    // === 전체 업데이트 메서드 === null 확인으로 수정
+    // 전체 업데이트 메서드 null 확인으로 수정
     public void updateAll(Instant orderDate,
                           Instant deliveryDate,
                           String remark,

@@ -8,12 +8,12 @@ import lombok.Getter;
 @Getter
 @Builder
 @AllArgsConstructor
-public class OrderDeleteResponse {
+public class DeleteOrderResponse {
     private final Long orderId;
     private final String message;
 
-    public static OrderDeleteResponse from(Order order) {
-        return OrderDeleteResponse.builder()
+    public static DeleteOrderResponse from(Order order) {
+        return DeleteOrderResponse.builder()
                 .orderId(order.getOrderId())
                 .message("주문이 삭제가 완료됐습니다.")
                 .build();
