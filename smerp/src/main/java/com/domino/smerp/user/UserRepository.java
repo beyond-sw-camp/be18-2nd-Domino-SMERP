@@ -15,6 +15,8 @@ public interface UserRepository extends JpaRepository<User,Long> {
 
     Optional<User>findByLoginId(String username);
 
+    Optional<User> findByEmpNo(String empNo);
+
     @Query(value = "SELECT emp_no FROM user WHERE emp_no LIKE :yearMonth% ORDER BY emp_no DESC LIMIT 1", nativeQuery = true)
     String findLastEmpNoByYearMonth(@Param("yearMonth") String yearMonth);
 }
