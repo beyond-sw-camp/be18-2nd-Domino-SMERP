@@ -46,7 +46,7 @@ public class PurchaseOrder extends BaseEntity {
   @Comment("발주 FK")
   private RequestOrder requestOrder;
 
-  @Column(name = "qty", nullable = false)
+  @Column(name = "qty", nullable = false, precision = 12, scale = 3)
   private BigDecimal qty; // 수량 (발주와 다를 수 있음)
 
   @Column(name = "surtax", nullable = false, precision = 12, scale = 2)
