@@ -1,5 +1,6 @@
 package com.domino.smerp.user.dto.response;
 
+import com.domino.smerp.user.constants.UserRole;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -13,5 +14,5 @@ public class UserListResponse {
     private final String phone;
     private final String address;
     private final String deptTitle;
-    private final String role;
+    private final UserRole role;
 }
