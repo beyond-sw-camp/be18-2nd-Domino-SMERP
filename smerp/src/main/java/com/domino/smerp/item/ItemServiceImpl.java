@@ -46,9 +46,9 @@ public class ItemServiceImpl implements ItemService {
   // 품목 목록 조회
   @Override
   @Transactional(readOnly = true)
-  public PageResponse<ItemListResponse> searchItems(final ItemSearchRequest cond, final Pageable pageable) {
+  public PageResponse<ItemListResponse> searchItems(final ItemSearchRequest keyword, final Pageable pageable) {
     return PageResponse.from(
-        itemRepository.searchItems(cond, pageable)       // Page<Item>
+        itemRepository.searchItems(keyword, pageable)       // Page<Item>
             .map(ItemListResponse::fromEntity) // Page<ItemListResponse>
     );
   }
