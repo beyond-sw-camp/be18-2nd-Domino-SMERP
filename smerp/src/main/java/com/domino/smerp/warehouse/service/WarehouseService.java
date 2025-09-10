@@ -18,7 +18,7 @@ public interface WarehouseService {
 
   WarehouseResponse createWarehouse(final WarehouseRequest warehouseRequest);
 
-  WarehouseIdListResponse getAllUnFilledWarehouses();
+  //WarehouseIdListResponse getAllUnFilledWarehouses();
 
   WarehouseResponse toWarehouseResponse(final Warehouse warehouse);
 }

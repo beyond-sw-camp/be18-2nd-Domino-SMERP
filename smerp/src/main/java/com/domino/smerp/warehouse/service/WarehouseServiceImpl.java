@@ -93,7 +93,7 @@ public class WarehouseServiceImpl implements WarehouseService {
 
     return toWarehouseResponse(warehouse);
   }
-
+/*
   @Override
   @Transactional(readOnly = true)
   public WarehouseIdListResponse getAllUnFilledWarehouses() {
@@ -109,7 +109,7 @@ public class WarehouseServiceImpl implements WarehouseService {
 
     return warehouseIdListResponse;
   }
-
+*/
   @Override
   public WarehouseResponse toWarehouseResponse(final Warehouse warehouse) {
     WarehouseResponse warehouseResponse = WarehouseResponse.builder()

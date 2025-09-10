@@ -9,11 +9,13 @@ import org.springframework.stereotype.Repository;
 public interface WarehouseRepository extends JpaRepository<Warehouse, Long> {
 
   Boolean existsByName(String name);
-
+/*
   @Query("SELECT DISTINCT w.id FROM Warehouse w " +
       "WHERE NOT EXISTS (" +
       "  SELECT l FROM Location l " +
       "  WHERE l.warehouse = w AND l.filled = true" +
       ")")
   List<Warehouse> findWarehousesWithFilledFalseLocations();
+*/
 }
+

@@ -1,6 +1,6 @@
 package com.domino.smerp.warehouse;
 
-import com.domino.smerp.location.Location;
+//import com.domino.smerp.location.Location;
 import com.domino.smerp.warehouse.constants.DivisionType;
 import com.domino.smerp.warehouse.dto.WarehouseRequest;
 import jakarta.persistence.CascadeType;
@@ -60,9 +60,13 @@ public class Warehouse {
   @Column(name = "updated_at")
   private LocalDateTime updatedAt;
 
+  /*
+
   @OneToMany(cascade = CascadeType.ALL, mappedBy = "warehouse", orphanRemoval = true)
+  @Builder.Default
   private List<Location> locations = new ArrayList<>();
 
+  */
   //Boolean - null, false, true
   public void update(WarehouseRequest warehouseRequest) {
 
