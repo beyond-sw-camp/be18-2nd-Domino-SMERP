@@ -4,6 +4,8 @@ import com.domino.smerp.client.dto.request.CreateClientRequest;
 import com.domino.smerp.client.dto.request.UpdateClientRequest;
 import com.domino.smerp.client.dto.response.ClientListResponse;
 import com.domino.smerp.client.dto.response.ClientResponse;
+import com.domino.smerp.common.exception.CustomException;
+import com.domino.smerp.common.exception.ErrorCode;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -18,6 +20,12 @@ public class ClientServiceImpl implements ClientService {
     @Transactional
     public void createClient(final CreateClientRequest request) {
 
+        if (clientRepository.existsByCompanyName(request.getCompanyName())) {
+            throw new CustomException(ErrorCode.DUPLICATE_COMPANY_NAME);
+        }
+        if (clientRepository.existsByBusinessNumber(request.getBusinessNumber())) {
+            throw new CustomException(ErrorCode.DUPLICATE_BUSINESS_NUMBER);
+        }
         Client client = Client.builder()
                               .businessNumber(request.getBusinessNumber())
                               .companyName(request.getCompanyName())
@@ -45,6 +53,9 @@ public class ClientServiceImpl implements ClientService {
     @Transactional
     public void deleteClient(final Long clientId) {
 
+        Client client = clientRepository.findById(clientId)
+                                        .orElseThrow(
+                                            () -> new CustomException(ErrorCode.CLIENT_NOT_FOUND));
         clientRepository.deleteById(clientId);
     }
 
@@ -72,7 +83,7 @@ public class ClientServiceImpl implements ClientService {
 
         Client client = clientRepository.findById(clientId)
                                         .orElseThrow(
-                                            () -> new IllegalArgumentException("해당 거래처 없음"));
+                                            () -> new CustomException(ErrorCode.CLIENT_NOT_FOUND));
 
         return ClientResponse.builder()
                              .businessNumber(client.getBusinessNumber())
@@ -98,7 +109,10 @@ public class ClientServiceImpl implements ClientService {
     @Override
     @Transactional
     public void updateClient(final Long clientId, final UpdateClientRequest request) {
-        Client client = clientRepository.findById(clientId).orElseThrow(() -> new IllegalArgumentException("해당유저 없음"));
+
+        Client client = clientRepository.findById(clientId)
+                                        .orElseThrow(() -> new CustomException(
+                                            ErrorCode.CLIENT_NOT_FOUND));
         client.updateClient(request);
     }
 }
