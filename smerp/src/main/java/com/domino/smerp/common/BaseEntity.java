@@ -26,9 +26,14 @@ public abstract class BaseEntity {
   @Column(name = "created_at", nullable = false, updatable = false)
   private Instant createdAt;
 
-  @LastModifiedDate
+  // @LastModifiedDate
   @Column(name = "updated_at")
   private Instant updatedAt;
+
+  @PreUpdate
+  public void preUpdate() {
+    this.updatedAt = Instant.now();
+  }
 
 }
 

@@ -5,11 +5,12 @@ import com.domino.smerp.client.ClientRepository;
 import com.domino.smerp.common.encrypt.SsnEncryptor;
 import com.domino.smerp.common.exception.CustomException;
 import com.domino.smerp.common.exception.ErrorCode;
-import com.domino.smerp.user.constants.UserRole;
 import com.domino.smerp.user.dto.request.CreateUserRequest;
 import com.domino.smerp.user.dto.request.UpdateUserRequest;
 import com.domino.smerp.user.dto.response.UserListResponse;
 import com.domino.smerp.user.dto.response.UserResponse;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
@@ -44,11 +45,13 @@ public class UserServiceImpl implements UserService {
         }
 
         Client client = null;
-        if (request.getClientId() != null) {
-            client = clientRepository.findById(request.getClientId())
+        if (request.getCompanyName() != null) {
+            client = clientRepository.findByCompanyName(request.getCompanyName())
                                      .orElseThrow(
                                          () -> new CustomException(ErrorCode.CLIENT_NOT_FOUND));
         }
+
+        String empNo = generateEmpNo(request.getHireDate());
 
         User user = User.builder()
                         .name(request.getName())
@@ -62,7 +65,8 @@ public class UserServiceImpl implements UserService {
                         .fireDate(
                             request.getFireDate() != null ? request.getFireDate() : null)
                         .deptTitle(request.getDeptTitle())
-                        .role(UserRole.valueOf(request.getRole()))
+                        .role(request.getRole())
+                        .empNo(empNo)
                         .client(client)
                         .build();
 
@@ -83,16 +87,18 @@ public class UserServiceImpl implements UserService {
                                                     .address(users.getAddress())
                                                     .phone(users.getPhone())
                                                     .deptTitle(users.getDeptTitle())
-                                                    .role(String.valueOf(users.getRole()))
+                                                    .role(users.getRole())
                                                     .build())
                       .collect(Collectors.toList());
     }
 
     @Override
     @Transactional
-    public void deleteUser(final Long UserId) {
-        User user  = userRepository.findById(UserId).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
-        userRepository.deleteById(UserId);
+    public void deleteUser(final Long userId) {
+
+        User user = userRepository.findById(userId)
+                                  .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+        userRepository.deleteById(userId);
     }
 
     @Override
@@ -104,18 +110,21 @@ public class UserServiceImpl implements UserService {
 
         Client client = user.getClient();
 
+        String decryptSsn = ssnEncryptor.decryptSsn(user.getSsn());
+
         return UserResponse.builder()
                            .userId(user.getUserId())
                            .name(user.getName())
                            .email(user.getEmail())
                            .phone(user.getPhone())
                            .address(user.getAddress())
-                           .ssn(ssnEncryptor.decryptSsn(user.getSsn()))
+                           .ssn(decryptSsn.substring(0,8)+"******")
                            .hireDate(user.getHireDate())
                            .fireDate(user.getFireDate())
                            .loginId(user.getLoginId())
                            .deptTitle(user.getDeptTitle())
                            .role(user.getRole())
+                           .empNo(user.getEmpNo())
                            .clientName(client != null ? client.getCompanyName() : "거래처 아님")
                            .build();
     }
@@ -124,8 +133,31 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public void updateUser(final Long userId, final UpdateUserRequest request) {
 
+        if (userRepository.existsByPhone(request.getPhone())) {
+            throw new CustomException(ErrorCode.DUPLICATE_PHONE);
+        }
+
         User user = userRepository.findById(userId)
                                   .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
         user.updateUser(request);
+
+        if(request.getCompanyName()!=null) {
+            Client client = clientRepository.findByCompanyName(request.getCompanyName()).orElseThrow(() -> new CustomException(ErrorCode.CLIENT_NOT_FOUND));
+            user.updateClient(client);
+        }
+    }
+
+    private String generateEmpNo(LocalDate hireDate) {
+
+        String yearMonth = hireDate.format(DateTimeFormatter.ofPattern("yyyyMM"));
+
+        String lastEmpNo = userRepository.findLastEmpNoByYearMonth(yearMonth);
+
+        int nextSeq = 1;
+        if (lastEmpNo != null) {
+            nextSeq = Integer.parseInt(lastEmpNo.substring(6)) + 1;
+        }
+
+        return String.format("%s%03d", yearMonth, nextSeq);
     }
 }

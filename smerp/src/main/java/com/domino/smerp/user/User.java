@@ -65,6 +65,9 @@ public class User {
     @Column(nullable = false)
     private UserRole role;
 
+    @Column(unique = true)
+    private String empNo;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "client_id", foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
     private Client client;
@@ -86,5 +89,8 @@ public class User {
         if (request.getFireDate() != null) {
             this.fireDate = request.getFireDate();
         }
+    }
+    public void updateClient(Client client) {
+        this.client = client;
     }
 }

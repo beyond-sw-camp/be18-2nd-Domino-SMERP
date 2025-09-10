@@ -1,5 +1,6 @@
 package com.domino.smerp.user.dto.request;
 
+import com.domino.smerp.user.constants.UserRole;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -50,8 +51,8 @@ public class CreateUserRequest {
     @NotBlank(message = "부서명은 필수 입력입니다.")
     private final String deptTitle;
 
-    @NotBlank(message = "역할(Role)은 필수 입력입니다.")
-    private final String role;
+    @NotNull(message = "역할(Role)은 필수 입력입니다.")
+    private final UserRole role;
 
-    private final Long clientId;
+    private final String companyName;
 }
