@@ -1,12 +1,16 @@
 package com.domino.smerp.item;
 
+import com.domino.smerp.common.dto.PageResponse;
 import com.domino.smerp.item.dto.request.CreateItemRequest;
+import com.domino.smerp.item.dto.request.ItemSearchRequest;
 import com.domino.smerp.item.dto.request.UpdateItemRequest;
 import com.domino.smerp.item.dto.request.UpdateItemStatusRequest;
 import com.domino.smerp.item.dto.response.ItemDetailResponse;
 import com.domino.smerp.item.dto.response.ItemListResponse;
 import com.domino.smerp.item.dto.response.ItemStatusResponse;
 import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 public interface ItemService {
 
@@ -14,10 +18,7 @@ public interface ItemService {
   ItemDetailResponse createItem(final CreateItemRequest request);
 
   // 품목 목록 조회
-  List<ItemListResponse> getItems();
-
-  // 품목 구분 조회
-  List<ItemListResponse> getItemsByStatusName(final String statusName);
+  PageResponse<ItemListResponse> searchItems(final ItemSearchRequest cond, final Pageable pageable);
 
   // 품목 상세 조회
   ItemDetailResponse getItemById(final Long itemId);

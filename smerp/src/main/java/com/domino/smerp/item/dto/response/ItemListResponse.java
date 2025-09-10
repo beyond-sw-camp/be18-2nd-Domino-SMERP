@@ -1,11 +1,13 @@
 package com.domino.smerp.item.dto.response;
 
 import com.domino.smerp.item.Item;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 
 @Getter
 @Builder
+@AllArgsConstructor
 public class ItemListResponse {
 
   private final Long itemId;
