@@ -9,6 +9,7 @@ import com.domino.smerp.user.dto.request.CreateUserRequest;
 import com.domino.smerp.user.dto.request.UpdateUserRequest;
 import com.domino.smerp.user.dto.response.UserListResponse;
 import com.domino.smerp.user.dto.response.UserResponse;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -76,9 +77,21 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<UserListResponse> findAllUsers() {
+    public List<UserListResponse> findAllUsers(String name, String deptTitle) {
 
-        List<User> allUser = userRepository.findAll();
+        BooleanExpression nameCondition = (name != null && !name.isEmpty()) ? QUser.user.name.eq(name) : null;
+        BooleanExpression deptCondition = (deptTitle != null && !deptTitle.isEmpty()) ? QUser.user.deptTitle.eq(deptTitle) : null;
+        BooleanExpression condition = null;
+
+        if (nameCondition != null && deptCondition != null) {
+            condition = nameCondition.and(deptCondition);
+        } else if (nameCondition != null) {
+            condition = nameCondition;
+        } else if (deptCondition != null) {
+            condition = deptCondition;
+        }
+
+        List<User> allUser = (condition == null)?  userRepository.findAll() : (List<User>) userRepository.findAll(condition);
 
         return allUser.stream()
                       .map(users -> UserListResponse.builder()
