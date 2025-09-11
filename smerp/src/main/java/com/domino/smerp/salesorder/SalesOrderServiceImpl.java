@@ -2,7 +2,6 @@ package com.domino.smerp.salesorder;
 
 import com.domino.smerp.order.Order;
 import com.domino.smerp.order.OrderRepository;
-import com.domino.smerp.salesorder.constants.SalesOrderStatus;
 import com.domino.smerp.salesorder.dto.request.SalesOrderRequest;
 import com.domino.smerp.salesorder.dto.response.SalesOrderCreateResponse;
 import com.domino.smerp.salesorder.dto.response.SalesOrderResponse;
@@ -22,16 +21,15 @@ public class SalesOrderServiceImpl implements SalesOrderService {
 
     @Override
     public SalesOrderCreateResponse createSalesOrder(SalesOrderRequest request) {
+        // 주문 찾아오기
         Order order = orderRepository.findById(request.getOrderId())
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 주문 ID: " + request.getOrderId()));
 
+        // 판매 전표 생성 (주문만 참조)
         SalesOrder salesOrder = SalesOrder.builder()
-                .order(order)
-                .qty(request.getQty())
-                .surtax(request.getSurtax())
-                .price(request.getPrice())
-                .remark(request.getRemark())
-                .status(SalesOrderStatus.APPROVED)   // ✅ 강제로 APPROVED 지정
+                .order(order)                 // ✅ 주문 참조만 세팅
+                .salesDate(order.getCreatedAt()) // 주문 생성일 기준으로 판매일자 지정
+                .remark(order.getRemark())
                 .build();
 
         return SalesOrderCreateResponse.from(salesOrderRepository.save(salesOrder));
@@ -58,7 +56,9 @@ public class SalesOrderServiceImpl implements SalesOrderService {
         SalesOrder salesOrder = salesOrderRepository.findById(soId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 판매 ID: " + soId));
 
-        salesOrder.updateStatus(request.getStatus());
+        // 여기서는 상태값이나 비고 정도만 수정 가능하게 유지
+        salesOrder.updateRemark(request.getRemark());
+
         return SalesOrderResponse.from(salesOrder);
     }
 

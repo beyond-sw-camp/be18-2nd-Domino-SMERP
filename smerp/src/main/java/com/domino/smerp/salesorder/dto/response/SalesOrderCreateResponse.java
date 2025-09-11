@@ -17,7 +17,6 @@ public class SalesOrderCreateResponse {
     public static SalesOrderCreateResponse from(SalesOrder salesOrder) {
         return SalesOrderCreateResponse.builder()
                 .soId(salesOrder.getSoId())
-                .status(salesOrder.getStatus())
                 .message("판매 등록이 완료됐습니다.")
                 .build();
     }

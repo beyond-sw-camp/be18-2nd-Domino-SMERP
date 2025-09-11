@@ -20,6 +20,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneOffset;
@@ -117,28 +118,19 @@ public class OrderServiceImpl implements OrderService {
                 .orElseThrow(() -> new CustomException(ErrorCode.ORDER_NOT_FOUND));
 
         List<DetailItemOrderResponse> itemResponses = order.getOrderItems().stream()
-                .map(itemOrder -> {
-                    Item item = itemOrder.getItem();
-                    BigDecimal supplyAmount = itemOrder.getQty()
-                            .multiply(itemOrder.getSpecialPrice());
-                    BigDecimal tax = supplyAmount.multiply(BigDecimal.valueOf(0.1));
-                    BigDecimal totalAmount = supplyAmount.add(tax);
-
-                    return DetailItemOrderResponse.builder()
-                            .itemCode(item.getItemId())
-                            .itemName(item.getName())
-                            .specification(item.getSpecification())
-                            .qty(itemOrder.getQty())
-                            .unit(item.getUnit())
-                            .specialPrice(itemOrder.getSpecialPrice())
-                            .supplyAmount(supplyAmount)
-                            .tax(tax)
-                            .totalAmount(totalAmount)
-                            .deliveryDate(order.getDeliveryDate()
-                                    .atZone(ZoneOffset.UTC).toLocalDate())
-                            .note(order.getRemark())
-                            .build();
-                })
+                .map(itemOrder -> DetailItemOrderResponse.builder()
+                        .itemCode(itemOrder.getItem().getItemId())
+                        .itemName(itemOrder.getItem().getName())
+                        .specification(itemOrder.getItem().getSpecification())
+                        .qty(itemOrder.getQty())
+                        .unit(itemOrder.getItem().getUnit())
+                        .specialPrice(itemOrder.getSpecialPrice())
+                        .supplyAmount(itemOrder.getSupplyAmount()) // ✅ 엔티티 메서드 호출
+                        .tax(itemOrder.getTax())
+                        .totalAmount(itemOrder.getTotalAmount())
+                        .deliveryDate(order.getDeliveryDate().atZone(ZoneOffset.UTC).toLocalDate())
+                        .note(order.getRemark())
+                        .build())
                 .toList();
 
         return DetailOrderResponse.builder()

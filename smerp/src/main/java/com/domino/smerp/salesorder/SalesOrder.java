@@ -20,12 +20,12 @@ public class SalesOrder extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "sales_order_id")
-    private Long salesOrderId;
+    private Long soId;
 
     // 주문 참조 (항상 동기화)
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_id", nullable = false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
-    private Order orderId;
+    private Order order;
 
     // 판매일자 (주문일자와 같을 수도 있고, 실제 매출일을 따로 관리할 수도 있음)
     @Column(name = "sales_date", nullable = false)
@@ -41,9 +41,15 @@ public class SalesOrder extends BaseEntity {
     // 편의 메서드: 주문에서 기본값 세팅
     public static SalesOrder fromOrder(Order order) {
         return SalesOrder.builder()
-                .orderId(order)
+                .order(order)
                 .salesDate(order.getCreatedAt())   // 주문 생성일자 그대로
                 .remark(order.getRemark())
                 .build();
+    }
+
+    public void updateRemark(String remark) {
+        if (remark != null && !remark.isBlank()) {
+            this.remark = remark;
+        }
     }
 }

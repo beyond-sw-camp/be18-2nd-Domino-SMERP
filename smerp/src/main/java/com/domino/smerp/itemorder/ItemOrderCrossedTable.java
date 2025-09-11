@@ -6,6 +6,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 @Entity
 @Getter
@@ -38,4 +39,19 @@ public class ItemOrderCrossedTable {
     public void assignOrder(Order order) {
         this.order = order;
     }
+
+    public BigDecimal getSupplyAmount() {
+        return qty.multiply(specialPrice).setScale(2, RoundingMode.HALF_UP);
+    }
+
+    public BigDecimal getTax() {
+        return getSupplyAmount().multiply(BigDecimal.valueOf(0.1))
+                .setScale(2, RoundingMode.HALF_UP);
+    }
+
+    public BigDecimal getTotalAmount() {
+        return getSupplyAmount().add(getTax())
+                .setScale(2, RoundingMode.HALF_UP);
+    }
+
 }

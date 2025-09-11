@@ -11,6 +11,7 @@ import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLRestriction;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
@@ -69,9 +70,17 @@ public class Order extends BaseEntity {
     // 총 공급가 계산
     public BigDecimal getTotalAmount() {
         return orderItems.stream()
-                .map(itemOrder -> itemOrder.getQty()
-                        .multiply(itemOrder.getSpecialPrice()))
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
+                .map(ItemOrderCrossedTable::getSupplyAmount)
+                .reduce(BigDecimal.ZERO, BigDecimal::add)
+                .setScale(2, RoundingMode.HALF_UP);
+    }
+
+    // 세금 계산
+    public BigDecimal getTotalTax() {
+        return orderItems.stream()
+                .map(ItemOrderCrossedTable::getTax)
+                .reduce(BigDecimal.ZERO, BigDecimal::add)
+                .setScale(2, RoundingMode.HALF_UP);
     }
 
     // 첫번째 품목 가져오기
