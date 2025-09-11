@@ -1,6 +1,7 @@
 package com.domino.smerp.warehouse;
 
 //import com.domino.smerp.location.Location;
+import com.domino.smerp.common.BaseEntity;
 import com.domino.smerp.warehouse.constants.DivisionType;
 import com.domino.smerp.warehouse.dto.WarehouseRequest;
 import jakarta.persistence.CascadeType;
@@ -28,7 +29,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Getter
 @Table(name = "warehouse")
-public class Warehouse {
+public class Warehouse extends BaseEntity {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -50,15 +51,6 @@ public class Warehouse {
 
   @Column(nullable = false)
   private String zipcode;
-
-  //생성일자
-  @Builder.Default
-  @Column(name = "created_at", nullable = false, updatable = false)
-  private LocalDateTime createdAt = LocalDateTime.now();
-
-  //수정일자
-  @Column(name = "updated_at")
-  private LocalDateTime updatedAt;
 
   /*
 
