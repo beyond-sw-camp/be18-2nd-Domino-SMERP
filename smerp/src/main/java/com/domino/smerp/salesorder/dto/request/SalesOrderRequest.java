@@ -11,7 +11,7 @@ import java.math.BigDecimal;
 @Getter
 @Builder
 @AllArgsConstructor
-@NoArgsConstructor(force = true)  // ✅ Jackson 역직렬화 지원
+@NoArgsConstructor(force = true)  // Jackson 역직렬화 지원
 public class SalesOrderRequest {
 
     private final Long orderId;
@@ -19,5 +19,5 @@ public class SalesOrderRequest {
     private final BigDecimal surtax;
     private final BigDecimal price;
     private final String remark;
-    private final SalesOrderStatus status;   // ✅ Enum으로 변경
+    private final SalesOrderStatus status;   // Enum으로 변경
 }

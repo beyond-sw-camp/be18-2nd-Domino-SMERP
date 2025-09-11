@@ -28,8 +28,11 @@ public class ItemOrderCrossedTable {
     @JoinColumn(name = "item_id", nullable = false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
     private Item item;
 
-    @Column(nullable = false)
+    @Column(name = "qty", nullable = false, precision = 12, scale = 3)
     private BigDecimal qty;
+
+    @Column(name = "special_price",nullable = false, precision = 12, scale = 2)
+    private BigDecimal specialPrice;
 
     // 편의 메서드
     public void assignOrder(Order order) {

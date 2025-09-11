@@ -5,7 +5,7 @@ import com.domino.smerp.client.ClientRepository;
 import com.domino.smerp.common.exception.CustomException;
 import com.domino.smerp.common.exception.ErrorCode;
 import com.domino.smerp.item.Item;
-import com.domino.smerp.item.ItemRepository;
+import com.domino.smerp.item.ItemServiceImpl;
 import com.domino.smerp.itemorder.ItemOrderCrossedTable;
 import com.domino.smerp.itemorder.dto.request.ItemOrderRequest;
 import com.domino.smerp.itemorder.dto.response.DetailItemOrderResponse;
@@ -33,7 +33,7 @@ public class OrderServiceImpl implements OrderService {
     private final OrderRepository orderRepository;
     private final ClientRepository clientRepository;
     private final UserRepository userRepository;
-    private final ItemRepository itemRepository;
+    private final ItemServiceImpl itemServiceImpl;
 
     private Client getClientByCompanyName(String companyName) {
         return clientRepository.findByCompanyName(companyName)
@@ -65,7 +65,7 @@ public class OrderServiceImpl implements OrderService {
         // 주문일자(documentDate) 기반 documentNo 생성
         LocalDate documentDate = request.getDocumentDate();
         if (documentDate == null) {
-            throw new CustomException(ErrorCode.INVALID_REQUEST); // 주문일자 없으면 예외
+            throw new CustomException(ErrorCode.INVALID_ORDER_REQUEST); // 주문일자 없으면 예외
         }
         String documentNo = generateDocumentNo(documentDate);
 
@@ -84,17 +84,18 @@ public class OrderServiceImpl implements OrderService {
                 .build();
 
         for (ItemOrderRequest itemReq : request.getItems()) {
-            Item item = itemRepository.findById(itemReq.getItemId())
-                    .orElseThrow(() -> new CustomException(ErrorCode.ITEM_NOT_FOUND));
+            Item item = itemServiceImpl.findItemById(itemReq.getItemId());
 
             ItemOrderCrossedTable orderItem = ItemOrderCrossedTable.builder()
                     .order(order)
                     .item(item)
                     .qty(itemReq.getQty())
+                    .specialPrice(item.getOutboundUnitPrice()) // 주문 당시 단가 고정
                     .build();
 
             order.addOrderItem(orderItem);
         }
+
 
         return CreateOrderResponse.from(orderRepository.save(order));
     }
@@ -119,7 +120,7 @@ public class OrderServiceImpl implements OrderService {
                 .map(itemOrder -> {
                     Item item = itemOrder.getItem();
                     BigDecimal supplyAmount = itemOrder.getQty()
-                            .multiply(item.getOutboundUnitPrice());
+                            .multiply(itemOrder.getSpecialPrice());
                     BigDecimal tax = supplyAmount.multiply(BigDecimal.valueOf(0.1));
                     BigDecimal totalAmount = supplyAmount.add(tax);
 
@@ -129,7 +130,7 @@ public class OrderServiceImpl implements OrderService {
                             .specification(item.getSpecification())
                             .qty(itemOrder.getQty())
                             .unit(item.getUnit())
-                            .unitPrice(item.getOutboundUnitPrice())
+                            .specialPrice(itemOrder.getSpecialPrice())
                             .supplyAmount(supplyAmount)
                             .tax(tax)
                             .totalAmount(totalAmount)
@@ -164,13 +165,13 @@ public class OrderServiceImpl implements OrderService {
 
         List<ItemOrderCrossedTable> newOrderItems = request.getItems().stream()
                 .map(itemReq -> {
-                    Item item = itemRepository.findById(itemReq.getItemId())
-                            .orElseThrow(() -> new CustomException(ErrorCode.ITEM_NOT_FOUND));
+                    Item item = itemServiceImpl.findItemById(itemReq.getItemId());
 
                     return ItemOrderCrossedTable.builder()
                             .order(order)
                             .item(item)
                             .qty(itemReq.getQty())
+                            .specialPrice(item.getOutboundUnitPrice())
                             .build();
                 })
                 .toList();
@@ -212,8 +213,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
 
-
-     // 주문 삭제
+    // 주문 삭제
 
     @Override
     @Transactional

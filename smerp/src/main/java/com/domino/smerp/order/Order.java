@@ -43,7 +43,7 @@ public class Order extends BaseEntity {
     @Builder.Default
     private OrderStatus status = OrderStatus.PENDING;
 
-    @Column(name = "delivery_date", nullable = false)
+    @Column(name = "delivery_at", nullable = false)
     private Instant deliveryDate;
 
     @Column(name = "remark", length = 100)
@@ -70,7 +70,7 @@ public class Order extends BaseEntity {
     public BigDecimal getTotalAmount() {
         return orderItems.stream()
                 .map(itemOrder -> itemOrder.getQty()
-                        .multiply(itemOrder.getItem().getOutboundUnitPrice()))
+                        .multiply(itemOrder.getSpecialPrice()))
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 
@@ -86,20 +86,34 @@ public class Order extends BaseEntity {
     }
 
     // 전체 업데이트 메서드 null 확인으로 수정
+    // PATCH 방식: null이 들어오면 기존 값 유지
     public void updateAll(Instant orderDate,
                           Instant deliveryDate,
                           String remark,
                           OrderStatus status,
                           User newUser,
                           List<ItemOrderCrossedTable> newOrderItems) {
-        this.deliveryDate = deliveryDate;
-        this.remark = remark;
-        this.status = status;
-        this.user = newUser;
 
-        this.orderItems.clear();
-        if (newOrderItems != null) {
+        if (deliveryDate != null) {
+            this.deliveryDate = deliveryDate;
+        }
+
+        if (remark != null) {
+            this.remark = remark;
+        }
+
+        if (status != null) {
+            this.status = status;
+        }
+
+        if (newUser != null) {
+            this.user = newUser;
+        }
+
+        if (newOrderItems != null && !newOrderItems.isEmpty()) {
+            this.orderItems.clear();
             newOrderItems.forEach(this::addOrderItem);
         }
     }
+
 }
