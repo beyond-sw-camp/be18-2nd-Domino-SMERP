@@ -1,4 +1,4 @@
-package com.domino.smerp.item;
+package com.domino.smerp.item.service;
 
 import com.domino.smerp.common.dto.PageResponse;
 import com.domino.smerp.common.exception.CustomException;
@@ -10,11 +10,12 @@ import com.domino.smerp.item.dto.request.UpdateItemStatusRequest;
 import com.domino.smerp.item.dto.response.ItemDetailResponse;
 import com.domino.smerp.item.dto.response.ItemListResponse;
 import com.domino.smerp.item.dto.response.ItemStatusResponse;
+import com.domino.smerp.item.entity.Item;
+import com.domino.smerp.item.entity.ItemStatus;
 import com.domino.smerp.item.repository.ItemRepository;
 import com.domino.smerp.item.repository.ItemStatusRepository;
 import java.math.BigDecimal;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -46,7 +47,8 @@ public class ItemServiceImpl implements ItemService {
   // 품목 목록 조회
   @Override
   @Transactional(readOnly = true)
-  public PageResponse<ItemListResponse> searchItems(final ItemSearchRequest keyword, final Pageable pageable) {
+  public PageResponse<ItemListResponse> searchItems(final ItemSearchRequest keyword,
+      final Pageable pageable) {
     return PageResponse.from(
         itemRepository.searchItems(keyword, pageable)       // Page<Item>
             .map(ItemListResponse::fromEntity) // Page<ItemListResponse>

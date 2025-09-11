@@ -1,6 +1,7 @@
-package com.domino.smerp.item;
+package com.domino.smerp.item.controller;
 
 import com.domino.smerp.common.dto.PageResponse;
+import com.domino.smerp.item.service.ItemService;
 import com.domino.smerp.item.dto.request.CreateItemRequest;
 import com.domino.smerp.item.dto.request.ItemSearchRequest;
 import com.domino.smerp.item.dto.request.UpdateItemRequest;

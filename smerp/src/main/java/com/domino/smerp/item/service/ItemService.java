@@ -1,4 +1,4 @@
-package com.domino.smerp.item;
+package com.domino.smerp.item.service;
 
 import com.domino.smerp.common.dto.PageResponse;
 import com.domino.smerp.item.dto.request.CreateItemRequest;
@@ -8,8 +8,6 @@ import com.domino.smerp.item.dto.request.UpdateItemStatusRequest;
 import com.domino.smerp.item.dto.response.ItemDetailResponse;
 import com.domino.smerp.item.dto.response.ItemListResponse;
 import com.domino.smerp.item.dto.response.ItemStatusResponse;
-import java.util.List;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 public interface ItemService {

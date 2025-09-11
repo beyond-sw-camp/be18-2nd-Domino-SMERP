@@ -1,6 +1,6 @@
-package com.domino.smerp.item.repository;
+package com.domino.smerp.item.repository.query;
 
-import com.domino.smerp.item.Item;
+import com.domino.smerp.item.entity.Item;
 import com.domino.smerp.item.dto.request.ItemSearchRequest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

@@ -1,6 +1,6 @@
 package com.domino.smerp.item.dto.response;
 
-import com.domino.smerp.item.Item;
+import com.domino.smerp.item.entity.Item;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import java.math.BigDecimal;
 import java.time.Instant;

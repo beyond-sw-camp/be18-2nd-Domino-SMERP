@@ -1,12 +1,10 @@
-package com.domino.smerp.item.repository;
+package com.domino.smerp.item.repository.query;
 
-import com.domino.smerp.item.Item;
-import com.domino.smerp.item.QItem;
-import com.domino.smerp.item.QItemStatus;
 import com.domino.smerp.item.constants.ItemStatusStatus;
 import com.domino.smerp.item.dto.request.ItemSearchRequest;
-import com.domino.smerp.item.dto.response.ItemListResponse;
-import com.querydsl.core.types.Projections;
+import com.domino.smerp.item.entity.Item;
+import com.domino.smerp.item.entity.QItem;
+import com.domino.smerp.item.entity.QItemStatus;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;

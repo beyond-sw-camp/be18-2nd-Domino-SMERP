@@ -1,4 +1,4 @@
-package com.domino.smerp.item;
+package com.domino.smerp.lotno.entity;
 
 import com.domino.smerp.common.BaseEntity;
 import com.domino.smerp.item.constants.ItemAct;
@@ -6,6 +6,8 @@ import com.domino.smerp.item.constants.SafetyStockAct;
 import com.domino.smerp.item.dto.request.CreateItemRequest;
 import com.domino.smerp.item.dto.request.UpdateItemRequest;
 import com.domino.smerp.item.dto.request.UpdateItemStatusRequest;
+import com.domino.smerp.item.entity.Item;
+import com.domino.smerp.item.entity.ItemStatus;
 import jakarta.persistence.Column;
 import jakarta.persistence.ConstraintMode;
 import jakarta.persistence.Entity;
@@ -32,14 +34,14 @@ import org.hibernate.annotations.SQLRestriction;
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-@Table(name = "item")
+@Table(name = "lot_number")
 @SQLRestriction("is_deleted = false")
-public class Item extends BaseEntity {
+public class LotNumber extends BaseEntity {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = "item_id")
-  private Long itemId;
+  private Item item;
 
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "item_status_id", nullable = false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
@@ -89,8 +91,8 @@ public class Item extends BaseEntity {
 
 
   // 품목 생성
-  public static Item create(CreateItemRequest request, ItemStatus itemStatus) {
-    return Item.builder()
+  public static LotNumber create(CreateItemRequest request, ItemStatus itemStatus) {
+    return LotNumber.builder()
         .itemStatus(itemStatus)
         .name(request.getName())
         .specification(request.getSpecification())
