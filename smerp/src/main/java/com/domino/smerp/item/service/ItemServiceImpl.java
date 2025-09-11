@@ -51,7 +51,7 @@ public class ItemServiceImpl implements ItemService {
       final Pageable pageable) {
     return PageResponse.from(
         itemRepository.searchItems(keyword, pageable)       // Page<Item>
-            .map(ItemListResponse::fromEntity) // Page<ItemListResponse>
+            .map(ItemListResponse::fromEntity)     // Page<ItemListResponse>
     );
   }
 
@@ -117,9 +117,7 @@ public class ItemServiceImpl implements ItemService {
   @Override
   @Transactional
   public void deleteItem(final Long itemId) {
-    Item item = itemRepository.findById(itemId)
-        .orElseThrow(
-            () -> new CustomException(ErrorCode.ITEM_NOT_FOUND));
+    Item item = findItemById(itemId);
 
     item.delete();
   }
