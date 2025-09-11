@@ -66,6 +66,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
   @Override
   @Transactional(readOnly = true)
   public List<PurchaseOrderGetListResponse> getPurchaseOrders(final int page, final int size) {
+    // 생성일자 내림차순 기준 정렬
     PageRequest pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
     return purchaseOrderRepository.findAll(pageable)
         .map(entity -> PurchaseOrderGetListResponse.builder()
@@ -89,7 +90,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
 
     return PurchaseOrderGetDetailResponse.builder()
         .poId(entity.getPoId())
-//        .roId(entity.getRequestOrder().getRoId())
+        .roId(entity.getRequestOrder().getRoId())
         .qty(entity.getQty())
         .surtax(entity.getSurtax())
         .price(entity.getPrice())
