@@ -18,7 +18,6 @@ public class PurchaseOrderGetDetailResponse {
   private final BigDecimal price;
   private final String remark;
   private final String documentNo;
-  private final boolean isDeleted;
   private final Instant createdAt;
   private final Instant updatedAt;
 }

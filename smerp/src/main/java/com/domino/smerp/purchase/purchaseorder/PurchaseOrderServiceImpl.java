@@ -36,7 +36,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
     // RequestOrder requestOrder = null; // 임시 placeholder
 
     RequestOrder requestOrder = requestOrderRepository.findById(request.getRoId())
-        .orElseThrow(() -> new EntityNotFoundException("request의 id 가 없음" + request.getRoId()));
+        .orElseThrow(() -> new EntityNotFoundException("발주 전표를 조회할 수 없습니다." + request.getRoId()));
 
     // 엔티티 변환 (빌더 패턴)
     PurchaseOrder entity = PurchaseOrder.builder()
@@ -86,7 +86,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
   @Transactional(readOnly = true)
   public PurchaseOrderGetDetailResponse getPurchaseOrderById(final Long poId) {
     PurchaseOrder entity = purchaseOrderRepository.findById(poId)
-        .orElseThrow(() -> new EntityNotFoundException("구매 전표를 찾을 수 없습니다. id=" + poId));
+        .orElseThrow(() -> new EntityNotFoundException("구매 전표를 조회할 수 없습니다. id=" + poId));
 
     return PurchaseOrderGetDetailResponse.builder()
         .poId(entity.getPoId())
@@ -96,7 +96,6 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
         .price(entity.getPrice())
         .remark(entity.getRemark())
         .documentNo(entity.getDocumentNo())
-        .isDeleted(entity.isDeleted())
         .createdAt(entity.getCreatedAt())
         .updatedAt(entity.getUpdatedAt())
         .build();
@@ -108,7 +107,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
   public PurchaseOrderUpdateResponse updatePurchaseOrder(final Long poId,
       final PurchaseOrderUpdateRequest request) {
     PurchaseOrder entity = purchaseOrderRepository.findById(poId)
-        .orElseThrow(() -> new EntityNotFoundException("조회할 수 없습니다. id=" + poId));
+        .orElseThrow(() -> new EntityNotFoundException("구매 전표를 조회할 수 없습니다. id=" + poId));
 
     // 엔티티 도메인 메서드 활용
     entity.updateQty(request.getQty());

@@ -55,7 +55,6 @@ public class PurchaseOrder extends BaseEntity {
   @Column(name = "price", nullable = false, precision = 12, scale = 2)
   private BigDecimal price; // 금액 (qty * 단가)
 
-  @Size(max = 100)
   @Column(name = "remark", length = 100)
   private String remark; // 비고
 
