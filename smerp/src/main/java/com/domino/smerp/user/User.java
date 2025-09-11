@@ -90,4 +90,7 @@ public class User {
             this.fireDate = request.getFireDate();
         }
     }
+    public void updateClient(Client client) {
+        this.client = client;
+    }
 }

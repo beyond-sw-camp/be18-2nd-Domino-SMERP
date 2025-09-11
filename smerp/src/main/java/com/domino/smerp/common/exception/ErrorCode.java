@@ -15,7 +15,8 @@ public enum ErrorCode {
 
     //client - 거래처와 관련된 예외 정보
     CLIENT_NOT_FOUND(HttpStatus.NOT_FOUND, "CLIENT_NOT_FOUND", "존재하지 않는 거래처입니다."),
-    DUPLICATE_COMPANY(HttpStatus.CONFLICT, "DUPLICATE_COMPANY", "이미 등록된 사업자번호입니다."),
+    DUPLICATE_BUSINESS_NUMBER(HttpStatus.CONFLICT, "DUPLICATE_BUSINESS_NUMBER", "이미 등록된 사업자번호입니다."),
+    DUPLICATE_COMPANY_NAME(HttpStatus.CONFLICT, "DUPLICATE_COMPANY_NAME", "이미 등록된 회사명입니다."),
 
     //item - 품목과 관련된 예외 정보
     ITEM_STATUS_NOT_FOUND(HttpStatus.NOT_FOUND, "ITEM_STATUS_NOT_FOUND", "존재하지 않는 품목 구분입니다."),

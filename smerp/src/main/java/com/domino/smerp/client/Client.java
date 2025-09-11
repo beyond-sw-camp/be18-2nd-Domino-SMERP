@@ -28,7 +28,7 @@ public class Client {
     @Column(nullable = false, length = 12, unique = true)
     private String businessNumber;
 
-    @Column(nullable = false, length = 60)
+    @Column(nullable = false, length = 60, unique = true)
     private String companyName;
 
     @Column(nullable = false, length = 15)

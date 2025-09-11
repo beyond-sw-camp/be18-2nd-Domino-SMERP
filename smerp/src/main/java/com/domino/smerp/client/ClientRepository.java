@@ -7,4 +7,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface ClientRepository extends JpaRepository<Client, Long> {
     Optional<Client> findByCompanyName(String companyName);
+    boolean existsByCompanyName(String companyName);
+    boolean existsByBusinessNumber(String businessNumber);
 }
