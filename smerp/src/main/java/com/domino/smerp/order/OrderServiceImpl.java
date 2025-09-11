@@ -125,11 +125,11 @@ public class OrderServiceImpl implements OrderService {
                         .qty(itemOrder.getQty())
                         .unit(itemOrder.getItem().getUnit())
                         .specialPrice(itemOrder.getSpecialPrice())
-                        .supplyAmount(itemOrder.getSupplyAmount()) // ✅ 엔티티 메서드 호출
+                        .supplyAmount(itemOrder.getSupplyAmount()) //  엔티티 메서드 호출
                         .tax(itemOrder.getTax())
                         .totalAmount(itemOrder.getTotalAmount())
                         .deliveryDate(order.getDeliveryDate().atZone(ZoneOffset.UTC).toLocalDate())
-                        .note(order.getRemark())
+                        .remark(order.getRemark())
                         .build())
                 .toList();
 
@@ -216,6 +216,4 @@ public class OrderServiceImpl implements OrderService {
         orderRepository.delete(order);
         return DeleteOrderResponse.from(order);
     }
-
-
 }

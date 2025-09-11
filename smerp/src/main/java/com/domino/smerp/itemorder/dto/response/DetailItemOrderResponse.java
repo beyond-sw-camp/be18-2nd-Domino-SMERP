@@ -21,5 +21,5 @@ public class DetailItemOrderResponse {
     private BigDecimal tax;        // 부가세
     private BigDecimal totalAmount; // 금액
     private LocalDate deliveryDate; // 납기일자
-    private String note;           // 적요
+    private String remark;           // 적요
 }
