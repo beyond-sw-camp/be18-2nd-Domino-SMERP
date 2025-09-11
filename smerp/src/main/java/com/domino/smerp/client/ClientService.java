@@ -11,7 +11,7 @@ public interface ClientService {
 
     void deleteClient(Long clientId);
 
-    List<ClientListResponse> findAllClients();
+    List<ClientListResponse> findAllClients(String companyName, String businessNumber);
 
     ClientResponse findClient(Long clientId);
 
