@@ -6,6 +6,7 @@ import com.domino.smerp.client.dto.response.ClientListResponse;
 import com.domino.smerp.client.dto.response.ClientResponse;
 import com.domino.smerp.common.exception.CustomException;
 import com.domino.smerp.common.exception.ErrorCode;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -61,9 +62,28 @@ public class ClientServiceImpl implements ClientService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<ClientListResponse> findAllClients() {
+    public List<ClientListResponse> findAllClients(String companyName, String businessNumber) {
 
-        List<Client> clients = clientRepository.findAll();
+        BooleanExpression companyNameCondition =
+            (companyName != null && !companyName.isEmpty()) ? QClient.client.companyName.startsWith(
+                companyName) : null;
+
+        BooleanExpression businessNumberCondition =
+            (businessNumber != null && !businessNumber.isEmpty())
+                ? QClient.client.businessNumber.startsWith(businessNumber) : null;
+
+        BooleanExpression condition = null;
+
+        if (companyNameCondition != null && businessNumberCondition != null) {
+            condition = companyNameCondition.and(businessNumberCondition);
+        } else if (companyNameCondition != null) {
+            condition = companyNameCondition;
+        } else if (businessNumberCondition != null) {
+            condition = businessNumberCondition;
+        }
+
+        List<Client> clients = (condition == null) ? clientRepository.findAll()
+            : (List<Client>) clientRepository.findAll(condition);
 
         return clients.stream()
                       .map(client -> ClientListResponse.builder()
