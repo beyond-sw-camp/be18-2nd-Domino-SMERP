@@ -10,6 +10,6 @@ import lombok.Getter;
 @Builder
 public class UpdateLotNumberRequest {
 
-
+  private final String status;
 
 }

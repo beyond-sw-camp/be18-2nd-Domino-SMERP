@@ -7,4 +7,6 @@ import lombok.Getter;
 @Builder
 public class LotNumberDetailResponse {
 
+
+
 }
