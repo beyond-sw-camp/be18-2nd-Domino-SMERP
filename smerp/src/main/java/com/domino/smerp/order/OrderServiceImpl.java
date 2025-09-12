@@ -6,7 +6,8 @@ import com.domino.smerp.common.exception.CustomException;
 import com.domino.smerp.common.exception.ErrorCode;
 import com.domino.smerp.item.Item;
 import com.domino.smerp.item.ItemServiceImpl;
-import com.domino.smerp.itemorder.ItemOrderCrossedTable;
+import com.domino.smerp.itemorder.ItemOrder;
+import com.domino.smerp.itemorder.ItemOrderRepository;
 import com.domino.smerp.itemorder.dto.request.ItemOrderRequest;
 import com.domino.smerp.itemorder.dto.response.DetailItemOrderResponse;
 import com.domino.smerp.order.constants.OrderStatus;
@@ -16,7 +17,6 @@ import com.domino.smerp.order.dto.response.*;
 import com.domino.smerp.user.User;
 import com.domino.smerp.user.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -35,6 +35,7 @@ public class OrderServiceImpl implements OrderService {
     private final ClientRepository clientRepository;
     private final UserRepository userRepository;
     private final ItemServiceImpl itemServiceImpl;
+    private final ItemOrderRepository itemOrderRepository;
 
     private Client getClientByCompanyName(String companyName) {
         return clientRepository.findByCompanyName(companyName)
@@ -46,25 +47,20 @@ public class OrderServiceImpl implements OrderService {
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
     }
 
-    //전표번호 생성 (yyyy/MM/dd-순번)
+    //전표 생성
     private String generateDocumentNo(LocalDate documentDate) {
         String datePart = documentDate.format(DateTimeFormatter.ofPattern("yyyy/MM/dd"));
-        for (int i = 0; i < 3; i++) { // 최대 3번 재시도
-            long count = orderRepository.countByDocumentNoStartingWith(datePart);
-            String candidate = datePart + "-" + (count + 1);
-            try {
-                return candidate;
-            } catch (DataIntegrityViolationException e) {
-                // 유니크 충돌 → 재시도
-            }
-        }
-        throw new CustomException(ErrorCode.INVALID_ORDER_REQUEST); // 실패 시
+
+        Integer maxSeq = orderRepository.findMaxSequenceByPrefix(datePart).orElse(0);
+        int nextSeq = maxSeq + 1;
+
+        return datePart + "-" + nextSeq;
     }
 
-    // ItemOrderCrossedTable 생성 편의 메서드
-    private ItemOrderCrossedTable toOrderItem(Order order, ItemOrderRequest itemReq) {
+    // ItemOrder 생성 편의 메서드
+    private ItemOrder toOrderItem(Order order, ItemOrderRequest itemReq) {
         Item item = itemServiceImpl.findItemById(itemReq.getItemId());
-        return ItemOrderCrossedTable.builder()
+        return ItemOrder.builder()
                 .order(order)
                 .item(item)
                 .qty(itemReq.getQty())
@@ -106,8 +102,14 @@ public class OrderServiceImpl implements OrderService {
         // 교차 테이블 생성
         request.getItems().forEach(itemReq -> order.addOrderItem(toOrderItem(order, itemReq)));
 
+        // 부모 먼저 저장 → PK 확보
+        Order savedOrder = orderRepository.save(order);
+
+        // 자식들 직접 저장
+        order.getOrderItems().forEach(itemOrderRepository::save);
+
         return CreateOrderResponse.from(orderRepository.save(order));
-}
+    }
 
     // 주문 목록 조회
     @Override
@@ -122,7 +124,7 @@ public class OrderServiceImpl implements OrderService {
                         .userName(order.getUser().getName())
                         .firstItemName(order.getFirstItemName())
                         .otherItemCount(order.getOtherItemCount())
-                        .totalAmount(order.getTotalAmount().setScale(2,RoundingMode.HALF_UP))
+                        .totalAmount(order.getTotalAmount().setScale(2, RoundingMode.HALF_UP))
                         .remark(order.getRemark())
                         .build()
                 )
@@ -174,7 +176,7 @@ public class OrderServiceImpl implements OrderService {
 
         User user = getUserByEmpNo(request.getEmpNo());
 
-        List<ItemOrderCrossedTable> newOrderItems = request.getItems().stream()
+        List<ItemOrder> newOrderItems = request.getItems().stream()
                 .map(itemReq -> toOrderItem(order, itemReq))
                 .toList();
 

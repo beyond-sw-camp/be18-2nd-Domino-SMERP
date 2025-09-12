@@ -6,7 +6,6 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 
 @Entity
 @Getter
@@ -14,7 +13,7 @@ import java.math.RoundingMode;
 @AllArgsConstructor
 @Builder
 @Table(name = "item_order_crossed_table")
-public class ItemOrderCrossedTable {
+public class ItemOrder {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

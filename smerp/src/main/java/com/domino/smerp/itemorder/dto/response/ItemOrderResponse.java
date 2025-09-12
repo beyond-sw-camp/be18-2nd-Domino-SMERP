@@ -1,6 +1,6 @@
 package com.domino.smerp.itemorder.dto.response;
 
-import com.domino.smerp.itemorder.ItemOrderCrossedTable;
+import com.domino.smerp.itemorder.ItemOrder;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -13,7 +13,7 @@ public class ItemOrderResponse {
     private String itemName;
     private BigDecimal qty;
 
-    public static ItemOrderResponse from(ItemOrderCrossedTable entity) {
+    public static ItemOrderResponse from(ItemOrder entity) {
         return ItemOrderResponse.builder()
                 .itemId(entity.getItem().getItemId())
                 .itemName(entity.getItem().getName())

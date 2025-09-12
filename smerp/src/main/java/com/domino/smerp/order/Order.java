@@ -2,7 +2,7 @@ package com.domino.smerp.order;
 
 import com.domino.smerp.client.Client;
 import com.domino.smerp.common.BaseEntity;
-import com.domino.smerp.itemorder.ItemOrderCrossedTable;
+import com.domino.smerp.itemorder.ItemOrder;
 import com.domino.smerp.order.constants.OrderStatus;
 import com.domino.smerp.user.User;
 import jakarta.persistence.*;
@@ -56,12 +56,12 @@ public class Order extends BaseEntity {
     @Column(name = "document_no", nullable = false, length = 30, unique = true)
     private String documentNo;
 
-    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "order") // casecade 제거
     @Builder.Default
-    private List<ItemOrderCrossedTable> orderItems = new ArrayList<>();
+    private List<ItemOrder> orderItems = new ArrayList<>();
 
     // 양방향 연관관계 세팅 메서드
-    public void addOrderItem(ItemOrderCrossedTable orderItem) {
+    public void addOrderItem(ItemOrder orderItem) {
         this.orderItems.add(orderItem);
         orderItem.assignOrder(this);
     }
@@ -69,11 +69,11 @@ public class Order extends BaseEntity {
     //  도메인 계산 메소드
     public BigDecimal getTotalAmount() {
         return orderItems.stream()
-                .map(ItemOrderCrossedTable::getSupplyAmount)
+                .map(ItemOrder::getSupplyAmount)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 
-    public ItemOrderCrossedTable getFirstItem() {
+    public ItemOrder getFirstItem() {
         return orderItems.stream()
                 .findFirst()
                 .orElse(null);
@@ -81,7 +81,7 @@ public class Order extends BaseEntity {
 
     // 첫번째 품목명 가져오기
     public String getFirstItemName() {
-        ItemOrderCrossedTable firstItem = this.getFirstItem();
+        ItemOrder firstItem = this.getFirstItem();
         return (firstItem != null) ? firstItem.getItem().getName() : null;
     }
 
@@ -91,7 +91,6 @@ public class Order extends BaseEntity {
                 ? this.getOrderItems().size() - 1
                 : 0;
     }
-
 
     // 전체 업데이트 메서드 null 확인으로 수정
     // PATCH 방식: null이 들어오면 기존 값 유지
@@ -104,7 +103,7 @@ public class Order extends BaseEntity {
                           String remark,
                           OrderStatus status,
                           User newUser,
-                          List<ItemOrderCrossedTable> newOrderItems) {
+                          List<ItemOrder> newOrderItems) {
 
         if (deliveryDate != null) {
             this.deliveryDate = deliveryDate;
