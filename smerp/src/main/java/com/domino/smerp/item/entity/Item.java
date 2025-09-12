@@ -1,4 +1,4 @@
-package com.domino.smerp.item;
+package com.domino.smerp.item.entity;
 
 import com.domino.smerp.common.BaseEntity;
 import com.domino.smerp.item.constants.ItemAct;

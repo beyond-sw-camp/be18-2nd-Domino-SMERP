@@ -1,6 +1,6 @@
 package com.domino.smerp.item.dto.response;
 
-import com.domino.smerp.item.Item;
+import com.domino.smerp.item.entity.Item;
 import java.math.BigDecimal;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

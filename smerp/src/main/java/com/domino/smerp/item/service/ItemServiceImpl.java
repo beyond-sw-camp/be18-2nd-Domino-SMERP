@@ -1,8 +1,10 @@
-package com.domino.smerp.item;
+package com.domino.smerp.item.service;
 
 import com.domino.smerp.common.dto.PageResponse;
 import com.domino.smerp.common.exception.CustomException;
 import com.domino.smerp.common.exception.ErrorCode;
+import com.domino.smerp.item.entity.Item;
+import com.domino.smerp.item.entity.ItemStatus;
 import com.domino.smerp.item.dto.request.CreateItemRequest;
 import com.domino.smerp.item.dto.request.ItemSearchRequest;
 import com.domino.smerp.item.dto.request.UpdateItemRequest;
@@ -14,7 +16,6 @@ import com.domino.smerp.item.repository.ItemRepository;
 import com.domino.smerp.item.repository.ItemStatusRepository;
 import java.math.BigDecimal;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -48,8 +49,8 @@ public class ItemServiceImpl implements ItemService {
   @Transactional(readOnly = true)
   public PageResponse<ItemListResponse> searchItems(final ItemSearchRequest keyword, final Pageable pageable) {
     return PageResponse.from(
-        itemRepository.searchItems(keyword, pageable)       // Page<Item>
-            .map(ItemListResponse::fromEntity) // Page<ItemListResponse>
+        itemRepository.searchItems(keyword, pageable)        // Page<Item>
+            .map(ItemListResponse::fromEntity)      // Page<ItemListResponse>
     );
   }
 
@@ -125,6 +126,8 @@ public class ItemServiceImpl implements ItemService {
 
   // findById 공통 메소드
   // 품목 구분 findById
+  @Override
+  @Transactional(readOnly = true)
   public ItemStatus findItemStatusById(final Long itemStatusId) {
     return itemStatusRepository.findById(itemStatusId)
         .orElseThrow(
@@ -132,6 +135,8 @@ public class ItemServiceImpl implements ItemService {
   }
 
   // 품목 findById
+  @Override
+  @Transactional(readOnly = true)
   public Item findItemById(final Long itemId) {
     return itemRepository.findById(itemId)
         .orElseThrow(
