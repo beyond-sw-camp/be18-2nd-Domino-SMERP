@@ -79,8 +79,8 @@ public class UserServiceImpl implements UserService {
     @Transactional(readOnly = true)
     public List<UserListResponse> findAllUsers(String name, String deptTitle) {
 
-        BooleanExpression nameCondition = (name != null && !name.isEmpty()) ? QUser.user.name.eq(name) : null;
-        BooleanExpression deptCondition = (deptTitle != null && !deptTitle.isEmpty()) ? QUser.user.deptTitle.eq(deptTitle) : null;
+        BooleanExpression nameCondition = (name != null && !name.isEmpty()) ? QUser.user.name.startsWith(name) : null;
+        BooleanExpression deptCondition = (deptTitle != null && !deptTitle.isEmpty()) ? QUser.user.deptTitle.startsWith(deptTitle) : null;
         BooleanExpression condition = null;
 
         if (nameCondition != null && deptCondition != null) {
