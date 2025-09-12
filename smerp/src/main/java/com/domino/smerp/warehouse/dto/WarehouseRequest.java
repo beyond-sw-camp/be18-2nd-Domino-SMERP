@@ -11,8 +11,6 @@ import lombok.Getter;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class WarehouseRequest {
 
-  private final Long id;
-
   private final String name;
 
   private final DivisionType divisionType;
