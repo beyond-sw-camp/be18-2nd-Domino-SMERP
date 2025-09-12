@@ -41,17 +41,15 @@ public class ItemOrderCrossedTable {
     }
 
     public BigDecimal getSupplyAmount() {
-        return qty.multiply(specialPrice).setScale(2, RoundingMode.HALF_UP);
+        return qty.multiply(specialPrice);
     }
 
     public BigDecimal getTax() {
-        return getSupplyAmount().multiply(BigDecimal.valueOf(0.1))
-                .setScale(2, RoundingMode.HALF_UP);
+        return getSupplyAmount().multiply(BigDecimal.valueOf(0.1));
     }
 
     public BigDecimal getTotalAmount() {
-        return getSupplyAmount().add(getTax())
-                .setScale(2, RoundingMode.HALF_UP);
+        return getSupplyAmount().add(getTax());
     }
 
 }

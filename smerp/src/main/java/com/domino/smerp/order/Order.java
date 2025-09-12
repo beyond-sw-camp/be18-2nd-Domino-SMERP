@@ -11,7 +11,6 @@ import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLRestriction;
 
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
@@ -54,48 +53,52 @@ public class Order extends BaseEntity {
     @Column(name = "is_deleted", nullable = false)
     private boolean isDeleted = false;
 
-    @Column(name = "document_no", nullable = false, length = 30)
+    @Column(name = "document_no", nullable = false, length = 30, unique = true)
     private String documentNo;
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
     private List<ItemOrderCrossedTable> orderItems = new ArrayList<>();
 
-    // 연관관계 편의 메서드
+    // 양방향 연관관계 세팅 메서드
     public void addOrderItem(ItemOrderCrossedTable orderItem) {
         this.orderItems.add(orderItem);
         orderItem.assignOrder(this);
     }
 
-    // 총 공급가 계산
+    //  도메인 계산 메소드
     public BigDecimal getTotalAmount() {
         return orderItems.stream()
                 .map(ItemOrderCrossedTable::getSupplyAmount)
-                .reduce(BigDecimal.ZERO, BigDecimal::add)
-                .setScale(2, RoundingMode.HALF_UP);
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 
-    // 세금 계산
-    public BigDecimal getTotalTax() {
-        return orderItems.stream()
-                .map(ItemOrderCrossedTable::getTax)
-                .reduce(BigDecimal.ZERO, BigDecimal::add)
-                .setScale(2, RoundingMode.HALF_UP);
-    }
-
-    // 첫번째 품목 가져오기
     public ItemOrderCrossedTable getFirstItem() {
         return orderItems.stream()
                 .findFirst()
                 .orElse(null);
     }
 
-    public void updateDocumentInfo(Instant baseDate, String newDocumentNo) {
-        this.documentNo = newDocumentNo;
+    // 첫번째 품목명 가져오기
+    public String getFirstItemName() {
+        ItemOrderCrossedTable firstItem = this.getFirstItem();
+        return (firstItem != null) ? firstItem.getItem().getName() : null;
     }
+
+    // 품목 갯수 카운트
+    public int getOtherItemCount() {
+        return (this.getOrderItems().size() > 1)
+                ? this.getOrderItems().size() - 1
+                : 0;
+    }
+
 
     // 전체 업데이트 메서드 null 확인으로 수정
     // PATCH 방식: null이 들어오면 기존 값 유지
+    public void updateDocumentInfo(String newDocumentNo) {
+        this.documentNo = newDocumentNo;
+    }
+
     public void updateAll(Instant orderDate,
                           Instant deliveryDate,
                           String remark,
@@ -124,5 +127,4 @@ public class Order extends BaseEntity {
             newOrderItems.forEach(this::addOrderItem);
         }
     }
-
 }

@@ -16,10 +16,10 @@ import com.domino.smerp.order.dto.response.*;
 import com.domino.smerp.user.User;
 import com.domino.smerp.user.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.Instant;
 import java.time.LocalDate;
@@ -49,8 +49,27 @@ public class OrderServiceImpl implements OrderService {
     //전표번호 생성 (yyyy/MM/dd-순번)
     private String generateDocumentNo(LocalDate documentDate) {
         String datePart = documentDate.format(DateTimeFormatter.ofPattern("yyyy/MM/dd"));
-        long count = orderRepository.countByDocumentNoStartingWith(datePart);
-        return datePart + "-" + (count + 1);
+        for (int i = 0; i < 3; i++) { // 최대 3번 재시도
+            long count = orderRepository.countByDocumentNoStartingWith(datePart);
+            String candidate = datePart + "-" + (count + 1);
+            try {
+                return candidate;
+            } catch (DataIntegrityViolationException e) {
+                // 유니크 충돌 → 재시도
+            }
+        }
+        throw new CustomException(ErrorCode.INVALID_ORDER_REQUEST); // 실패 시
+    }
+
+    // ItemOrderCrossedTable 생성 편의 메서드
+    private ItemOrderCrossedTable toOrderItem(Order order, ItemOrderRequest itemReq) {
+        Item item = itemServiceImpl.findItemById(itemReq.getItemId());
+        return ItemOrderCrossedTable.builder()
+                .order(order)
+                .item(item)
+                .qty(itemReq.getQty())
+                .specialPrice(item.getOutboundUnitPrice()) // 주문 당시 단가 고정
+                .build();
     }
 
     // 주문 등록
@@ -74,7 +93,7 @@ public class OrderServiceImpl implements OrderService {
                 ? request.getDeliveryDate().atStartOfDay(ZoneOffset.UTC).toInstant()
                 : null;
 
-        // client, user 모두 반영
+        // 주문 엔티티 생성
         Order order = Order.builder()
                 .client(client)
                 .user(user)
@@ -84,29 +103,29 @@ public class OrderServiceImpl implements OrderService {
                 .documentNo(documentNo)
                 .build();
 
-        for (ItemOrderRequest itemReq : request.getItems()) {
-            Item item = itemServiceImpl.findItemById(itemReq.getItemId());
-
-            ItemOrderCrossedTable orderItem = ItemOrderCrossedTable.builder()
-                    .order(order)
-                    .item(item)
-                    .qty(itemReq.getQty())
-                    .specialPrice(item.getOutboundUnitPrice()) // 주문 당시 단가 고정
-                    .build();
-
-            order.addOrderItem(orderItem);
-        }
-
+        // 교차 테이블 생성
+        request.getItems().forEach(itemReq -> order.addOrderItem(toOrderItem(order, itemReq)));
 
         return CreateOrderResponse.from(orderRepository.save(order));
-    }
+}
 
     // 주문 목록 조회
     @Override
     @Transactional(readOnly = true)
     public List<ListOrderResponse> getOrders() {
         return orderRepository.findAll().stream()
-                .map(ListOrderResponse::from)
+                .map(order -> ListOrderResponse.builder()
+                        .documentNo(order.getDocumentNo())
+                        .companyName(order.getClient().getCompanyName())
+                        .status(order.getStatus().name())
+                        .deliveryDate(order.getDeliveryDate())
+                        .userName(order.getUser().getName())
+                        .firstItemName(order.getFirstItemName())
+                        .otherItemCount(order.getOtherItemCount())
+                        .totalAmount(order.getTotalAmount().setScale(2,RoundingMode.HALF_UP))
+                        .remark(order.getRemark())
+                        .build()
+                )
                 .toList();
     }
 
@@ -125,9 +144,9 @@ public class OrderServiceImpl implements OrderService {
                         .qty(itemOrder.getQty())
                         .unit(itemOrder.getItem().getUnit())
                         .specialPrice(itemOrder.getSpecialPrice())
-                        .supplyAmount(itemOrder.getSupplyAmount()) //  엔티티 메서드 호출
-                        .tax(itemOrder.getTax())
-                        .totalAmount(itemOrder.getTotalAmount())
+                        .supplyAmount(itemOrder.getSupplyAmount().setScale(2, RoundingMode.HALF_UP)) //  엔티티 메서드 호출
+                        .tax(itemOrder.getTax().setScale(2, RoundingMode.HALF_UP))
+                        .totalAmount(itemOrder.getTotalAmount().setScale(2, RoundingMode.HALF_UP))
                         .deliveryDate(order.getDeliveryDate().atZone(ZoneOffset.UTC).toLocalDate())
                         .remark(order.getRemark())
                         .build())
@@ -156,16 +175,7 @@ public class OrderServiceImpl implements OrderService {
         User user = getUserByEmpNo(request.getEmpNo());
 
         List<ItemOrderCrossedTable> newOrderItems = request.getItems().stream()
-                .map(itemReq -> {
-                    Item item = itemServiceImpl.findItemById(itemReq.getItemId());
-
-                    return ItemOrderCrossedTable.builder()
-                            .order(order)
-                            .item(item)
-                            .qty(itemReq.getQty())
-                            .specialPrice(item.getOutboundUnitPrice())
-                            .build();
-                })
+                .map(itemReq -> toOrderItem(order, itemReq))
                 .toList();
 
         // 납기일 변환
@@ -175,11 +185,9 @@ public class OrderServiceImpl implements OrderService {
 
         // documentDate 변경 시 새 documentNo 생성
         String newDocumentNo = order.getDocumentNo(); // 기본값: 기존 번호 유지
-
         if (request.getDocumentDate() != null) {
             String newDatePart = request.getDocumentDate().format(DateTimeFormatter.ofPattern("yyyy/MM/dd"));
             String oldDatePart = order.getDocumentNo().split("-")[0]; // ex) "2025/09/09"
-
             // 날짜가 바뀐 경우에만 새 번호 생성
             if (!newDatePart.equals(oldDatePart)) {
                 newDocumentNo = generateDocumentNo(request.getDocumentDate());
@@ -199,7 +207,7 @@ public class OrderServiceImpl implements OrderService {
         );
 
         // 전표번호 갱신
-        order.updateDocumentInfo(order.getCreatedAt(), newDocumentNo);
+        order.updateDocumentInfo(newDocumentNo);
 
         return UpdateOrderResponse.from(orderRepository.save(order));
     }
