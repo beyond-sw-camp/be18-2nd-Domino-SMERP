@@ -8,6 +8,8 @@ import com.domino.smerp.item.dto.request.UpdateItemStatusRequest;
 import com.domino.smerp.item.dto.response.ItemDetailResponse;
 import com.domino.smerp.item.dto.response.ItemListResponse;
 import com.domino.smerp.item.dto.response.ItemStatusResponse;
+import com.domino.smerp.item.entity.Item;
+import com.domino.smerp.item.entity.ItemStatus;
 import org.springframework.data.domain.Pageable;
 
 public interface ItemService {
@@ -29,4 +31,8 @@ public interface ItemService {
 
   // 품목 삭제
   void deleteItem(final Long itemId);
+
+  // 공통 메소드
+  ItemStatus findItemStatusById(final Long itemStatusId);
+  Item findItemById(final Long itemId);
 }

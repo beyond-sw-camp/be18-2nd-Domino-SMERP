@@ -125,6 +125,8 @@ public class ItemServiceImpl implements ItemService {
 
   // findById 공통 메소드
   // 품목 구분 findById
+  @Override
+  @Transactional(readOnly = true)
   public ItemStatus findItemStatusById(final Long itemStatusId) {
     return itemStatusRepository.findById(itemStatusId)
         .orElseThrow(
@@ -132,6 +134,8 @@ public class ItemServiceImpl implements ItemService {
   }
 
   // 품목 findById
+  @Override
+  @Transactional(readOnly = true)
   public Item findItemById(final Long itemId) {
     return itemRepository.findById(itemId)
         .orElseThrow(

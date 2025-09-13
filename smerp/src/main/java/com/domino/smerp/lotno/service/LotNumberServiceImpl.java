@@ -3,6 +3,7 @@ package com.domino.smerp.lotno.service;
 import com.domino.smerp.common.dto.PageResponse;
 import com.domino.smerp.common.exception.CustomException;
 import com.domino.smerp.common.exception.ErrorCode;
+import com.domino.smerp.item.service.ItemService;
 import com.domino.smerp.item.service.ItemServiceImpl;
 import com.domino.smerp.lotno.dto.request.CreateLotNumberRequest;
 import com.domino.smerp.lotno.dto.request.LotNumberSearchRequest;
@@ -21,40 +22,43 @@ import org.springframework.transaction.annotation.Transactional;
 public class LotNumberServiceImpl implements LotNumberService {
 
   private final LotNumberRepository lotNumberRepository;
-  private final ItemServiceImpl itemServiceImpl;
+  private final ItemService itemService;
 
   // Lot.No 수동 생성
   @Override
   @Transactional
-  public LotNumberDetailResponse createLots(CreateLotNumberRequest request) {
+  public LotNumberDetailResponse createLots(final CreateLotNumberRequest request) {
     return null;
   }
 
+  // Lot.No 이력 조회
   @Override
   @Transactional(readOnly = true)
-  public PageResponse<LotNumberListResponse> searchLotNumbers(LotNumberSearchRequest keyword,
-      Pageable pageable) {
+  public PageResponse<LotNumberListResponse> searchLotNumbers(final LotNumberSearchRequest keyword,
+      final Pageable pageable) {
     return null;
   }
 
+  // Lot.No 상세 조회
   @Override
   @Transactional(readOnly = true)
-  public LotNumberDetailResponse getLotNumberById(Long lotNumberId) {
+  public LotNumberDetailResponse getLotNumberById(final Long lotNumberId) {
     return null;
   }
 
-  // Lot.No 수정
+  // Lot.No 수정()
   @Override
   @Transactional
-  public LotNumberDetailResponse updateLotNumber(Long lotNumberId, UpdateLotNumberRequest request) {
+  public LotNumberDetailResponse updateLotNumber(final Long lotNumberId,
+      final UpdateLotNumberRequest request) {
     return null;
   }
 
   // Lot.No 삭제 (소프트 딜리트)
   @Override
   @Transactional
-  public void deleteLotNumber(Long lotNumberId) {
-    LotNumber lotNumber = findLotNumberById(lotNumberId);
+  public void deleteLotNumber(final Long lotNumberId) {
+    final LotNumber lotNumber = findLotNumberById(lotNumberId);
 
     lotNumber.delete();
   }

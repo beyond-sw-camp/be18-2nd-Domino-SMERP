@@ -23,6 +23,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.SQLRestriction;
+import org.hibernate.annotations.SoftDelete;
 
 @Entity
 @Getter
@@ -55,12 +56,9 @@ public class LotNumber extends BaseEntity {
 
 
   // Lot.No 생성
-  public static LotNumber create(CreateLotNumberRequest request, Item item) {
-    return LotNumber.builder()
-        .item(item)
-        .name(request.getName())
-        .status(LotNumberStatus.fromLabel(request.getStatus()))
-        .build();
+  public static LotNumber create(final CreateLotNumberRequest request, final Item item) {
+    return LotNumber.builder().item(item).name(request.getName())
+        .status(LotNumberStatus.fromLabel(request.getStatus())).build();
   }
 
   // 품목 삭제 (소프트딜리트)

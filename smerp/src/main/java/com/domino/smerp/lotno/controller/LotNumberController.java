@@ -28,7 +28,7 @@ public class LotNumberController {
 
   private final LotNumberService lotNumberService;
 
-  // Lot.No 생성
+  // Lot.No 등록
   @PostMapping
   public ResponseEntity<LotNumberDetailResponse> createLots(final @Valid @RequestBody
       CreateLotNumberRequest request){
@@ -39,9 +39,23 @@ public class LotNumberController {
   // Lot.No 목록 조회 (검색조건은 쿼리파라미터로)
   @GetMapping
   public ResponseEntity<PageResponse<LotNumberListResponse>> getLotNumbers(
-      @ModelAttribute LotNumberSearchRequest keyword,
-      Pageable pageable) {
+      @ModelAttribute final LotNumberSearchRequest keyword,
+      final Pageable pageable) {
     return ResponseEntity.ok(lotNumberService.searchLotNumbers(keyword, pageable));
+  }
+
+  // Lot.No 상세 조회 정전개
+  @GetMapping("/{lots-id}/inbound")
+  public ResponseEntity<LotNumberDetailResponse> getInboundLotNumberDetail(
+      @PathVariable("lots-id") final Long lotNumberId) {
+    return ResponseEntity.ok(lotNumberService.getLotNumberById(lotNumberId));
+  }
+
+  // Lot.No 상세 조회 역전개
+  @GetMapping("/{lots-id}/outbound")
+  public ResponseEntity<LotNumberDetailResponse> getOutboundLotNumberDetail(
+      @PathVariable("lots-id") final Long lotNumberId) {
+    return ResponseEntity.ok(lotNumberService.getLotNumberById(lotNumberId));
   }
 
   // Lot.No (이력)상세 조회
