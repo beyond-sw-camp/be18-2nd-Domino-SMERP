@@ -46,6 +46,7 @@ public class LocationServiceImpl implements LocationService {
           String rfid = generateRfid(w, r, l, b);
           Location location = Location.create(r, l, b, rfid, warehouse);
           locations.add(location);
+          warehouse.getLocations().add(location); //
         }
       }
     }
@@ -57,6 +58,8 @@ public class LocationServiceImpl implements LocationService {
         loc.getId() + " " + loc.getRackNo() + " " + loc.getLevelNo() + " " + loc.getBinNo() + " " + loc.getBinRfid()
     ));
      */
+
+
   }
 
   public List<String> parseFixedRange(final String prefix, final int start, final int end) {

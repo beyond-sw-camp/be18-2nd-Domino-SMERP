@@ -2,8 +2,10 @@ package com.domino.smerp.location;
 
 import com.domino.smerp.warehouse.Warehouse;
 import jakarta.persistence.Column;
+import jakarta.persistence.ConstraintMode;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
+import jakarta.persistence.ForeignKey;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -50,7 +52,10 @@ public class Location {
   private boolean filled = false;
 
   @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "warehouse_id", nullable = false)
+  @JoinColumn(name = "warehouse_id",
+      nullable = false,
+      foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT)
+  )
   private Warehouse warehouse;
 
   public static Location create(String rackNo, String levelNo, String binNo, String binRfid,
@@ -69,5 +74,16 @@ public class Location {
   public void setFilled(boolean filled) {
     this.filled = filled;
   }
+
+  //warehouse에서 사용
+  public void setWarehouse(Warehouse warehouse){
+    this.warehouse = warehouse;
+
+    if(warehouse != null && !warehouse.getLocations().contains(this)){
+      warehouse.getLocations().add(this);
+    }
+
+  }
+
 
 }
