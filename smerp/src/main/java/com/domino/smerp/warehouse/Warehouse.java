@@ -1,10 +1,10 @@
 package com.domino.smerp.warehouse;
 
-//import com.domino.smerp.location.Location;
-
 import com.domino.smerp.common.BaseEntity;
+import com.domino.smerp.location.Location;
 import com.domino.smerp.warehouse.constants.DivisionType;
 import com.domino.smerp.warehouse.dto.WarehouseRequest;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -12,7 +12,10 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -48,13 +51,10 @@ public class Warehouse extends BaseEntity {
   @Column(nullable = false)
   private String zipcode;
 
-  /*
-
   @OneToMany(cascade = CascadeType.ALL, mappedBy = "warehouse", orphanRemoval = true)
   @Builder.Default
   private List<Location> locations = new ArrayList<>();
 
-  */
   //Boolean - null, false, true
   public void update(WarehouseRequest warehouseRequest) {
 
@@ -89,5 +89,16 @@ public class Warehouse extends BaseEntity {
         .zipcode(warehouseRequest.getZipcode())
         .divisionType(warehouseRequest.getDivisionType())
         .build();
+  }
+
+
+  public void addLocation(Location location){
+    locations.add(location); //warehouse
+    location.setWarehouse(this); //location
+  }
+
+  public void removeLocation(Location location){
+    locations.remove(location);
+    location.setWarehouse(null);
   }
 }
