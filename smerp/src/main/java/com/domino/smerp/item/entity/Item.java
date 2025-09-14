@@ -48,6 +48,9 @@ public class Item extends BaseEntity {
   @Column(name = "name", nullable = false, length = 60)
   private String name;
 
+  @Column(name = "item_code", nullable = false, unique = true, length = 20)
+  private String itemCode;
+
   @Column(name = "specification", length = 100)
   private String specification;
 
@@ -144,7 +147,7 @@ public class Item extends BaseEntity {
 
 
   // 품목 사용/비사용, 안전 재고를 다룹니다.
-  public void updateStatus(UpdateItemStatusRequest request) {
+  public void updateStatus(final UpdateItemStatusRequest request) {
     if (request.getItemAct() != null) {
       this.itemAct = ItemAct.fromLabel(request.getItemAct());
     }

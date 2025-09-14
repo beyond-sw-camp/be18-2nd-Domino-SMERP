@@ -7,9 +7,9 @@ import lombok.Getter;
 @Getter
 @Builder
 @AllArgsConstructor
-public class LotNumberSearchRequest {
+public class SearchLotNumberRequest {
 
-  private final Long itemId;           // 품목 명
-  private final String name;           // Lot.No 명
+  private final String lotName;        // Lot.No 명
+  private final String itemName;       // 품목 명
   private final String status;         // Lot.No 사용상태
 }

@@ -1,9 +1,13 @@
 package com.domino.smerp.lotno.entity;
 
 import com.domino.smerp.common.BaseEntity;
+import com.domino.smerp.item.constants.ItemAct;
+import com.domino.smerp.item.constants.SafetyStockAct;
+import com.domino.smerp.item.dto.request.UpdateItemStatusRequest;
 import com.domino.smerp.item.entity.Item;
 import com.domino.smerp.lotno.constants.LotNumberStatus;
 import com.domino.smerp.lotno.dto.request.CreateLotNumberRequest;
+import com.domino.smerp.lotno.dto.request.UpdateLotNumberRequest;
 import jakarta.persistence.Column;
 import jakarta.persistence.ConstraintMode;
 import jakarta.persistence.Entity;
@@ -17,13 +21,13 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import java.math.BigDecimal;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.SQLRestriction;
-import org.hibernate.annotations.SoftDelete;
 
 @Entity
 @Getter
@@ -46,6 +50,9 @@ public class LotNumber extends BaseEntity {
   @Column(name = "name", nullable = false, length = 30)
   private String name;
 
+  @Column(name = "qty", nullable = false, precision = 12, scale = 3)
+  private BigDecimal qty;
+
   @Enumerated(EnumType.STRING)
   @Column(name = "status", nullable = false)
   private LotNumberStatus status;
@@ -57,11 +64,25 @@ public class LotNumber extends BaseEntity {
 
   // Lot.No 생성
   public static LotNumber create(final CreateLotNumberRequest request, final Item item) {
-    return LotNumber.builder().item(item).name(request.getName())
-        .status(LotNumberStatus.fromLabel(request.getStatus())).build();
+    return LotNumber.builder()
+        .item(item)
+        .name(request.getName())
+        .qty(request.getQty())
+        .status(LotNumberStatus.fromLabel(request.getStatus()))
+        .build();
   }
 
-  // 품목 삭제 (소프트딜리트)
+  // Lot.No 수정
+  public void updateLotNumber(final UpdateLotNumberRequest request) {
+    if (request.getQty() != null) {
+      this.qty = request.getQty();
+    }
+    if (request.getStatus() != null) {
+      this.status = LotNumberStatus.fromLabel(request.getStatus());
+    }
+  }
+
+  // Lot.No 삭제 (소프트딜리트)
   public void delete() {
     this.isDeleted = true;
   }

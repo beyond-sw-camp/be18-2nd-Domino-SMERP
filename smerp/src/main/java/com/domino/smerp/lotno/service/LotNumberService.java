@@ -2,21 +2,28 @@ package com.domino.smerp.lotno.service;
 
 import com.domino.smerp.common.dto.PageResponse;
 import com.domino.smerp.lotno.dto.request.CreateLotNumberRequest;
-import com.domino.smerp.lotno.dto.request.LotNumberSearchRequest;
+import com.domino.smerp.lotno.dto.request.SearchLotNumberRequest;
 import com.domino.smerp.lotno.dto.request.UpdateLotNumberRequest;
 import com.domino.smerp.lotno.dto.response.LotNumberDetailResponse;
 import com.domino.smerp.lotno.dto.response.LotNumberListResponse;
+import com.domino.smerp.lotno.dto.response.LotNumberSimpleResponse;
+import com.domino.smerp.lotno.entity.LotNumber;
 import org.springframework.data.domain.Pageable;
 
 public interface LotNumberService {
 
   // Lot.No 생성
-  LotNumberDetailResponse createLots(final CreateLotNumberRequest request);
+  LotNumberSimpleResponse createLotNumber(final CreateLotNumberRequest request);
 
   // Lot.No 목록 조회
-  PageResponse<LotNumberListResponse> searchLotNumbers(final LotNumberSearchRequest keyword, final Pageable pageable);
+  PageResponse<LotNumberListResponse> searchLotNumbers(final SearchLotNumberRequest keyword, final Pageable pageable);
 
-  // Lot.No 조회
+  // Lot.No 정전개 조회
+
+  // Lot.No 역전개 조회
+
+
+  // Lot.No 상세 조회(이력 조회)
   LotNumberDetailResponse getLotNumberById(final Long lotNumberId);
 
   // Lot.No 수정
@@ -25,6 +32,8 @@ public interface LotNumberService {
   // Lot.No 삭제
   void deleteLotNumber(final Long lotNumberId);
 
-
+  // 공통 메소드
+  // Lot.No 조회
+  LotNumber findLotNumberById(final Long lotNumberId);
 
 }

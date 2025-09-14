@@ -33,6 +33,7 @@ public enum ErrorCode {
     DUPLICATE_RFID(HttpStatus.CONFLICT, "DUPLICATE_RFID", "이미 등록된 RFID입니다."),
 
     // lotNumber - Lot.No와 관련된 에러
+    LOTNUMBER_NOT_FOUND(HttpStatus.NOT_FOUND,"LOTNUMBER_NOT_FOUND", "존재하지 않는 Lot.No입니다."),
     INVALID_LOTNUMBER_STATUS(HttpStatus.BAD_REQUEST, "INVALID_LOTNUMBER_STATUS", "잘못된 Lot.No 상태 값입니다.");
 
 

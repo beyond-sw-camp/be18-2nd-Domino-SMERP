@@ -2,10 +2,11 @@ package com.domino.smerp.lotno.controller;
 
 import com.domino.smerp.common.dto.PageResponse;
 import com.domino.smerp.lotno.dto.request.CreateLotNumberRequest;
-import com.domino.smerp.lotno.dto.request.LotNumberSearchRequest;
+import com.domino.smerp.lotno.dto.request.SearchLotNumberRequest;
 import com.domino.smerp.lotno.dto.request.UpdateLotNumberRequest;
 import com.domino.smerp.lotno.dto.response.LotNumberDetailResponse;
 import com.domino.smerp.lotno.dto.response.LotNumberListResponse;
+import com.domino.smerp.lotno.dto.response.LotNumberSimpleResponse;
 import com.domino.smerp.lotno.service.LotNumberService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -30,16 +31,16 @@ public class LotNumberController {
 
   // Lot.No 등록
   @PostMapping
-  public ResponseEntity<LotNumberDetailResponse> createLots(final @Valid @RequestBody
+  public ResponseEntity<LotNumberSimpleResponse> createLotNumber(final @Valid @RequestBody
       CreateLotNumberRequest request){
 
-    return ResponseEntity.ok(lotNumberService.createLots(request));
+    return ResponseEntity.ok(lotNumberService.createLotNumber(request));
   }
 
   // Lot.No 목록 조회 (검색조건은 쿼리파라미터로)
   @GetMapping
   public ResponseEntity<PageResponse<LotNumberListResponse>> getLotNumbers(
-      @ModelAttribute final LotNumberSearchRequest keyword,
+      final @ModelAttribute SearchLotNumberRequest keyword,
       final Pageable pageable) {
     return ResponseEntity.ok(lotNumberService.searchLotNumbers(keyword, pageable));
   }

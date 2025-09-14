@@ -3,13 +3,14 @@ package com.domino.smerp.lotno.service;
 import com.domino.smerp.common.dto.PageResponse;
 import com.domino.smerp.common.exception.CustomException;
 import com.domino.smerp.common.exception.ErrorCode;
+import com.domino.smerp.item.entity.Item;
 import com.domino.smerp.item.service.ItemService;
-import com.domino.smerp.item.service.ItemServiceImpl;
 import com.domino.smerp.lotno.dto.request.CreateLotNumberRequest;
-import com.domino.smerp.lotno.dto.request.LotNumberSearchRequest;
+import com.domino.smerp.lotno.dto.request.SearchLotNumberRequest;
 import com.domino.smerp.lotno.dto.request.UpdateLotNumberRequest;
 import com.domino.smerp.lotno.dto.response.LotNumberDetailResponse;
 import com.domino.smerp.lotno.dto.response.LotNumberListResponse;
+import com.domino.smerp.lotno.dto.response.LotNumberSimpleResponse;
 import com.domino.smerp.lotno.entity.LotNumber;
 import com.domino.smerp.lotno.repository.LotNumberRepository;
 import lombok.RequiredArgsConstructor;
@@ -27,48 +28,64 @@ public class LotNumberServiceImpl implements LotNumberService {
   // Lot.No 수동 생성
   @Override
   @Transactional
-  public LotNumberDetailResponse createLots(final CreateLotNumberRequest request) {
-    return null;
+  public LotNumberSimpleResponse createLotNumber(final CreateLotNumberRequest request) {
+    Item item = itemService.findItemById(request.getItemId());
+
+    LotNumber lotNumber = LotNumber.create(request, item);
+    LotNumber savedLotNumber = lotNumberRepository.save(lotNumber);
+
+    return LotNumberSimpleResponse.fromEntity(savedLotNumber);
   }
 
-  // Lot.No 이력 조회
+  // Lot.No 목록 조회
   @Override
   @Transactional(readOnly = true)
-  public PageResponse<LotNumberListResponse> searchLotNumbers(final LotNumberSearchRequest keyword,
+  public PageResponse<LotNumberListResponse> searchLotNumbers(final SearchLotNumberRequest keyword,
       final Pageable pageable) {
-    return null;
+    return PageResponse
+        .from(lotNumberRepository
+            .searchLots(keyword, pageable)
+            .map(LotNumberListResponse::fromEntity));
   }
 
   // Lot.No 상세 조회
   @Override
   @Transactional(readOnly = true)
   public LotNumberDetailResponse getLotNumberById(final Long lotNumberId) {
-    return null;
+    LotNumber lotNumber = findLotNumberById(lotNumberId);
+
+    return LotNumberDetailResponse.fromEntity(lotNumber);
   }
 
-  // Lot.No 수정()
+  // Lot.No 수정
   @Override
   @Transactional
   public LotNumberDetailResponse updateLotNumber(final Long lotNumberId,
       final UpdateLotNumberRequest request) {
-    return null;
+    LotNumber lotNumber = findLotNumberById(lotNumberId);
+
+    lotNumber.updateLotNumber(request);
+
+    return LotNumberDetailResponse.fromEntity(lotNumber);
+
   }
 
   // Lot.No 삭제 (소프트 딜리트)
   @Override
   @Transactional
   public void deleteLotNumber(final Long lotNumberId) {
-    final LotNumber lotNumber = findLotNumberById(lotNumberId);
+    LotNumber lotNumber = findLotNumberById(lotNumberId);
 
     lotNumber.delete();
   }
 
-  // 공통 부분
-
+  // 공통 메소드
   // Lot.No findById
+  @Override
+  @Transactional(readOnly = true)
   public LotNumber findLotNumberById(final Long lotNumberId) {
     return lotNumberRepository.findById(lotNumberId)
-        .orElseThrow(() -> new CustomException(ErrorCode.ITEM_NOT_FOUND));
+        .orElseThrow(() -> new CustomException(ErrorCode.LOTNUMBER_NOT_FOUND));
   }
 
 
