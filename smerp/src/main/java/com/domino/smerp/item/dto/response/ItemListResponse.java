@@ -11,6 +11,7 @@ import lombok.Getter;
 public class ItemListResponse {
 
   private final Long itemId;
+  // private final String itemCode;
   private final String name;
   private final String unit;
   private final String itemStatusName;
@@ -23,6 +24,7 @@ public class ItemListResponse {
   public static ItemListResponse fromEntity(Item item) {
     return ItemListResponse.builder()
         .itemId(item.getItemId())
+        // .itemCode(item.getItemCode())
         .itemStatusName(item.getItemStatus().getStatus().getDescription())
         .name(item.getName())
         .unit(item.getUnit())

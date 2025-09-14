@@ -45,11 +45,12 @@ public class Item extends BaseEntity {
   @JoinColumn(name = "item_status_id", nullable = false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
   private ItemStatus itemStatus;
 
-  @Column(name = "name", nullable = false, length = 60)
+  @Column(name = "name", nullable = false, unique = true, length = 60)
   private String name;
 
-  @Column(name = "item_code", nullable = false, unique = true, length = 20)
-  private String itemCode;
+  // TODO: 품목 코드 추가(PK 대신 품목 코드로 조회 예정)
+//  @Column(name = "item_code", nullable = false, unique = true, length = 20)
+//  private String itemCode;
 
   @Column(name = "specification", length = 100)
   private String specification;
@@ -96,6 +97,7 @@ public class Item extends BaseEntity {
     return Item.builder()
         .itemStatus(itemStatus)
         .name(request.getName())
+        // .itemCode(request.getItemCode())
         .specification(request.getSpecification())
         .unit(request.getUnit())
         .inboundUnitPrice(request.getInboundUnitPrice())
@@ -119,6 +121,9 @@ public class Item extends BaseEntity {
     if (request.getName() != null) {
       this.name = request.getName();
     }
+//    if (request.getItemCode() != null) {
+//      this.itemCode = request.getItemCode();
+//    }
     if (request.getSpecification() != null) {
       this.specification = request.getSpecification();
     }

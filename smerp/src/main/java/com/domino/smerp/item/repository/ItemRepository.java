@@ -8,7 +8,14 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface ItemRepository extends JpaRepository<Item, Long>, ItemQueryRepository {
 
+  boolean existsById(final Long id);
+  boolean existsByName(final String name);
   boolean existsByRfid(final String rfid);
+
+
+  // TODO: 품목코드
+  // boolean existsByItemCode(final String itemCode);
+  long countByItemCodeStartingWith(final String prefix);
 
 }
 

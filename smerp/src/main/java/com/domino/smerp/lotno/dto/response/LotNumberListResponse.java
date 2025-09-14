@@ -11,6 +11,7 @@ import lombok.Getter;
 @Builder
 @AllArgsConstructor
 public class LotNumberListResponse {
+
   // TODO: Lot.No, 품목명, 생산일자, 입고수량, 출고수량, 재고수량, 공정흐름
   private String lotName;      // Lot 명
   private String itemName;     // 품목명

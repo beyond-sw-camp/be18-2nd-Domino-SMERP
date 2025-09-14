@@ -11,6 +11,7 @@ public class ItemSearchRequest {
 
   private final String status;         // 품목 구분
   private final String name;           // 품목 명
+  // private final String itemCode;       // 품목 코드
   private final String specification;   // 품목 규격
   private final String groupName1;     // 품목 그룹1
   private final String groupName2;     // 품목 그룹2

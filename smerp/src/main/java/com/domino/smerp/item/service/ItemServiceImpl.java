@@ -33,12 +33,18 @@ public class ItemServiceImpl implements ItemService {
   public ItemDetailResponse createItem(final CreateItemRequest request) {
     ItemStatus itemStatus = findItemStatusById(request.getItemStatusId());
 
+    // 중복 검사
+    if (itemRepository.existsByName(request.getName())) {
+      throw new CustomException(ErrorCode.DUPLICATE_ITEM);
+    }
     if (itemRepository.existsByRfid(request.getRfid())) {
       throw new CustomException(ErrorCode.DUPLICATE_RFID);
     }
 
-    Item item = Item.create(request, itemStatus);
+    // TODO: 품목 코드 로직 반영
+    // String itemCode = generateItemCode(request.getName());
 
+    Item item = Item.create(request, itemStatus);
     Item savedItem = itemRepository.save(item);
 
     return ItemDetailResponse.fromEntity(savedItem);
@@ -49,10 +55,10 @@ public class ItemServiceImpl implements ItemService {
   @Transactional(readOnly = true)
   public PageResponse<ItemListResponse> searchItems(final ItemSearchRequest keyword,
       final Pageable pageable) {
-    return PageResponse.from(
-        itemRepository.searchItems(keyword, pageable)       // Page<Item>
-            .map(ItemListResponse::fromEntity)     // Page<ItemListResponse>
-    );
+    return PageResponse
+        .from(itemRepository.searchItems(keyword, pageable)
+            .map(ItemListResponse::fromEntity)
+        );
   }
 
 
@@ -99,7 +105,7 @@ public class ItemServiceImpl implements ItemService {
       item.updateStatus(request);
 
       // 안전재고 / 사용여부 ENUM값 체크
-    } catch (IllegalArgumentException e) {
+    } catch (final IllegalArgumentException e) {
       if (e.getMessage().contains("ItemAct")) {
         throw new CustomException(ErrorCode.INVALID_ITEM_ACT);
       }
@@ -141,6 +147,39 @@ public class ItemServiceImpl implements ItemService {
         .orElseThrow(
             () -> new CustomException(ErrorCode.ITEM_NOT_FOUND));
   }
+
+  // 품목 코드 로직
+  // REVIEW: 품목명 한글인 경우 어떻게 할 지?, 품목코드 명명 규칙 정해진게 있을까요?
+  /*
+  private String generateItemCode(final String name) {
+    // 1. 품목명에서 영문+숫자만 남기고 대문자로 변환
+    //    예: "Threadlocker 243" → "THREADLOCKER243"
+    String code = name.toUpperCase().replaceAll("[^A-Z0-9]", "");
+
+    // 2. 최소 4자리 확보 (길이가 4 미만이면 뒤에 '0'을 채움)
+    //    예: "AA" → "AA00"
+    if (code.length() < 4) {
+      code = String.format("%-4s", code).replace(' ', '0');
+    }
+
+    // 3. 앞 4자리만 잘라서 prefix로 사용
+    //    예: "THREADLOCKER243" → "THRE"
+    String prefix = code.substring(0, 4);
+
+    // 4. DB에서 해당 prefix(앞글자)로 시작하는 item_code 개수 조회
+    //    예: "THRE%" 로 시작하는 데이터가 5개 있으면 count = 5
+    long count = itemRepository.countByItemCodeStartingWith(prefix);
+
+    // 5. 검증: prefix별 item_code는 최대 999개까지만 생성 가능
+    if (count >= 999) {
+      throw new CustomException(ErrorCode.ITEM_CODE_LIMIT_EXCEEDED);
+    }
+
+    // 6. 최종 item_code 생성 (세 자리 일련번호, 001부터 시작)
+    //    예: count=5 → "THRE-006"
+    return String.format("%s-%03d", prefix, count + 1);
+  }
+  */
 
   // TODO: 유효성 검사 로직 추가 (e.g. null 여부)
 

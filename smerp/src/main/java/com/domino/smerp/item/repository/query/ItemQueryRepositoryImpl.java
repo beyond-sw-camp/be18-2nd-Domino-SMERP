@@ -32,6 +32,7 @@ public class ItemQueryRepositoryImpl implements ItemQueryRepository {
         .where(
             statusEq(keyword.getStatus()),
             nameContains(keyword.getName()),
+            // itemCodeContains(keyword.getItemCode()),
             specificationContains(keyword.getSpecification()),
             groupName1Eq(keyword.getGroupName1()),
             groupName2Eq(keyword.getGroupName2()),
@@ -48,6 +49,7 @@ public class ItemQueryRepositoryImpl implements ItemQueryRepository {
         .where(
             statusEq(keyword.getStatus()),
             nameContains(keyword.getName()),
+            // itemCodeContains(keyword.getItemCode()),
             specificationContains(keyword.getSpecification()),
             groupName1Eq(keyword.getGroupName1()),
             groupName2Eq(keyword.getGroupName2()),
@@ -56,7 +58,6 @@ public class ItemQueryRepositoryImpl implements ItemQueryRepository {
 
     return PageableExecutionUtils.getPage(results, pageable, countQuery::fetchOne);
   }
-
 
 
   // 품목 구분 검색
@@ -72,6 +73,12 @@ public class ItemQueryRepositoryImpl implements ItemQueryRepository {
   private BooleanExpression nameContains(String name) {
     return (name == null || name.isEmpty()) ? null : QItem.item.name.contains(name);
   }
+
+  // TODO: 품목코드
+  // 품목코드 검색
+//  private BooleanExpression itemCodeContains(String itemCode) {
+//    return (itemCode == null || itemCode.isEmpty()) ? null : QItem.item.itemCode.contains(itemCode);
+//  }
 
   // 품목 규격 검색
   private BooleanExpression specificationContains(String specification) {

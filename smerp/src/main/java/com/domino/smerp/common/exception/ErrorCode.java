@@ -31,6 +31,8 @@ public enum ErrorCode {
     ITEM_DELETE_CONFLICT(HttpStatus.CONFLICT, "ITEM_DELETE_CONFLICT", "다른 데이터에서 참조 중이라 품목을 삭제할 수 없습니다.(수불이력)"), // 소프트 딜리트 예정
     DUPLICATE_ITEM(HttpStatus.CONFLICT, "DUPLICATE_ITEM", "이미 존재하는 품목입니다."),
     DUPLICATE_RFID(HttpStatus.CONFLICT, "DUPLICATE_RFID", "이미 등록된 RFID입니다."),
+    ITEM_CODE_LIMIT_EXCEEDED(HttpStatus.BAD_REQUEST, "ITEM_CODE_LIMIT_EXCEEDED", "해당 품목코드는 최대 999개까지 생성 가능합니다."),
+    ITEM_CODE_DUPLICATED(HttpStatus.CONFLICT, "ITEM_CODE_DUPLICATED","이미 존재하는 품목 코드입니다."),
 
     // lotNumber - Lot.No와 관련된 에러
     LOTNUMBER_NOT_FOUND(HttpStatus.NOT_FOUND,"LOTNUMBER_NOT_FOUND", "존재하지 않는 Lot.No입니다."),
