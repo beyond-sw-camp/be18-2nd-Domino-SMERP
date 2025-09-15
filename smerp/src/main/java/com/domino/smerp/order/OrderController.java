@@ -1,10 +1,13 @@
 package com.domino.smerp.order;
 
+import com.domino.smerp.common.dto.PageResponse;
 import com.domino.smerp.order.dto.request.CreateOrderRequest;
+import com.domino.smerp.order.dto.request.OrderSearchRequest;
 import com.domino.smerp.order.dto.request.UpdateOrderRequest;
 import com.domino.smerp.order.dto.response.*;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -27,9 +30,14 @@ public class OrderController {
 
     // 주문 목록 조회 (GET)
     @GetMapping
-    public ResponseEntity<List<ListOrderResponse>> getOrders() {
-        return ResponseEntity.ok(orderService.getOrders());
+    public ResponseEntity<PageResponse<ListOrderResponse>> getOrders(
+            OrderSearchRequest condition,
+            Pageable pageable
+    ) {
+        return ResponseEntity.ok(orderService.getOrders(condition, pageable));
     }
+
+
 
     // 주문 상세 조회 (GET)
     @GetMapping("/{orderId}")

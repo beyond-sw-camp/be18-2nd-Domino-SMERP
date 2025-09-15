@@ -2,6 +2,7 @@ package com.domino.smerp.order;
 
 import com.domino.smerp.client.Client;
 import com.domino.smerp.client.ClientRepository;
+import com.domino.smerp.common.dto.PageResponse;
 import com.domino.smerp.common.exception.CustomException;
 import com.domino.smerp.common.exception.ErrorCode;
 import com.domino.smerp.item.Item;
@@ -13,12 +14,16 @@ import com.domino.smerp.itemorder.dto.request.UpdateItemOrderRequest;
 import com.domino.smerp.itemorder.dto.response.DetailItemOrderResponse;
 import com.domino.smerp.order.constants.OrderStatus;
 import com.domino.smerp.order.dto.request.CreateOrderRequest;
+import com.domino.smerp.order.dto.request.OrderSearchRequest;
 import com.domino.smerp.order.dto.request.UpdateOrderRequest;
 import com.domino.smerp.order.dto.response.*;
+import com.domino.smerp.order.repository.OrderRepository;
 import com.domino.smerp.user.User;
 import com.domino.smerp.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -133,9 +138,11 @@ public class OrderServiceImpl implements OrderService {
     // 주문 목록 조회
     @Override
     @Transactional(readOnly = true)
-    public List<ListOrderResponse> getOrders() {
-        return orderRepository.findAllWithDetails().stream()
-                .map(order -> ListOrderResponse.builder()
+    public PageResponse<ListOrderResponse> getOrders(OrderSearchRequest condition, Pageable pageable) {
+        Page<Order> page = orderRepository.searchOrders(condition, pageable);
+
+        Page<ListOrderResponse> dtoPage = page.map(order ->
+                ListOrderResponse.builder()
                         .documentNo(order.getDocumentNo())
                         .companyName(order.getClient().getCompanyName())
                         .status(order.getStatus().name())
@@ -143,12 +150,14 @@ public class OrderServiceImpl implements OrderService {
                         .userName(order.getUser().getName())
                         .firstItemName(order.getFirstItemName())
                         .otherItemCount(order.getOtherItemCount())
-                        .totalAmount(order.getTotalAmount().setScale(2, RoundingMode.HALF_UP))
+                        .totalAmount(order.getTotalAmount())
                         .remark(order.getRemark())
                         .build()
-                )
-                .toList();
+        );
+
+        return PageResponse.from(dtoPage);
     }
+
 
     // 주문 상세 조회
     @Override

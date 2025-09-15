@@ -1,7 +1,7 @@
 package com.domino.smerp.salesorder;
 
 import com.domino.smerp.order.Order;
-import com.domino.smerp.order.OrderRepository;
+import com.domino.smerp.order.repository.OrderRepository;
 import com.domino.smerp.salesorder.dto.request.SalesOrderRequest;
 import com.domino.smerp.salesorder.dto.response.SalesOrderCreateResponse;
 import com.domino.smerp.salesorder.dto.response.SalesOrderResponse;

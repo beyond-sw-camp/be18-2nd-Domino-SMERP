@@ -1,5 +1,6 @@
-package com.domino.smerp.order;
+package com.domino.smerp.order.repository;
 
+import com.domino.smerp.order.Order;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -9,15 +10,8 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface OrderRepository extends JpaRepository<Order, Long> {
-    // 다중 조회
-    @Query("SELECT DISTINCT o FROM Order o " +
-            "JOIN FETCH o.client " +
-            "JOIN FETCH o.user " +
-            "LEFT JOIN FETCH o.orderItems")
-    List<Order> findAllWithDetails();
+public interface OrderRepository extends JpaRepository<Order, Long>, OrderQueryRepository {
 
-    // 단건 조회
     @Query("SELECT DISTINCT o FROM Order o " +
             "JOIN FETCH o.client " +
             "JOIN FETCH o.user " +
@@ -25,8 +19,10 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
             "WHERE o.orderId = :id")
     Optional<Order> findByIdWithDetails(@Param("id") Long id);
 
-    @Query("SELECT MAX(CAST(SUBSTRING_INDEX(o.documentNo, '-', -1) AS int)) " +
-            "FROM Order o " +
-            "WHERE o.documentNo LIKE CONCAT(:prefix, '%')")
+    @Query(value = "SELECT MAX(CAST(SUBSTRING_INDEX(o.document_no, '-', -1) AS UNSIGNED)) " +
+            "FROM `order` o " +
+            "WHERE o.document_no LIKE CONCAT(:prefix, '%')",
+            nativeQuery = true)
     Optional<Integer> findMaxSequenceByPrefix(@Param("prefix") String prefix);
 }
+
