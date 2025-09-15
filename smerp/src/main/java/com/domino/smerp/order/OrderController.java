@@ -37,7 +37,7 @@ public class OrderController {
         return ResponseEntity.ok(orderService.getDetailOrder(orderId));
     }
 
-    // 주문 전체 수정 (PATCH)
+    // 주문 수정 (PATCH)
     @PatchMapping("/{orderId}")
     public ResponseEntity<UpdateOrderResponse> updateOrder(
             @PathVariable Long orderId,

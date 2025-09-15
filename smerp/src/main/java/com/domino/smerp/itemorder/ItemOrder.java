@@ -31,14 +31,26 @@ public class ItemOrder {
     @Column(name = "qty", nullable = false, precision = 12, scale = 3)
     private BigDecimal qty;
 
-    @Column(name = "special_price",nullable = false, precision = 12, scale = 2)
+    @Column(name = "special_price", nullable = false, precision = 12, scale = 2)
     private BigDecimal specialPrice;
 
-    // 편의 메서드
+    // == 연관관계 메서드 ==
     public void assignOrder(Order order) {
         this.order = order;
     }
 
+    // == 도메인 수정 메서드 (Setter 금지) ==
+    public void updateQty(BigDecimal qty) {
+        if (qty != null) this.qty = qty;
+    }
+
+    public void updateSpecialPrice(BigDecimal specialPrice) {
+        if (specialPrice != null) {
+            this.specialPrice = specialPrice;
+        }
+    }
+
+    // == 계산 메서드 ==
     public BigDecimal getSupplyAmount() {
         return qty.multiply(specialPrice);
     }
@@ -50,5 +62,4 @@ public class ItemOrder {
     public BigDecimal getTotalAmount() {
         return getSupplyAmount().add(getTax());
     }
-
 }

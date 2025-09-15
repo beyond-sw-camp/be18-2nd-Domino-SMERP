@@ -1,6 +1,7 @@
 package com.domino.smerp.order.dto.request;
 
 import com.domino.smerp.itemorder.dto.request.ItemOrderRequest;
+import com.domino.smerp.itemorder.dto.request.UpdateItemOrderRequest;
 import com.domino.smerp.order.constants.OrderStatus;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -36,5 +37,5 @@ public class UpdateOrderRequest {
 
     @NotNull(message = "품목 리스트(items)는 필수 입력입니다.")
     @Size(min = 1, message = "최소 1개 이상의 품목이 필요합니다.")
-    private final List<ItemOrderRequest> items; // 품목 리스트
+    private final List<UpdateItemOrderRequest> items; // 품목 리스트
 }

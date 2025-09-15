@@ -9,6 +9,7 @@ import com.domino.smerp.item.ItemServiceImpl;
 import com.domino.smerp.itemorder.ItemOrder;
 import com.domino.smerp.itemorder.ItemOrderRepository;
 import com.domino.smerp.itemorder.dto.request.ItemOrderRequest;
+import com.domino.smerp.itemorder.dto.request.UpdateItemOrderRequest;
 import com.domino.smerp.itemorder.dto.response.DetailItemOrderResponse;
 import com.domino.smerp.order.constants.OrderStatus;
 import com.domino.smerp.order.dto.request.CreateOrderRequest;
@@ -20,12 +21,16 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -57,14 +62,19 @@ public class OrderServiceImpl implements OrderService {
         return datePart + "-" + nextSeq;
     }
 
-    // ItemOrder 생성 편의 메서드
+    // 등록용 ItemOrder 생성 메서드
     private ItemOrder toOrderItem(Order order, ItemOrderRequest itemReq) {
         Item item = itemServiceImpl.findItemById(itemReq.getItemId());
+
+        BigDecimal specialPrice = itemReq.getSpecialPrice() != null
+                ? itemReq.getSpecialPrice()          // 요청값 있으면 그대로 사용
+                : item.getOutboundUnitPrice();       // null이면 품목 단가 고정
+
         return ItemOrder.builder()
                 .order(order)
                 .item(item)
                 .qty(itemReq.getQty())
-                .specialPrice(item.getOutboundUnitPrice()) // 주문 당시 단가 고정
+                .specialPrice(specialPrice) // 주문 당시 단가 고정
                 .build();
     }
 
@@ -103,10 +113,10 @@ public class OrderServiceImpl implements OrderService {
         request.getItems().forEach(itemReq -> order.addOrderItem(toOrderItem(order, itemReq)));
 
         // 부모 먼저 저장 → PK 확보
-        Order savedOrder = orderRepository.save(order);
+        orderRepository.save(order);
 
         // 자식들 직접 저장
-        order.getOrderItems().forEach(itemOrderRepository::save);
+        itemOrderRepository.saveAll(order.getOrderItems());
 
         return CreateOrderResponse.from(orderRepository.save(order));
     }
@@ -167,7 +177,7 @@ public class OrderServiceImpl implements OrderService {
                 .build();
     }
 
-    // 주문 변경
+    // 주문 수정 (PATCH: 없는 건 삭제, 새로 온 건 추가, 기존은 수정)
     @Override
     @Transactional
     public UpdateOrderResponse updateOrder(Long orderId, UpdateOrderRequest request) {
@@ -176,44 +186,78 @@ public class OrderServiceImpl implements OrderService {
 
         User user = getUserByEmpNo(request.getEmpNo());
 
-        List<ItemOrder> newOrderItems = request.getItems().stream()
-                .map(itemReq -> toOrderItem(order, itemReq))
-                .toList();
+        // 1. 기존 품목 매핑
+        Map<Long, ItemOrder> existingItems = order.getOrderItems().stream()
+                .collect(Collectors.toMap(ItemOrder::getId, io -> io));
 
-        // 납기일 변환
-        Instant newDeliveryDateInstant = request.getDeliveryDate() != null
-                ? request.getDeliveryDate().atStartOfDay(ZoneOffset.UTC).toInstant()
-                : null;
+        List<ItemOrder> finalItems = new ArrayList<>();
 
-        // documentDate 변경 시 새 documentNo 생성
-        String newDocumentNo = order.getDocumentNo(); // 기본값: 기존 번호 유지
-        if (request.getDocumentDate() != null) {
-            String newDatePart = request.getDocumentDate().format(DateTimeFormatter.ofPattern("yyyy/MM/dd"));
-            String oldDatePart = order.getDocumentNo().split("-")[0]; // ex) "2025/09/09"
-            // 날짜가 바뀐 경우에만 새 번호 생성
-            if (!newDatePart.equals(oldDatePart)) {
-                newDocumentNo = generateDocumentNo(request.getDocumentDate());
+        // 2. 요청 품목 처리
+        for (UpdateItemOrderRequest itemReq : request.getItems()) {
+            if (itemReq.getItemOrderId() != null) {
+                // 기존 품목 수정
+                ItemOrder existing = existingItems.get(itemReq.getItemOrderId());
+                if (existing == null) {
+                    throw new CustomException(ErrorCode.ITEM_NOT_FOUND);
+                }
+
+                // 수량 수정
+                existing.updateQty(itemReq.getQty());
+
+                // specialPrice 없으면 Item 출고단가 사용
+                BigDecimal specialPrice = itemReq.getSpecialPrice() != null
+                        ? itemReq.getSpecialPrice()
+                        : existing.getItem().getOutboundUnitPrice();
+
+                existing.updateSpecialPrice(specialPrice);
+
+                finalItems.add(existing);
+
+                // 수정된 아이템은 삭제 후보에서 제거
+                existingItems.remove(itemReq.getItemOrderId());
+
+            } else {
+                // 신규 품목 추가
+                Item item = itemServiceImpl.findItemById(itemReq.getItemId());
+
+                BigDecimal specialPrice = itemReq.getSpecialPrice() != null
+                        ? itemReq.getSpecialPrice()
+                        : item.getOutboundUnitPrice();
+
+                ItemOrder newItem = ItemOrder.builder()
+                        .order(order)
+                        .item(item)
+                        .qty(itemReq.getQty())
+                        .specialPrice(specialPrice)
+                        .build();
+
+                itemOrderRepository.save(newItem);
+                order.addOrderItem(newItem);
+                finalItems.add(newItem);
             }
         }
 
-        // 주문 전체 업데이트
+        // 3. JSON에 없는 기존 품목 삭제
+        for (ItemOrder toDelete : existingItems.values()) {
+            itemOrderRepository.delete(toDelete);
+            order.getOrderItems().remove(toDelete);
+        }
+
+        // 4. 주문 정보 갱신
+        Instant newDocumentDate = request.getDocumentDate().atStartOfDay(ZoneOffset.UTC).toInstant();
+        Instant newDeliveryDate = request.getDeliveryDate().atStartOfDay(ZoneOffset.UTC).toInstant();
+
         order.updateAll(
-                request.getDocumentDate() != null
-                        ? request.getDocumentDate().atStartOfDay(ZoneOffset.UTC).toInstant()
-                        : order.getCreatedAt(),   // documentDate → Instant 변환
-                newDeliveryDateInstant,
+                newDocumentDate,
+                newDeliveryDate,
                 request.getRemark(),
                 request.getStatus(),
                 user,
-                newOrderItems
+                finalItems
         );
-
-        // 전표번호 갱신
-        order.updateDocumentInfo(newDocumentNo);
 
         return UpdateOrderResponse.from(orderRepository.save(order));
     }
-
 
     // 주문 삭제
 
