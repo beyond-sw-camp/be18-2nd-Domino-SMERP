@@ -11,6 +11,7 @@ public interface LotNumberRepository extends JpaRepository<LotNumber, Long>,
     LotNumberQueryRepository, LotNumberCommandRepository {
 
   boolean existsByLotId(final Long lotId);
+
   boolean existsByName(final String name);
 
   long countByNameStartingWith(final String lotNumberPrefix);

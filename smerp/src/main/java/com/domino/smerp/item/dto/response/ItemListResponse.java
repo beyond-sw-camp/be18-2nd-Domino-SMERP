@@ -14,7 +14,7 @@ public class ItemListResponse {
   // private final String itemCode;
   private final String name;
   private final String unit;
-  private final String itemStatusName;
+  private final String itemStatus;
   private final String rfid;
   private final String itemAct;
   private final String groupName1;
@@ -25,7 +25,7 @@ public class ItemListResponse {
     return ItemListResponse.builder()
         .itemId(item.getItemId())
         // .itemCode(item.getItemCode())
-        .itemStatusName(item.getItemStatus().getStatus().getDescription())
+        .itemStatus(item.getItemStatus().getStatus().getDescription())
         .name(item.getName())
         .unit(item.getUnit())
         .rfid(item.getRfid())

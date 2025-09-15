@@ -4,7 +4,7 @@ import com.domino.smerp.common.dto.PageResponse;
 import com.domino.smerp.item.service.ItemManagementService;
 import com.domino.smerp.item.service.ItemService;
 import com.domino.smerp.item.dto.request.CreateItemRequest;
-import com.domino.smerp.item.dto.request.ItemSearchRequest;
+import com.domino.smerp.item.dto.request.SearchItemRequest;
 import com.domino.smerp.item.dto.request.UpdateItemRequest;
 import com.domino.smerp.item.dto.request.UpdateItemStatusRequest;
 import com.domino.smerp.item.dto.response.ItemDetailResponse;
@@ -43,7 +43,7 @@ public class ItemController {
   // 품목 목록 조회 (검색조건은 쿼리파라미터로)
   @GetMapping
   public ResponseEntity<PageResponse<ItemListResponse>> getItems(
-      @ModelAttribute ItemSearchRequest keyword,
+      @ModelAttribute SearchItemRequest keyword,
       Pageable pageable) {
     return ResponseEntity.ok(itemService.searchItems(keyword, pageable));
   }

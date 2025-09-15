@@ -1,14 +1,21 @@
 package com.domino.smerp.item.repository.query;
 
+import com.domino.smerp.common.util.QuerydslUtils;
 import com.domino.smerp.item.constants.ItemStatusStatus;
-import com.domino.smerp.item.dto.request.ItemSearchRequest;
+import com.domino.smerp.item.dto.request.SearchItemRequest;
 import com.domino.smerp.item.entity.Item;
 import com.domino.smerp.item.entity.QItem;
 import com.domino.smerp.item.entity.QItemStatus;
+import com.querydsl.core.types.Order;
+import com.querydsl.core.types.OrderSpecifier;
+import com.querydsl.core.types.Path;
 import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -22,10 +29,33 @@ public class ItemQueryRepositoryImpl implements ItemQueryRepository {
   private final JPAQueryFactory queryFactory;
 
   @Override
-  public Page<Item> searchItems(final ItemSearchRequest keyword, final Pageable pageable) {
+  public Page<Item> searchItems(final SearchItemRequest keyword, final Pageable pageable) {
     QItem item = QItem.item;
     QItemStatus itemStatus = QItemStatus.itemStatus;
 
+    // property(정렬기준) → QPath 매핑
+    Map<String, Path<? extends Comparable<?>>> sortMapping = Map.of(
+        "itemId", item.itemId,
+        // "itemCode", item.itemCode,   // TODO: 추후 itemCode 추가 시 주석 해제
+        "name", item.name,
+        "unit", item.unit,
+        "itemStatus", item.itemStatus.status,
+        "rfid", item.rfid,
+        "itemAct", item.itemAct,
+        "groupName1", item.groupName1,
+        "groupName2", item.groupName2,
+        "groupName3", item.groupName3
+    );
+
+    // 정렬
+    List<OrderSpecifier<?>> orders = QuerydslUtils.getSort(pageable.getSort(), sortMapping);
+
+    // 기본 정렬 (없을 때 fallback)
+    if (orders.isEmpty()) {
+      orders.add(item.itemId.desc());
+    }
+
+    // SELECT한 데이터
     List<Item> results = queryFactory
         .selectFrom(item)
         .join(item.itemStatus, itemStatus).fetchJoin()
@@ -34,10 +64,11 @@ public class ItemQueryRepositoryImpl implements ItemQueryRepository {
             nameContains(keyword.getName()),
             // itemCodeContains(keyword.getItemCode()),
             specificationContains(keyword.getSpecification()),
-            groupName1Eq(keyword.getGroupName1()),
-            groupName2Eq(keyword.getGroupName2()),
-            groupName3Eq(keyword.getGroupName3())
+            groupName1Contains(keyword.getGroupName1()),
+            groupName2Contains(keyword.getGroupName2()),
+            groupName3Contains(keyword.getGroupName3())
         )
+        .orderBy(orders.toArray(new OrderSpecifier[0]))       // 정렬 로직
         .offset(pageable.getOffset())
         .limit(pageable.getPageSize())
         .fetch();
@@ -51,9 +82,9 @@ public class ItemQueryRepositoryImpl implements ItemQueryRepository {
             nameContains(keyword.getName()),
             // itemCodeContains(keyword.getItemCode()),
             specificationContains(keyword.getSpecification()),
-            groupName1Eq(keyword.getGroupName1()),
-            groupName2Eq(keyword.getGroupName2()),
-            groupName3Eq(keyword.getGroupName3())
+            groupName1Contains(keyword.getGroupName1()),
+            groupName2Contains(keyword.getGroupName2()),
+            groupName3Contains(keyword.getGroupName3())
         );
 
     return PageableExecutionUtils.getPage(results, pageable, countQuery::fetchOne);
@@ -87,20 +118,20 @@ public class ItemQueryRepositoryImpl implements ItemQueryRepository {
   }
 
   // 품목 품목그룹1 검색
-  private BooleanExpression groupName1Eq(String groupName1) {
+  private BooleanExpression groupName1Contains(String groupName1) {
     return (groupName1 == null || groupName1.isEmpty()) ? null
-        : QItem.item.groupName1.eq(groupName1);
+        : QItem.item.groupName1.contains(groupName1);
   }
 
   // 품목 품목그룹2 검색
-  private BooleanExpression groupName2Eq(String groupName2) {
+  private BooleanExpression groupName2Contains(String groupName2) {
     return (groupName2 == null || groupName2.isEmpty()) ? null
-        : QItem.item.groupName2.eq(groupName2);
+        : QItem.item.groupName2.contains(groupName2);
   }
 
   // 품목 품목그룹3 검색
-  private BooleanExpression groupName3Eq(String groupName3) {
+  private BooleanExpression groupName3Contains(String groupName3) {
     return (groupName3 == null || groupName3.isEmpty()) ? null
-        : QItem.item.groupName3.eq(groupName3);
+        : QItem.item.groupName3.contains(groupName3);
   }
 }

@@ -20,9 +20,9 @@ public class LotNumberCommandRepositoryImpl implements LotNumberCommandRepositor
   @Transactional
   public void bulkSoftDeleteByItemId(final Long itemId) {
     queryFactory
-        .update(lotNumber) // LotNumber 엔티티에 대한 업데이트 시작
-        .set(lotNumber.isDeleted, true) // isDeleted 필드를 true로 설정
-        .where(lotNumber.item.itemId.eq(itemId)) // 부모 Item ID로 조건 지정
+        .update(lotNumber)
+        .set(lotNumber.isDeleted, true)
+        .where(lotNumber.item.itemId.eq(itemId))
         .execute(); // 쿼리 실행
   }
 }

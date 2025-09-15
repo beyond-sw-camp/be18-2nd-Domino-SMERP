@@ -7,7 +7,7 @@ import lombok.Getter;
 @Getter
 @Builder
 @AllArgsConstructor
-public class ItemSearchRequest {
+public class SearchItemRequest {
 
   private final String status;         // 품목 구분
   private final String name;           // 품목 명
