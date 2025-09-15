@@ -31,6 +31,7 @@ public interface LotNumberService {
 
   // Lot.No 삭제
   void deleteLotNumber(final Long lotNumberId);
+  void softDeleteByItemId(final Long itemId);
 
   // 공통 메소드
   // Lot.No 조회

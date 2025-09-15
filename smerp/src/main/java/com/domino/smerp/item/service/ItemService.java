@@ -31,6 +31,7 @@ public interface ItemService {
 
   // 품목 삭제
   void deleteItem(final Long itemId);
+  void softDeleteItem(final Long itemId);
 
   // 공통 메소드
   ItemStatus findItemStatusById(final Long itemStatusId);

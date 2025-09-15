@@ -128,6 +128,15 @@ public class ItemServiceImpl implements ItemService {
     item.delete();
   }
 
+  // 품목 소프트딜리트
+  @Override
+  @Transactional
+  public void softDeleteItem(final Long itemId) {
+    final Item item = findItemById(itemId);
+    item.delete();
+  }
+
+
 
   // findById 공통 메소드
   // 품목 구분 findById

@@ -1,6 +1,7 @@
 package com.domino.smerp.item.controller;
 
 import com.domino.smerp.common.dto.PageResponse;
+import com.domino.smerp.item.service.ItemManagementService;
 import com.domino.smerp.item.service.ItemService;
 import com.domino.smerp.item.dto.request.CreateItemRequest;
 import com.domino.smerp.item.dto.request.ItemSearchRequest;
@@ -29,6 +30,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class ItemController {
 
   private final ItemService itemService;
+  private final ItemManagementService itemManagementService;
 
   // 품목 생성
   @PostMapping
@@ -71,7 +73,9 @@ public class ItemController {
   // 품목 삭제
   @DeleteMapping("/{item-id}")
   public ResponseEntity<Void> deleteItem(@PathVariable("item-id") final Long itemId) {
-    itemService.deleteItem(itemId);
+    // itemService.deleteItem(itemId);
+    // itemService.softDeleteItem(itemId);
+    itemManagementService.deleteItemWithAllAssociations(itemId);
     return ResponseEntity.noContent().build();
   }
 }

@@ -90,11 +90,19 @@ public class LotNumberServiceImpl implements LotNumberService {
     lotNumber.delete();
   }
 
+  // Item ID로 Lot.No들을 소프트 삭제하는 로직
+  @Override
+  @Transactional
+  public void softDeleteByItemId(final Long itemId) {
+    lotNumberRepository.bulkSoftDeleteByItemId(itemId);
+  }
+
   // 공통 메소드
   // Lot.No findById
   @Override
   @Transactional(readOnly = true)
   public LotNumber findLotNumberById(final Long lotNumberId) {
+
     return lotNumberRepository.findById(lotNumberId)
         .orElseThrow(() -> new CustomException(ErrorCode.LOTNUMBER_NOT_FOUND));
   }

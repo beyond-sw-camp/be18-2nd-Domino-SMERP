@@ -78,6 +78,7 @@ public class LotNumberController {
   @DeleteMapping("/{lots-id}")
   public ResponseEntity<Void> deleteLotNumber(@PathVariable("lots-id") final Long lotNumberId) {
     lotNumberService.deleteLotNumber(lotNumberId);
+    //lotNumberService.softDeleteByItemId(lotNumberId);
     return ResponseEntity.noContent().build();
   }
 
