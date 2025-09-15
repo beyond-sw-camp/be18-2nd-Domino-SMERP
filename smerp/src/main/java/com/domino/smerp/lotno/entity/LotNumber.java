@@ -28,6 +28,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.SQLRestriction;
+import org.hibernate.annotations.SoftDelete;
 
 @Entity
 @Getter
@@ -36,6 +37,7 @@ import org.hibernate.annotations.SQLRestriction;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Table(name = "lot_number")
 @SQLRestriction("is_deleted = false")
+//@SoftDelete(columnName = "is_deleted")
 public class LotNumber extends BaseEntity {
 
   @Id
@@ -63,10 +65,10 @@ public class LotNumber extends BaseEntity {
 
 
   // Lot.No 생성
-  public static LotNumber create(final CreateLotNumberRequest request, final Item item) {
+  public static LotNumber create(final CreateLotNumberRequest request, final Item item, final String name) {
     return LotNumber.builder()
         .item(item)
-        .name(request.getName())
+        .name(name)
         .qty(request.getQty())
         .status(LotNumberStatus.fromLabel(request.getStatus()))
         .build();

@@ -45,7 +45,8 @@ public class Item extends BaseEntity {
   @JoinColumn(name = "item_status_id", nullable = false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
   private ItemStatus itemStatus;
 
-  @Column(name = "name", nullable = false, unique = true, length = 60)
+  // @Column(name = "name", nullable = false, unique = true, length = 60)
+  @Column(name = "name", nullable = false, length = 60)
   private String name;
 
   // TODO: 품목 코드 추가(PK 대신 품목 코드로 조회 예정)

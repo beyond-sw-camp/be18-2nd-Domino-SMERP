@@ -9,4 +9,9 @@ import org.springframework.stereotype.Repository;
 public interface LotNumberRepository extends JpaRepository<LotNumber, Long>,
     LotNumberQueryRepository {
 
+  boolean existsByLotId(final Long lotId);
+  boolean existsByName(final String name);
+
+  long countByNameStartingWith(final String lotNumberPrefix);
+
 }
