@@ -35,7 +35,10 @@ public enum ErrorCode {
     // order - 주문과 관련된 예외 정보
     ORDER_NOT_FOUND(HttpStatus.NOT_FOUND, "ORDER_NOT_FOUND", "존재하지 않는 주문입니다."),
     ITEMS_REQUIRED(HttpStatus.BAD_REQUEST, "ITEMS_REQUIRED", "주문에는 최소 1개 이상의 품목이 필요합니다."),
-    INVALID_ORDER_REQUEST(HttpStatus.BAD_REQUEST, "INVALID_REQUEST", "잘못된 주문 요청입니다.");
+    INVALID_ORDER_REQUEST(HttpStatus.BAD_REQUEST, "INVALID_REQUEST", "잘못된 주문 요청입니다."),
+
+    // 전표 생성 예외 정보
+    DOCUMENT_NO_GENERATION_FAILED(HttpStatus.CONFLICT, "DOCUMENT_NO_GENERATION_FAILED", "전표번호 생성에 실패했습니다.");
 
     private final HttpStatus status;
     private final String code;

@@ -31,7 +31,7 @@ public class CreateOrderRequest {
     @NotNull(message = "납기일자는 필수 입력입니다.")
     private final LocalDate deliveryDate;   // 납기일자
 
-    @Size(max = 100, message = "비고는 최대 200자까지 입력 가능합니다.")
+    @Size(max = 100, message = "비고는 최대 100자까지 입력 가능합니다.")
     private final String remark;            // 비고
 
     // 선택값 (없으면 기본 PENDING 처리)

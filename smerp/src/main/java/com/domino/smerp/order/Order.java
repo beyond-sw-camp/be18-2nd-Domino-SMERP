@@ -30,6 +30,9 @@ public class Order extends BaseEntity {
     @Column(name = "order_id")
     private Long orderId;
 
+    @Column(name = "document_no", nullable = false, length = 30, unique = true)
+    private String documentNo;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "client_id", nullable = false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
     private Client client;
@@ -53,10 +56,7 @@ public class Order extends BaseEntity {
     @Column(name = "is_deleted", nullable = false)
     private boolean isDeleted = false;
 
-    @Column(name = "document_no", nullable = false, length = 30, unique = true)
-    private String documentNo;
-
-    @OneToMany(mappedBy = "order") // casecade 제거
+    @OneToMany(mappedBy = "order") // Cascade 제거
     @Builder.Default
     private List<ItemOrder> orderItems = new ArrayList<>();
 
@@ -69,7 +69,7 @@ public class Order extends BaseEntity {
     //  도메인 계산 메소드
     public BigDecimal getTotalAmount() {
         return orderItems.stream()
-                .map(ItemOrder::getSupplyAmount)
+                .map(ItemOrder::getTotalAmount)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 
@@ -98,8 +98,7 @@ public class Order extends BaseEntity {
         this.documentNo = newDocumentNo;
     }
 
-    public void updateAll(Instant orderDate,
-                          Instant deliveryDate,
+    public void updateAll(Instant deliveryDate,
                           String remark,
                           OrderStatus status,
                           User newUser,
@@ -108,19 +107,15 @@ public class Order extends BaseEntity {
         if (deliveryDate != null) {
             this.deliveryDate = deliveryDate;
         }
-
         if (remark != null) {
             this.remark = remark;
         }
-
         if (status != null) {
             this.status = status;
         }
-
         if (newUser != null) {
             this.user = newUser;
         }
-
         if (newOrderItems != null && !newOrderItems.isEmpty()) {
             this.orderItems.clear();
             newOrderItems.forEach(this::addOrderItem);
