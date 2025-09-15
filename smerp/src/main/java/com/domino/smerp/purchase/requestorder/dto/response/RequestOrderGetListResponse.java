@@ -10,12 +10,12 @@ import java.time.Instant;
 @Getter
 @Builder
 @AllArgsConstructor(access = lombok.AccessLevel.PRIVATE)
-public class RequestOrderCreateResponse {
+public class RequestOrderGetListResponse {
     private final Long roId;
-    private final Long userId;
     private final Long clientId;
     private final Long itemId;
     private final BigDecimal qty;
+    private final String status;
     private final String documentNo;
     private final Instant createdAt;
 }

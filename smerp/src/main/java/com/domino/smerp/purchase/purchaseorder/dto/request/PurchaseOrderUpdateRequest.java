@@ -15,5 +15,5 @@ public class PurchaseOrderUpdateRequest {
   private final BigDecimal surtax;
   private final BigDecimal price;
   private final String remark;
-  private final LocalDate newDocDate; // yyyy-MM-dd, 전표 날짜 변경 시 사용 (null이면 변경 없음)
+  private final LocalDate newDocDate; // yyyy/MM/dd, 전표 날짜 변경 시 사용 (null이면 변경 없음)
 }

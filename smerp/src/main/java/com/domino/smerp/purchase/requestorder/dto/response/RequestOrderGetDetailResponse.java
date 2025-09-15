@@ -1,21 +1,26 @@
-package com.domino.smerp.purchase.requestorder.dto.request;
+package com.domino.smerp.purchase.requestorder.dto.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 
 import java.math.BigDecimal;
+import java.time.Instant;
 import java.time.LocalDate;
 
 @Getter
 @Builder
 @AllArgsConstructor(access = lombok.AccessLevel.PRIVATE)
-public class RequestOrderCreateRequest {
+public class RequestOrderGetDetailResponse {
+    private final Long roId;
     private final Long userId;
     private final Long clientId;
     private final Long itemId;
     private final BigDecimal qty;
     private final LocalDate deliveryDate;
+    private final String status;
     private final String remark;
-    private final String documentNo; // 전표번호 (사용자 입력 or 날짜 선택 기반)
+    private final String documentNo;
+    private final Instant createdAt;
+    private final Instant updatedAt;
 }

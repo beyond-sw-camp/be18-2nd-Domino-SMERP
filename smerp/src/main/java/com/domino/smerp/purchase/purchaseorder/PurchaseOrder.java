@@ -2,27 +2,13 @@ package com.domino.smerp.purchase.purchaseorder;
 
 import com.domino.smerp.common.BaseEntity;
 import com.domino.smerp.purchase.requestorder.RequestOrder;
-import jakarta.persistence.Column;
-import jakarta.persistence.ConstraintMode;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.ForeignKey;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToOne;
-import jakarta.persistence.Table;
-import jakarta.validation.constraints.Size;
+import jakarta.persistence.*;
+import lombok.*;
+import org.hibernate.annotations.Comment;
+
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import org.hibernate.annotations.Comment;
 
 /**
  * 구매(PurchaseOrder) 엔티티 - 발주(RequestOrder)와 1:1 매핑 - 발주 없는 구매는 존재할 수 없음
