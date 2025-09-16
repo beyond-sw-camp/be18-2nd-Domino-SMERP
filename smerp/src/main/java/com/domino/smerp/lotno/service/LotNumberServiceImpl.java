@@ -35,11 +35,13 @@ public class LotNumberServiceImpl implements LotNumberService {
   public LotNumberSimpleResponse createLotNumber(final CreateLotNumberRequest request) {
 
     final Item item = itemService.findItemById(request.getItemId());
-
     final String newLotNumberName = generateLotNumberName(request.getLotInstant(), item);
 
     final LotNumber lotNumber = LotNumber.create(request, item, newLotNumberName);
     final LotNumber savedLotNumber = lotNumberRepository.save(lotNumber);
+
+    // TODO: [재고] Lot 생성 시 초기 Stock 등록 (lotId, warehouseId, qty)
+    // TODO: [수불부] Lot 생성 시 INBOUND Movement 기록 (lotId, warehouseId, qty, remark="Lot 생성")
 
     return LotNumberSimpleResponse.fromEntity(savedLotNumber);
   }
@@ -65,10 +67,13 @@ public class LotNumberServiceImpl implements LotNumberService {
       throw new CustomException(ErrorCode.ITEM_NOT_AVAILABLE);
     }
 
+    // TODO: [재고] 상세조회 시, 현재 Lot 재고 수량도 함께 반환하도록 확장 가능
+    // TODO: [수불부] Lot 입출고 이력 조회와 묶어서 반환 고려
+
     return LotNumberDetailResponse.fromEntity(lotNumber);
   }
 
-  // Lot.No 수정
+  // Lot.No 수정(관리자만 가능)
   @Override
   @Transactional
   public LotNumberDetailResponse updateLotNumber(final Long lotNumberId,
@@ -87,6 +92,9 @@ public class LotNumberServiceImpl implements LotNumberService {
   public void deleteLotNumber(final Long lotNumberId) {
     LotNumber lotNumber = findLotNumberById(lotNumberId);
 
+    // TODO: [재고] Lot 삭제 시, 해당 Lot 관련 Stock soft delete 처리
+    // TODO: [재고수불부] Lot 삭제 시, Movement 이력 보존 여부 정책 확인
+
     lotNumber.delete();
   }
 
@@ -95,6 +103,9 @@ public class LotNumberServiceImpl implements LotNumberService {
   @Transactional
   public void softDeleteByItemId(final Long itemId) {
     lotNumberRepository.bulkSoftDeleteByItemId(itemId);
+
+    // TODO: [재고] Item 삭제 시 해당 품목 Lot 재고 전체 소프트딜리트
+    // TODO: [재고수불부] Item 삭제 시 해당 Lot Movement 이력 처리 방안 확정
   }
 
   // 공통 메소드

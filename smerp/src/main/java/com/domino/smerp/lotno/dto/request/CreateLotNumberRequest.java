@@ -21,7 +21,7 @@ public class CreateLotNumberRequest {
   private final Instant lotInstant;
 
   @NotNull(message = "수량을 입력해주세요")
-  @DecimalMin("0.001")
+  @DecimalMin("0.000")
   private final BigDecimal qty;
 
   @NotBlank(message = "사용상태를 설정해주세요")
