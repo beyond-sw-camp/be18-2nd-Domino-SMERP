@@ -1,6 +1,7 @@
 package com.domino.smerp.bom.service;
 
 import com.domino.smerp.bom.dto.request.CreateBomRequest;
+import com.domino.smerp.bom.dto.response.BomDetailResponse;
 import com.domino.smerp.bom.dto.response.BomListResponse;
 import com.domino.smerp.bom.dto.response.CreateBomResponse;
 import com.domino.smerp.bom.entity.Bom;
@@ -48,7 +49,11 @@ public class BomServiceImpl implements BomService {
     return CreateBomResponse.fromEntity(savedBom);
   }
 
-  // BOM 목록 조회
+  @Override
+  @Transactional(readOnly = true)
+  public List<BomListResponse> getAllBoms();
+
+  // 선택한 품목의 BOM 목록 조회
   @Override
   @Transactional(readOnly = true)
   public List<BomListResponse> getBomByParentItemId(Long parentItemId) {
@@ -58,6 +63,24 @@ public class BomServiceImpl implements BomService {
         .map(BomListResponse::fromEntity)
         .toList();
   }
+
+  // BOM 상세 조회
+  @Override
+  @Transactional(readOnly = true)
+  public BomDetailResponse getBomDetail(final Long bomId) {
+    Bom bom = findByBomId(bomId);
+    return BomDetailResponse.fromEntity(bom);
+  }
+
+// TODO: 소요량 산출 로직 구현
+// ex) 특정 부모품목을 기준으로 하위 BOM들을 재귀 탐색하여 total_qty 계산
+// public BigDecimal calculateTotalQty(Long parentItemId) { ... }
+
+// TODO: BOM 수량/비고 수정 메소드
+// @Transactional
+// public BomDetailResponse updateBom(Long bomId, UpdateBomRequest request) { ... }
+
+// TODO: BOM 삭제/강제삭제 메소드
 
 
   // 공통 메소드

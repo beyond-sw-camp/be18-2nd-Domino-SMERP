@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository;
 public interface BomRepository extends JpaRepository<Bom, Long> {
     List<Bom> findByParentItemItemId(final Long parentItemId);
 
-    boolean existsByParentItemItemIdAndChildItemItemId(Long parentItemId, Long childItemId);
+    boolean existsByParentItemItemIdAndChildItemItemId(final Long parentItemId, final Long childItemId);
 
 
 }
