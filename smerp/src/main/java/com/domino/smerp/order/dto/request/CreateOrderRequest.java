@@ -34,9 +34,6 @@ public class CreateOrderRequest {
     @Size(max = 100, message = "비고는 최대 100자까지 입력 가능합니다.")
     private final String remark;            // 비고
 
-    // 선택값 (없으면 기본 PENDING 처리)
-    private final OrderStatus status;
-
     @NotNull(message = "주문 품목 리스트(items)는 필수 입력입니다.")
     @Size(min = 1, message = "최소 1개 이상의 품목이 필요합니다.")
     private final List<ItemOrderRequest> items; // 품목 리스트

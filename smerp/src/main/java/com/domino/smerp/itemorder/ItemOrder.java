@@ -18,7 +18,7 @@ public class ItemOrder {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "item_order_id")
-    private Long id;
+    private Long itemOrderId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_id", nullable = false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
@@ -32,7 +32,8 @@ public class ItemOrder {
     private BigDecimal qty;
 
     @Column(name = "special_price", nullable = false, precision = 12, scale = 2)
-    private BigDecimal specialPrice;
+    @Builder.Default
+    private BigDecimal specialPrice = BigDecimal.ZERO;
 
     // == 연관관계 메서드 ==
     public void assignOrder(Order order) {

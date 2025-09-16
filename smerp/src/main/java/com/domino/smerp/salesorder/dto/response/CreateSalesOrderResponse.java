@@ -9,14 +9,15 @@ import lombok.Getter;
 @Getter
 @Builder
 @AllArgsConstructor
-public class SalesOrderCreateResponse {
-    private final Long soId;
+public class CreateSalesOrderResponse {
+    private final String documentNo;
     private final SalesOrderStatus status;
     private final String message;
 
-    public static SalesOrderCreateResponse from(SalesOrder salesOrder) {
-        return SalesOrderCreateResponse.builder()
-                .soId(salesOrder.getSoId())
+    public static CreateSalesOrderResponse from(SalesOrder salesOrder) {
+        return CreateSalesOrderResponse.builder()
+                .documentNo(salesOrder.getDocumentNo())
+                .status(salesOrder.getStatus())
                 .message("판매 등록이 완료됐습니다.")
                 .build();
     }

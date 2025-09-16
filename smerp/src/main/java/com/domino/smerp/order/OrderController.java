@@ -35,7 +35,6 @@ public class OrderController {
         return ResponseEntity.ok(orderService.getOrders(condition, pageable));
     }
 
-
     // 주문 상세 조회 (GET)
     @GetMapping("/{orderId}")
     public ResponseEntity<DetailOrderResponse> getOrderDetail(@PathVariable Long orderId) {

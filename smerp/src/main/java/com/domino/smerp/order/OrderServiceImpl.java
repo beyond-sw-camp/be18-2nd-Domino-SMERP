@@ -5,6 +5,7 @@ import com.domino.smerp.client.ClientRepository;
 import com.domino.smerp.common.dto.PageResponse;
 import com.domino.smerp.common.exception.CustomException;
 import com.domino.smerp.common.exception.ErrorCode;
+import com.domino.smerp.common.util.DocumentNoGenerator;
 import com.domino.smerp.item.Item;
 import com.domino.smerp.item.ItemServiceImpl;
 import com.domino.smerp.itemorder.ItemOrder;
@@ -21,7 +22,6 @@ import com.domino.smerp.order.repository.OrderRepository;
 import com.domino.smerp.user.User;
 import com.domino.smerp.user.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -32,7 +32,6 @@ import java.math.RoundingMode;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneOffset;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -47,6 +46,13 @@ public class OrderServiceImpl implements OrderService {
     private final UserRepository userRepository;
     private final ItemServiceImpl itemServiceImpl;
     private final ItemOrderRepository itemOrderRepository;
+    private final DocumentNoGenerator documentNoGenerator;
+
+    // 공용 조회용 메서드
+    public Order findOrderById(Long orderId) {
+        return orderRepository.findById(orderId)
+                .orElseThrow(() -> new CustomException(ErrorCode.ORDER_NOT_FOUND));
+    }
 
     private Client getClientByCompanyName(String companyName) {
         return clientRepository.findByCompanyName(companyName)
@@ -61,19 +67,7 @@ public class OrderServiceImpl implements OrderService {
     //전표 생성
     @Transactional
     public String generateDocumentNoWithRetry(LocalDate documentDate) {
-        String datePart = documentDate.format(DateTimeFormatter.ofPattern("yyyy/MM/dd"));
-        int retry = 0;
-
-        while (retry < 3) {
-            try {
-                Integer maxSeq = orderRepository.findMaxSequenceByPrefix(datePart).orElse(0);
-                int nextSeq = maxSeq + 1;
-                return datePart + "-" + nextSeq;
-            } catch (DataIntegrityViolationException e) {
-                retry++;
-            }
-        }
-        throw new CustomException(ErrorCode.DOCUMENT_NO_GENERATION_FAILED);
+        return documentNoGenerator.generate(documentDate, orderRepository::findMaxSequenceByPrefix);
     }
 
     // 등록용 ItemOrder 생성 메서드
@@ -100,7 +94,7 @@ public class OrderServiceImpl implements OrderService {
         Client client = getClientByCompanyName(request.getCompanyName());
         User user = getUserByEmpNo(request.getEmpNo());
 
-        OrderStatus status = (request.getStatus() != null) ? request.getStatus() : OrderStatus.PENDING;
+        OrderStatus status = OrderStatus.PENDING;
 
         // 주문일자(documentDate) 기반 documentNo 생성
         LocalDate documentDate = request.getDocumentDate();
@@ -150,7 +144,7 @@ public class OrderServiceImpl implements OrderService {
                         .userName(order.getUser().getName())
                         .firstItemName(order.getFirstItemName())
                         .otherItemCount(order.getOtherItemCount())
-                        .totalAmount(order.getTotalAmount())
+                        .totalAmount(order.getTotalAmount().setScale(2, RoundingMode.HALF_UP))
                         .remark(order.getRemark())
                         .build()
         );
@@ -163,12 +157,11 @@ public class OrderServiceImpl implements OrderService {
     @Override
     @Transactional(readOnly = true)
     public DetailOrderResponse getDetailOrder(Long orderId) {
-        Order order = orderRepository.findByIdWithDetails(orderId)
-                .orElseThrow(() -> new CustomException(ErrorCode.ORDER_NOT_FOUND));
+        Order order = findOrderById(orderId);
 
         List<DetailItemOrderResponse> itemResponses = order.getOrderItems().stream()
                 .map(itemOrder -> DetailItemOrderResponse.builder()
-                        .itemCode(itemOrder.getItem().getItemId())
+                        .itemId(itemOrder.getItem().getItemId())
                         .itemName(itemOrder.getItem().getName())
                         .specification(itemOrder.getItem().getSpecification())
                         .qty(itemOrder.getQty())
@@ -198,14 +191,13 @@ public class OrderServiceImpl implements OrderService {
     @Override
     @Transactional
     public UpdateOrderResponse updateOrder(Long orderId, UpdateOrderRequest request) {
-        Order order = orderRepository.findById(orderId)
-                .orElseThrow(() -> new CustomException(ErrorCode.ORDER_NOT_FOUND));
+        Order order = findOrderById(orderId);
 
         User user = getUserByEmpNo(request.getEmpNo());
 
         // 1. 기존 품목 매핑
         Map<Long, ItemOrder> existingItems = order.getOrderItems().stream()
-                .collect(Collectors.toMap(ItemOrder::getId, io -> io));
+                .collect(Collectors.toMap(ItemOrder::getItemOrderId, io -> io));
 
         List<ItemOrder> finalItems = new ArrayList<>();
 
@@ -251,7 +243,11 @@ public class OrderServiceImpl implements OrderService {
 
         // 4. 전표번호 갱신 (documentDate 변경 시)
         if (request.getDocumentDate() != null) {
-            String newDocNo = generateDocumentNoWithRetry(request.getDocumentDate());
+            String newDocNo = documentNoGenerator.generateOrKeep(
+                    order.getDocumentNo(),
+                    request.getDocumentDate(),
+                    orderRepository::findMaxSequenceByPrefix
+            );
             order.updateDocumentInfo(newDocNo);
         }
 
@@ -276,8 +272,7 @@ public class OrderServiceImpl implements OrderService {
     @Override
     @Transactional
     public DeleteOrderResponse deleteOrder(Long orderId) {
-        Order order = orderRepository.findById(orderId)
-                .orElseThrow(() -> new CustomException(ErrorCode.ORDER_NOT_FOUND));
+        Order order = findOrderById(orderId);
 
         orderRepository.delete(order);
         return DeleteOrderResponse.from(order);

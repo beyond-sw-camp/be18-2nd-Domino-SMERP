@@ -2,6 +2,8 @@ package com.domino.smerp.salesorder;
 
 import com.domino.smerp.common.BaseEntity;
 import com.domino.smerp.order.Order;
+import com.domino.smerp.order.constants.OrderStatus;
+import com.domino.smerp.salesorder.constants.SalesOrderStatus;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.SQLDelete;
@@ -22,34 +24,37 @@ public class SalesOrder extends BaseEntity {
     @Column(name = "sales_order_id")
     private Long soId;
 
-    // 주문 참조 (항상 동기화)
+    // 주문 참조 (1:1)
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "order_id", nullable = false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
+    @JoinColumn(name = "order_id", nullable = false, unique = true,
+            foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
     private Order order;
 
-    // 판매일자 (주문일자와 같을 수도 있고, 실제 매출일을 따로 관리할 수도 있음)
-    @Column(name = "sales_date", nullable = false)
-    private java.time.Instant salesDate;
+    @Column(name = "document_no", nullable = false, length = 30, unique = true)
+    private String documentNo;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status", nullable = false, length = 20)
+    @Builder.Default
+    private SalesOrderStatus status = SalesOrderStatus.APPROVED;
 
     @Column(name = "remark", length = 100)
     private String remark;
+
+    @Column(name = "warehouse_name", nullable = false, length = 50)
+    private String warehouseName;
 
     @Builder.Default
     @Column(name = "is_deleted", nullable = false)
     private boolean isDeleted = false;
 
-    // 편의 메서드: 주문에서 기본값 세팅
-    public static SalesOrder fromOrder(Order order) {
-        return SalesOrder.builder()
-                .order(order)
-                .salesDate(order.getCreatedAt())   // 주문 생성일자 그대로
-                .remark(order.getRemark())
-                .build();
+    public void updateAll(SalesOrderStatus status, String remark, String warehouseName) {
+        if (status != null) this.status = status;
+        if (remark != null) this.remark = remark;
+        if (warehouseName != null) this.warehouseName = warehouseName;
     }
 
-    public void updateRemark(String remark) {
-        if (remark != null && !remark.isBlank()) {
-            this.remark = remark;
-        }
+    public void updateDocumentInfo(String newDocumentNo) {
+        this.documentNo = newDocumentNo;
     }
 }

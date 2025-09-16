@@ -1,15 +1,17 @@
 package com.domino.smerp.salesorder;
 
-import com.domino.smerp.salesorder.dto.request.SalesOrderRequest;
-import com.domino.smerp.salesorder.dto.response.SalesOrderCreateResponse;
-import com.domino.smerp.salesorder.dto.response.SalesOrderResponse;
-
-import java.util.List;
+import com.domino.smerp.common.dto.PageResponse;
+import com.domino.smerp.salesorder.dto.request.CreateSalesOrderRequest;
+import com.domino.smerp.salesorder.dto.request.SearchSalesOrderRequest;
+import com.domino.smerp.salesorder.dto.request.UpdateSalesOrderRequest;
+import com.domino.smerp.salesorder.dto.response.*;
+import org.springframework.data.domain.Pageable;
+import org.springframework.transaction.annotation.Transactional;
 
 public interface SalesOrderService {
-    SalesOrderCreateResponse createSalesOrder(SalesOrderRequest request);
-    List<SalesOrderResponse> getSalesOrders();
-    SalesOrderResponse getSalesOrderById(Long soId);
-    SalesOrderResponse updateSalesOrder(Long soId, SalesOrderRequest request);
-    void deleteSalesOrder(Long soId);
+    CreateSalesOrderResponse createSalesOrder(CreateSalesOrderRequest request);
+    PageResponse<ListSalesOrderResponse> getSalesOrders(SearchSalesOrderRequest condition, Pageable pageable);
+    DetailSalesOrderResponse getDetailSalesOrder(Long salesOrderId);
+    UpdateSalesOrderResponse updateSalesOrder(Long salesOrderId, UpdateSalesOrderRequest request);
+    DeleteSalesOrderResponse deleteSalesOrder(Long salesOrderId);
 }
