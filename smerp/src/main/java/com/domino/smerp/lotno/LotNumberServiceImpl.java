@@ -1,20 +1,18 @@
-package com.domino.smerp.lotno.service;
+package com.domino.smerp.lotno;
 
 import com.domino.smerp.common.dto.PageResponse;
 import com.domino.smerp.common.exception.CustomException;
 import com.domino.smerp.common.exception.ErrorCode;
-import com.domino.smerp.item.entity.Item;
-import com.domino.smerp.item.service.ItemService;
+import com.domino.smerp.item.Item;
+import com.domino.smerp.item.ItemService;
 import com.domino.smerp.lotno.dto.request.CreateLotNumberRequest;
 import com.domino.smerp.lotno.dto.request.SearchLotNumberRequest;
 import com.domino.smerp.lotno.dto.request.UpdateLotNumberRequest;
 import com.domino.smerp.lotno.dto.response.LotNumberDetailResponse;
 import com.domino.smerp.lotno.dto.response.LotNumberListResponse;
 import com.domino.smerp.lotno.dto.response.LotNumberSimpleResponse;
-import com.domino.smerp.lotno.entity.LotNumber;
 import com.domino.smerp.lotno.repository.LotNumberRepository;
 import java.time.Instant;
-import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import lombok.RequiredArgsConstructor;

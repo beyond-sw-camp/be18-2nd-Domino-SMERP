@@ -1,6 +1,6 @@
 package com.domino.smerp.item.repository;
 
-import com.domino.smerp.item.entity.Item;
+import com.domino.smerp.item.Item;
 import com.domino.smerp.item.repository.query.ItemQueryRepository;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;

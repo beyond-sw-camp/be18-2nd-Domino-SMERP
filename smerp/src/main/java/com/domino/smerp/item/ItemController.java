@@ -1,8 +1,6 @@
-package com.domino.smerp.item.controller;
+package com.domino.smerp.item;
 
 import com.domino.smerp.common.dto.PageResponse;
-import com.domino.smerp.item.service.ItemManagementService;
-import com.domino.smerp.item.service.ItemService;
 import com.domino.smerp.item.dto.request.CreateItemRequest;
 import com.domino.smerp.item.dto.request.SearchItemRequest;
 import com.domino.smerp.item.dto.request.UpdateItemRequest;
@@ -13,8 +11,6 @@ import com.domino.smerp.item.dto.response.ItemStatusResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;

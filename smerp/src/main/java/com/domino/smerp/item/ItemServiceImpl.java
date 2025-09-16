@@ -1,4 +1,4 @@
-package com.domino.smerp.item.service;
+package com.domino.smerp.item;
 
 import com.domino.smerp.common.dto.PageResponse;
 import com.domino.smerp.common.exception.CustomException;
@@ -10,8 +10,6 @@ import com.domino.smerp.item.dto.request.UpdateItemStatusRequest;
 import com.domino.smerp.item.dto.response.ItemDetailResponse;
 import com.domino.smerp.item.dto.response.ItemListResponse;
 import com.domino.smerp.item.dto.response.ItemStatusResponse;
-import com.domino.smerp.item.entity.Item;
-import com.domino.smerp.item.entity.ItemStatus;
 import com.domino.smerp.item.repository.ItemRepository;
 import com.domino.smerp.item.repository.ItemStatusRepository;
 import java.math.BigDecimal;

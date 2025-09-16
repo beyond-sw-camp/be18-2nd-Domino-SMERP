@@ -1,6 +1,6 @@
 package com.domino.smerp.lotno.repository;
 
-import com.domino.smerp.lotno.entity.LotNumber;
+import com.domino.smerp.lotno.LotNumber;
 import com.domino.smerp.lotno.repository.command.LotNumberCommandRepository;
 import com.domino.smerp.lotno.repository.query.LotNumberQueryRepository;
 import org.springframework.data.jpa.repository.JpaRepository;

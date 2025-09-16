@@ -1,6 +1,6 @@
-package com.domino.smerp.item.service;
+package com.domino.smerp.item;
 
-import com.domino.smerp.lotno.service.LotNumberService;
+import com.domino.smerp.lotno.LotNumberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

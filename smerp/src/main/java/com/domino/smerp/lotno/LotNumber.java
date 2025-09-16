@@ -1,10 +1,7 @@
-package com.domino.smerp.lotno.entity;
+package com.domino.smerp.lotno;
 
 import com.domino.smerp.common.BaseEntity;
-import com.domino.smerp.item.constants.ItemAct;
-import com.domino.smerp.item.constants.SafetyStockAct;
-import com.domino.smerp.item.dto.request.UpdateItemStatusRequest;
-import com.domino.smerp.item.entity.Item;
+import com.domino.smerp.item.Item;
 import com.domino.smerp.lotno.constants.LotNumberStatus;
 import com.domino.smerp.lotno.dto.request.CreateLotNumberRequest;
 import com.domino.smerp.lotno.dto.request.UpdateLotNumberRequest;
@@ -28,7 +25,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.SQLRestriction;
-import org.hibernate.annotations.SoftDelete;
 
 @Entity
 @Getter

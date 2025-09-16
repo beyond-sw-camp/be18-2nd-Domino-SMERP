@@ -1,4 +1,4 @@
-package com.domino.smerp.lotno.controller;
+package com.domino.smerp.lotno;
 
 import com.domino.smerp.common.dto.PageResponse;
 import com.domino.smerp.lotno.dto.request.CreateLotNumberRequest;
@@ -7,7 +7,6 @@ import com.domino.smerp.lotno.dto.request.UpdateLotNumberRequest;
 import com.domino.smerp.lotno.dto.response.LotNumberDetailResponse;
 import com.domino.smerp.lotno.dto.response.LotNumberListResponse;
 import com.domino.smerp.lotno.dto.response.LotNumberSimpleResponse;
-import com.domino.smerp.lotno.service.LotNumberService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;

@@ -1,6 +1,6 @@
 package com.domino.smerp.lotno.dto.response;
 
-import com.domino.smerp.lotno.entity.LotNumber;
+import com.domino.smerp.lotno.LotNumber;
 import java.math.BigDecimal;
 import lombok.Builder;
 import lombok.Getter;

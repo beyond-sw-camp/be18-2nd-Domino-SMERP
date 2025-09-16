@@ -1,20 +1,16 @@
 package com.domino.smerp.lotno.repository.query;
 
 import com.domino.smerp.common.util.QuerydslUtils;
-import com.domino.smerp.item.constants.ItemStatusStatus;
-import com.domino.smerp.item.entity.QItem;
+import com.domino.smerp.item.QItem;
 import com.domino.smerp.lotno.constants.LotNumberStatus;
 import com.domino.smerp.lotno.dto.request.SearchLotNumberRequest;
-import com.domino.smerp.lotno.entity.LotNumber;
-import com.domino.smerp.lotno.entity.QLotNumber;
-import com.querydsl.core.types.Order;
+import com.domino.smerp.lotno.LotNumber;
+import com.domino.smerp.lotno.QLotNumber;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.Path;
 import com.querydsl.core.types.dsl.BooleanExpression;
-import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;

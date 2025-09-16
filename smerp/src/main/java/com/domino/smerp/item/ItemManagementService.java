@@ -1,4 +1,4 @@
-package com.domino.smerp.item.service;
+package com.domino.smerp.item;
 
 public interface ItemManagementService {
 

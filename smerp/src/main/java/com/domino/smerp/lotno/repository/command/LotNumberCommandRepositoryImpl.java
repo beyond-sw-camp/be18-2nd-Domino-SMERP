@@ -1,7 +1,7 @@
 package com.domino.smerp.lotno.repository.command;
 
-import com.domino.smerp.item.entity.QItem;
-import com.domino.smerp.lotno.entity.QLotNumber;
+import com.domino.smerp.item.QItem;
+import com.domino.smerp.lotno.QLotNumber;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
