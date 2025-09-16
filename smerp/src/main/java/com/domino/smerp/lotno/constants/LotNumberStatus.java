@@ -26,6 +26,6 @@ public enum LotNumberStatus {
         .filter(status -> status.description.equals(label)   // 한글 설명 매칭
             || status.name().equalsIgnoreCase(label))                   // Enum 이름 매칭
         .findFirst()
-        .orElseThrow(() -> new CustomException(ErrorCode.ITEM_STATUS_NOT_FOUND));
+        .orElseThrow(() -> new CustomException(ErrorCode.INVALID_LOTNUMBER_STATUS));
   }
 }

@@ -55,10 +55,8 @@ public class ItemServiceImpl implements ItemService {
   @Transactional(readOnly = true)
   public PageResponse<ItemListResponse> searchItems(final SearchItemRequest keyword,
       final Pageable pageable) {
-    return PageResponse
-        .from(itemRepository.searchItems(keyword, pageable)
-            .map(ItemListResponse::fromEntity)
-        );
+    return PageResponse.from(
+        itemRepository.searchItems(keyword, pageable).map(ItemListResponse::fromEntity));
   }
 
 
@@ -137,15 +135,13 @@ public class ItemServiceImpl implements ItemService {
   }
 
 
-
   // findById 공통 메소드
   // 품목 구분 findById
   @Override
   @Transactional(readOnly = true)
   public ItemStatus findItemStatusById(final Long itemStatusId) {
     return itemStatusRepository.findById(itemStatusId)
-        .orElseThrow(
-            () -> new CustomException(ErrorCode.ITEM_STATUS_NOT_FOUND));
+        .orElseThrow(() -> new CustomException(ErrorCode.ITEM_STATUS_NOT_FOUND));
   }
 
   // 품목 findById
@@ -153,8 +149,7 @@ public class ItemServiceImpl implements ItemService {
   @Transactional(readOnly = true)
   public Item findItemById(final Long itemId) {
     return itemRepository.findById(itemId)
-        .orElseThrow(
-            () -> new CustomException(ErrorCode.ITEM_NOT_FOUND));
+        .orElseThrow(() -> new CustomException(ErrorCode.ITEM_NOT_FOUND));
   }
 
   // 품목 코드 로직

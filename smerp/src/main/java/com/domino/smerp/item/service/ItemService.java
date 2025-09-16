@@ -18,7 +18,8 @@ public interface ItemService {
   ItemDetailResponse createItem(final CreateItemRequest request);
 
   // 품목 목록 조회
-  PageResponse<ItemListResponse> searchItems(final SearchItemRequest keyword, final Pageable pageable);
+  PageResponse<ItemListResponse> searchItems(final SearchItemRequest keyword,
+      final Pageable pageable);
 
   // 품목 상세 조회
   ItemDetailResponse getItemById(final Long itemId);
@@ -31,9 +32,11 @@ public interface ItemService {
 
   // 품목 삭제
   void deleteItem(final Long itemId);
+
   void softDeleteItem(final Long itemId);
 
   // 공통 메소드
   ItemStatus findItemStatusById(final Long itemStatusId);
+
   Item findItemById(final Long itemId);
 }
