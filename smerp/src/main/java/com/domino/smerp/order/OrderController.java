@@ -12,8 +12,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @RestController
 @RequestMapping("/api/v1/orders")
 @RequiredArgsConstructor
@@ -36,7 +34,6 @@ public class OrderController {
     ) {
         return ResponseEntity.ok(orderService.getOrders(condition, pageable));
     }
-
 
 
     // 주문 상세 조회 (GET)
