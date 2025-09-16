@@ -80,8 +80,7 @@ public class ItemServiceImpl implements ItemService {
 
     item.updateItem(request, itemStatus);
 
-    Item updatedItem = itemRepository.save(item);
-    return ItemDetailResponse.fromEntity(updatedItem);
+    return ItemDetailResponse.fromEntity(item);
   }
 
   // 품목 안전재고 / 사용여부 수정
@@ -97,22 +96,9 @@ public class ItemServiceImpl implements ItemService {
       throw new CustomException(ErrorCode.INVALID_SAFETY_STOCK);
     }
 
-    try {
-      item.updateStatus(request);
+    item.updateStatus(request);
 
-      // 안전재고 / 사용여부 ENUM값 체크
-    } catch (final IllegalArgumentException e) {
-      if (e.getMessage().contains("ItemAct")) {
-        throw new CustomException(ErrorCode.INVALID_ITEM_ACT);
-      }
-      if (e.getMessage().contains("SafetyStockAct")) {
-        throw new CustomException(ErrorCode.INVALID_SAFETY_STOCK_ACT);
-      }
-      throw e;
-    }
-
-    Item updatedItem = itemRepository.save(item);
-    return ItemStatusResponse.fromEntity(updatedItem);
+    return ItemStatusResponse.fromEntity(item);
   }
 
   // 품목 삭제
