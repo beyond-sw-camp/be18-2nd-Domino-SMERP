@@ -49,7 +49,7 @@ public class ItemQueryRepositoryImpl implements ItemQueryRepository {
 
     // 기본 정렬 (없을 때 fallback)
     if (orders.isEmpty()) {
-      orders.add(item.itemId.desc());
+      orders.add(item.itemId.asc());
     }
 
     // SELECT한 데이터

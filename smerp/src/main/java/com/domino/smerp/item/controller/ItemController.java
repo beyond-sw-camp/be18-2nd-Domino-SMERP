@@ -13,6 +13,8 @@ import com.domino.smerp.item.dto.response.ItemStatusResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -43,8 +45,7 @@ public class ItemController {
   // 품목 목록 조회 (검색조건은 쿼리파라미터로)
   @GetMapping
   public ResponseEntity<PageResponse<ItemListResponse>> getItems(
-      @ModelAttribute SearchItemRequest keyword,
-      Pageable pageable) {
+      @ModelAttribute SearchItemRequest keyword, Pageable pageable) {
     return ResponseEntity.ok(itemService.searchItems(keyword, pageable));
   }
 
