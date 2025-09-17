@@ -36,10 +36,12 @@ public enum ErrorCode {
     ORDER_NOT_FOUND(HttpStatus.NOT_FOUND, "ORDER_NOT_FOUND", "존재하지 않는 주문입니다."),
     ITEMS_REQUIRED(HttpStatus.BAD_REQUEST, "ITEMS_REQUIRED", "주문에는 최소 1개 이상의 품목이 필요합니다."),
     INVALID_ORDER_REQUEST(HttpStatus.BAD_REQUEST, "INVALID_REQUEST", "잘못된 주문 요청입니다."),
+    ORDER_ALREADY_APPROVED(HttpStatus.BAD_REQUEST, "ORDER_ALREADY_APPROVED", "이미 주문 승인이 완료되었습니다."),
 
     // sales_order - 판매와 관련된 예외 정보
+    INVALID_ORDER_STATUS(HttpStatus.BAD_REQUEST, "INVALID_ORDER_STATUS", "해당 주문은 판매 생성이 불가능한 상태입니다."),
     SALES_ORDER_NOT_FOUND(HttpStatus.NOT_FOUND, "SALES_ORDER_NOT_FOUND", "존재하지 않는 판매입니다."),
-
+    SALES_ORDER_ALREADY_EXISTS(HttpStatus.CONFLICT, "SALES_ORDER_ALREADY_EXISTS", "이미 존재하는 판매 전표가 있습니다."),
 
     // 전표 생성 예외 정보
     DOCUMENT_NO_GENERATION_FAILED(HttpStatus.CONFLICT, "DOCUMENT_NO_GENERATION_FAILED", "전표번호 생성에 실패했습니다.");

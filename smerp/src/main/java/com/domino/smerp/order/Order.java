@@ -4,6 +4,7 @@ import com.domino.smerp.client.Client;
 import com.domino.smerp.common.BaseEntity;
 import com.domino.smerp.itemorder.ItemOrder;
 import com.domino.smerp.order.constants.OrderStatus;
+import com.domino.smerp.salesorder.SalesOrder;
 import com.domino.smerp.user.User;
 import jakarta.persistence.*;
 import lombok.*;
@@ -59,6 +60,10 @@ public class Order extends BaseEntity {
     @OneToMany(mappedBy = "order") // Cascade 제거
     @Builder.Default
     private List<ItemOrder> orderItems = new ArrayList<>();
+
+    // 일대일 매핑
+    @OneToMany(mappedBy = "order", fetch = FetchType.LAZY)
+    private List<SalesOrder> salesOrders = new ArrayList<>();
 
     // 양방향 연관관계 세팅 메서드
     public void addOrderItem(ItemOrder orderItem) {

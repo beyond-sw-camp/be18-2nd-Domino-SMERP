@@ -7,6 +7,7 @@ import lombok.Builder;
 import lombok.Getter;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -18,8 +19,6 @@ public class DetailSalesOrderResponse {
     private final String documentNo;       // 판매번호
     private final String companyName;      // 거래처
     private final String userName;         // 담당자
-    private final String status;           // 판매 상태
-    private final LocalDate documentDate;  // 판매일자
     private final String remark;           // 비고
     private final String warehouseName;    // 창고명
     private final BigDecimal totalAmount;  // 금액 합계
@@ -30,11 +29,9 @@ public class DetailSalesOrderResponse {
                 .documentNo(so.getDocumentNo())
                 .companyName(so.getOrder().getClient().getCompanyName())
                 .userName(so.getOrder().getUser().getName())
-                .status(so.getStatus().name())
-                .documentDate(so.getCreatedAt().atZone(java.time.ZoneOffset.UTC).toLocalDate())
                 .remark(so.getRemark())
                 .warehouseName(so.getWarehouseName())
-                .totalAmount(so.getOrder().getTotalAmount())
+                .totalAmount(so.getOrder().getTotalAmount().setScale(2, RoundingMode.HALF_UP))
                 .items(
                         so.getOrder().getOrderItems().stream()
                                 .map(DetailItemOrderResponse::from)

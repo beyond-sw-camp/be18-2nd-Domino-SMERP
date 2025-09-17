@@ -1,7 +1,5 @@
 package com.domino.smerp.salesorder.dto.request;
 
-import com.domino.smerp.order.constants.OrderStatus;
-import com.domino.smerp.salesorder.constants.SalesOrderStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -13,7 +11,6 @@ import java.time.LocalDate;
 @AllArgsConstructor
 public class SearchSalesOrderRequest {
     private final String companyName;
-    private final SalesOrderStatus status;
     private final String userName;
     private final String documentNo;
     private final String remark;

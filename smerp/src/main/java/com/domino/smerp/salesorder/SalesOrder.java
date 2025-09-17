@@ -2,8 +2,6 @@ package com.domino.smerp.salesorder;
 
 import com.domino.smerp.common.BaseEntity;
 import com.domino.smerp.order.Order;
-import com.domino.smerp.order.constants.OrderStatus;
-import com.domino.smerp.salesorder.constants.SalesOrderStatus;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.SQLDelete;
@@ -25,18 +23,13 @@ public class SalesOrder extends BaseEntity {
     private Long soId;
 
     // 주문 참조 (1:1)
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "order_id", nullable = false, unique = true,
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "order_id", nullable = false,
             foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
     private Order order;
 
     @Column(name = "document_no", nullable = false, length = 30, unique = true)
     private String documentNo;
-
-    @Enumerated(EnumType.STRING)
-    @Column(name = "status", nullable = false, length = 20)
-    @Builder.Default
-    private SalesOrderStatus status = SalesOrderStatus.APPROVED;
 
     @Column(name = "remark", length = 100)
     private String remark;
@@ -48,8 +41,7 @@ public class SalesOrder extends BaseEntity {
     @Column(name = "is_deleted", nullable = false)
     private boolean isDeleted = false;
 
-    public void updateAll(SalesOrderStatus status, String remark, String warehouseName) {
-        if (status != null) this.status = status;
+    public void updateAll(String remark, String warehouseName) {
         if (remark != null) this.remark = remark;
         if (warehouseName != null) this.warehouseName = warehouseName;
     }

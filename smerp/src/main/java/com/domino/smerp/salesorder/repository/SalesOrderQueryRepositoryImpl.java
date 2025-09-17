@@ -4,7 +4,6 @@ import com.domino.smerp.client.QClient;
 import com.domino.smerp.order.QOrder;
 import com.domino.smerp.salesorder.QSalesOrder;
 import com.domino.smerp.salesorder.SalesOrder;
-import com.domino.smerp.salesorder.constants.SalesOrderStatus;
 import com.domino.smerp.salesorder.dto.request.SearchSalesOrderRequest;
 import com.domino.smerp.user.QUser;
 import com.querydsl.core.types.dsl.BooleanExpression;
@@ -40,7 +39,6 @@ public class SalesOrderQueryRepositoryImpl implements SalesOrderQueryRepository 
                 .join(order.user, user).fetchJoin()
                 .where(
                         companyNameContains(condition.getCompanyName()),
-                        statusEq(condition.getStatus()),
                         userNameContains(condition.getUserName()),
                         documentNoContains(condition.getDocumentNo()),
                         remarkContains(condition.getRemark()),
@@ -58,7 +56,6 @@ public class SalesOrderQueryRepositoryImpl implements SalesOrderQueryRepository 
                 .join(order.user, user)
                 .where(
                         companyNameContains(condition.getCompanyName()),
-                        statusEq(condition.getStatus()),
                         userNameContains(condition.getUserName()),
                         documentNoContains(condition.getDocumentNo()),
                         remarkContains(condition.getRemark()),
@@ -70,10 +67,6 @@ public class SalesOrderQueryRepositoryImpl implements SalesOrderQueryRepository 
 
     private BooleanExpression companyNameContains(String name) {
         return (name == null || name.isEmpty()) ? null : QClient.client.companyName.contains(name);
-    }
-
-    private BooleanExpression statusEq(SalesOrderStatus status) {
-        return (status == null) ? null : QSalesOrder.salesOrder.status.eq(status);
     }
 
     private BooleanExpression userNameContains(String userName) {

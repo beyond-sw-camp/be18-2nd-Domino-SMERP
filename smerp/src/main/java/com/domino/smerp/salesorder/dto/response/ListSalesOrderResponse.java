@@ -15,7 +15,6 @@ public class ListSalesOrderResponse {
 
     private final String documentNo;     // 판매 번호
     private final String companyName;    // 거래처
-    private final String status;         // 판매 상태
     private final String userName;       // 담당자
     private final String firstItemName;  // 첫 번째 품목
     private final int otherItemCount;    // 외 몇 건
@@ -27,7 +26,6 @@ public class ListSalesOrderResponse {
         return ListSalesOrderResponse.builder()
                 .documentNo(so.getDocumentNo())
                 .companyName(so.getOrder().getClient().getCompanyName())
-                .status(so.getStatus().name())
                 .userName(so.getOrder().getUser().getName())
                 .firstItemName(so.getOrder().getFirstItemName())
                 .otherItemCount(so.getOrder().getOtherItemCount())

@@ -1,11 +1,13 @@
 package com.domino.smerp.order.dto.response;
 
+import com.domino.smerp.order.Order;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.Instant;
 
 @Getter
@@ -23,5 +25,19 @@ public class ListOrderResponse {
     private final int otherItemCount;  // 나머지 품목 수
     private final BigDecimal totalAmount; // 총 공급가
     private final String remark;       // 비고
+
+    public static ListOrderResponse from(Order order) {
+        return ListOrderResponse.builder()
+                .documentNo(order.getDocumentNo())
+                .companyName(order.getClient().getCompanyName())
+                .status(order.getStatus().name())
+                .deliveryDate(order.getDeliveryDate())
+                .userName(order.getUser().getName())
+                .firstItemName(order.getFirstItemName())
+                .otherItemCount(order.getOtherItemCount())
+                .totalAmount(order.getTotalAmount().setScale(2, RoundingMode.HALF_UP))
+                .remark(order.getRemark())
+                .build();
+    }
 }
 

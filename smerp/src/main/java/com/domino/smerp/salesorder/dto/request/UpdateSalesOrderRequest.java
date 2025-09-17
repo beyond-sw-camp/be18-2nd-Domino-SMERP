@@ -1,6 +1,5 @@
 package com.domino.smerp.salesorder.dto.request;
 
-import com.domino.smerp.salesorder.constants.SalesOrderStatus;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
@@ -15,9 +14,6 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @NoArgsConstructor(force = true)
 public class UpdateSalesOrderRequest {
-
-    @NotNull(message = "판매 상태는 필수 입력입니다.")
-    private final SalesOrderStatus status;
 
     private final LocalDate documentDate;  // 판매일자
 

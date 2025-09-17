@@ -5,8 +5,8 @@ import com.domino.smerp.common.exception.CustomException;
 import com.domino.smerp.common.exception.ErrorCode;
 import com.domino.smerp.common.util.DocumentNoGenerator;
 import com.domino.smerp.order.Order;
+import com.domino.smerp.order.constants.OrderStatus;
 import com.domino.smerp.order.repository.OrderRepository;
-import com.domino.smerp.salesorder.constants.SalesOrderStatus;
 import com.domino.smerp.salesorder.dto.request.CreateSalesOrderRequest;
 import com.domino.smerp.salesorder.dto.request.SearchSalesOrderRequest;
 import com.domino.smerp.salesorder.dto.request.UpdateSalesOrderRequest;
@@ -26,16 +26,29 @@ public class SalesOrderServiceImpl implements SalesOrderService {
     private final OrderRepository orderRepository;
     private final DocumentNoGenerator documentNoGenerator;
 
+    // 판매 등록
     @Override
     @Transactional
     public CreateSalesOrderResponse createSalesOrder(CreateSalesOrderRequest request) {
         // 주문 전표로 Order 조회
         Order order = orderRepository.findByDocumentNo(request.getOrderDocumentNo())
-                .orElseThrow(() -> new CustomException(ErrorCode.SALES_ORDER_NOT_FOUND));
+                .orElseThrow(() -> new CustomException(ErrorCode.ORDER_NOT_FOUND));
+
+        // 주문 상태가 APPROVED가 아닌 경우 에외 발생
+        if (order.getStatus() != OrderStatus.APPROVED) {
+            throw new CustomException(ErrorCode.INVALID_ORDER_STATUS);
+        }
+
+        // 이미 삭제되지 않은 판매가 존재하는 경우 예외 발생
+        if (salesOrderRepository.existsByOrderAndIsDeletedFalse(order)) {
+            throw new CustomException(ErrorCode.SALES_ORDER_ALREADY_EXISTS);
+        }
 
         if (request.getDocumentDate() == null) {
             throw new CustomException(ErrorCode.INVALID_ORDER_REQUEST);
         }
+
+
 
         // 전표번호 생성
         String documentNo = documentNoGenerator.generate(
@@ -46,7 +59,6 @@ public class SalesOrderServiceImpl implements SalesOrderService {
         SalesOrder salesOrder = SalesOrder.builder()
                 .order(order)
                 .documentNo(documentNo)
-                .status(SalesOrderStatus.APPROVED)
                 .remark(request.getRemark())
                 .warehouseName(request.getWarehouseName())
                 .build();
@@ -55,14 +67,7 @@ public class SalesOrderServiceImpl implements SalesOrderService {
         return CreateSalesOrderResponse.from(salesOrder);
     }
 
-    @Override
-    @Transactional(readOnly = true)
-    public DetailSalesOrderResponse getDetailSalesOrder(Long salesOrderId) {
-        SalesOrder salesOrder = salesOrderRepository.findById(salesOrderId)
-                .orElseThrow(() -> new CustomException(ErrorCode.ORDER_NOT_FOUND));
-        return DetailSalesOrderResponse.from(salesOrder);
-    }
-
+    // 주문 목록 조회
     @Override
     @Transactional(readOnly = true)
     public PageResponse<ListSalesOrderResponse> getSalesOrders(SearchSalesOrderRequest condition, Pageable pageable) {
@@ -73,11 +78,21 @@ public class SalesOrderServiceImpl implements SalesOrderService {
         return PageResponse.from(dtoPage);
     }
 
+    // 주문 상세 조회
+    @Override
+    @Transactional(readOnly = true)
+    public DetailSalesOrderResponse getDetailSalesOrder(Long salesOrderId) {
+        SalesOrder salesOrder = salesOrderRepository.findByIdWithDetails(salesOrderId)
+                .orElseThrow(() -> new CustomException(ErrorCode.SALES_ORDER_NOT_FOUND));
+        return DetailSalesOrderResponse.from(salesOrder);
+    }
+
+    // 주문 수정
     @Override
     @Transactional
     public UpdateSalesOrderResponse updateSalesOrder(Long salesOrderId, UpdateSalesOrderRequest request) {
-        SalesOrder salesOrder = salesOrderRepository.findById(salesOrderId)
-                .orElseThrow(() -> new CustomException(ErrorCode.ORDER_NOT_FOUND));
+        SalesOrder salesOrder = salesOrderRepository.findByIdWithDetails(salesOrderId)
+                .orElseThrow(() -> new CustomException(ErrorCode.SALES_ORDER_NOT_FOUND));
 
         // 전표번호 갱신 로직
         if (request.getDocumentDate() != null) {
@@ -90,7 +105,6 @@ public class SalesOrderServiceImpl implements SalesOrderService {
         }
 
         salesOrder.updateAll(
-                request.getStatus(),
                 request.getRemark(),
                 request.getWarehouseName()
         );
@@ -98,6 +112,7 @@ public class SalesOrderServiceImpl implements SalesOrderService {
         return UpdateSalesOrderResponse.from(salesOrderRepository.save(salesOrder));
     }
 
+    // 주문 삭제
     @Override
     @Transactional
     public DeleteSalesOrderResponse deleteSalesOrder(Long salesOrderId) {

@@ -17,6 +17,7 @@ public class SalesOrderController {
 
     private final SalesOrderService salesOrderService;
 
+    // 주문 등록
     @PostMapping
     public ResponseEntity<CreateSalesOrderResponse> createSalesOrder(
             @RequestBody CreateSalesOrderRequest request) {
@@ -24,6 +25,7 @@ public class SalesOrderController {
         return ResponseEntity.ok(response);
     }
 
+    // 주문 목록 조회
     @GetMapping
     public ResponseEntity<PageResponse<ListSalesOrderResponse>> getSalesOrders(
             SearchSalesOrderRequest condition,
@@ -32,6 +34,7 @@ public class SalesOrderController {
         return ResponseEntity.ok(response);
     }
 
+    // 주문 상세 조회
     @GetMapping("/{salesOrderId}")
     public ResponseEntity<DetailSalesOrderResponse> getDetailSalesOrder(
             @PathVariable Long salesOrderId) {
@@ -39,6 +42,7 @@ public class SalesOrderController {
         return ResponseEntity.ok(response);
     }
 
+    // 주문 수정
     @PatchMapping("/{salesOrderId}")
     public ResponseEntity<UpdateSalesOrderResponse> updateSalesOrder(
             @PathVariable Long salesOrderId,
@@ -47,6 +51,7 @@ public class SalesOrderController {
         return ResponseEntity.ok(response);
     }
 
+    // 삭제
     @DeleteMapping("/{salesOrderId}")
     public ResponseEntity<DeleteSalesOrderResponse> deleteSalesOrder(
             @PathVariable Long salesOrderId) {

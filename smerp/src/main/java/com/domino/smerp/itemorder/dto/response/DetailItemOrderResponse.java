@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Getter;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
 
 @Getter
@@ -32,9 +33,9 @@ public class DetailItemOrderResponse {
                 .qty(itemOrder.getQty())
                 .unit(itemOrder.getItem().getUnit())
                 .specialPrice(itemOrder.getSpecialPrice())
-                .supplyAmount(itemOrder.getSupplyAmount())
-                .tax(itemOrder.getTax())
-                .totalAmount(itemOrder.getTotalAmount())
+                .supplyAmount(itemOrder.getSupplyAmount().setScale(2, RoundingMode.HALF_UP))
+                .tax(itemOrder.getTax().setScale(2, RoundingMode.HALF_UP))
+                .totalAmount(itemOrder.getTotalAmount().setScale(2, RoundingMode.HALF_UP))
                 .deliveryDate(itemOrder.getOrder().getDeliveryDate()
                         .atZone(java.time.ZoneOffset.UTC).toLocalDate())
                 .remark(itemOrder.getOrder().getRemark())
