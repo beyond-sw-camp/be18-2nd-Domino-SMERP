@@ -1,6 +1,8 @@
 package com.domino.smerp.item.entity;
 
 import com.domino.smerp.common.BaseEntity;
+import com.domino.smerp.common.exception.CustomException;
+import com.domino.smerp.common.exception.ErrorCode;
 import com.domino.smerp.item.constants.ItemAct;
 import com.domino.smerp.item.constants.SafetyStockAct;
 import com.domino.smerp.item.dto.request.CreateItemRequest;
@@ -45,8 +47,13 @@ public class Item extends BaseEntity {
   @JoinColumn(name = "item_status_id", nullable = false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
   private ItemStatus itemStatus;
 
+  // @Column(name = "name", nullable = false, unique = true, length = 60)
   @Column(name = "name", nullable = false, length = 60)
   private String name;
+
+  // TODO: 품목 코드 추가(PK 대신 품목 코드로 조회 예정)
+//  @Column(name = "item_code", nullable = false, unique = true, length = 20)
+//  private String itemCode;
 
   @Column(name = "specification", length = 100)
   private String specification;
@@ -89,10 +96,11 @@ public class Item extends BaseEntity {
 
 
   // 품목 생성
-  public static Item create(CreateItemRequest request, ItemStatus itemStatus) {
+  public static Item create(final CreateItemRequest request, final ItemStatus itemStatus) {
     return Item.builder()
         .itemStatus(itemStatus)
         .name(request.getName())
+        // .itemCode(request.getItemCode())
         .specification(request.getSpecification())
         .unit(request.getUnit())
         .inboundUnitPrice(request.getInboundUnitPrice())
@@ -109,13 +117,16 @@ public class Item extends BaseEntity {
 
 
   // 품목 수정
-  public void updateItem(UpdateItemRequest request, ItemStatus itemStatus) {
+  public void updateItem(final UpdateItemRequest request, final ItemStatus itemStatus) {
     if (itemStatus != null) {
       this.itemStatus = itemStatus;
     }
     if (request.getName() != null) {
       this.name = request.getName();
     }
+//    if (request.getItemCode() != null) {
+//      this.itemCode = request.getItemCode();
+//    }
     if (request.getSpecification() != null) {
       this.specification = request.getSpecification();
     }
@@ -144,15 +155,23 @@ public class Item extends BaseEntity {
 
 
   // 품목 사용/비사용, 안전 재고를 다룹니다.
-  public void updateStatus(UpdateItemStatusRequest request) {
+  public void updateStatus(final UpdateItemStatusRequest request) {
     if (request.getItemAct() != null) {
-      this.itemAct = ItemAct.fromLabel(request.getItemAct());
+      try {
+        this.itemAct = ItemAct.fromLabel(request.getItemAct());
+      } catch (IllegalArgumentException e) {
+        throw new CustomException(ErrorCode.INVALID_ITEM_ACT);
+      }
     }
     if (request.getSafetyStock() != null) {
       this.safetyStock = request.getSafetyStock();
     }
     if (request.getSafetyStockAct() != null) {
-      this.safetyStockAct = SafetyStockAct.fromLabel(request.getSafetyStockAct());
+      try {
+        this.safetyStockAct = SafetyStockAct.fromLabel(request.getSafetyStockAct());
+      } catch (IllegalArgumentException e) {
+        throw new CustomException(ErrorCode.INVALID_SAFETY_STOCK_ACT);
+      }
     }
   }
 

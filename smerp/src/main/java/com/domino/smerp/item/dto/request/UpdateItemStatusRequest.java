@@ -1,8 +1,6 @@
 package com.domino.smerp.item.dto.request;
 
 
-import com.domino.smerp.item.constants.ItemAct;
-import com.domino.smerp.item.constants.SafetyStockAct;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import java.math.BigDecimal;

@@ -4,10 +4,13 @@ import com.domino.smerp.client.dto.request.CreateClientRequest;
 import com.domino.smerp.client.dto.request.UpdateClientRequest;
 import com.domino.smerp.client.dto.response.ClientListResponse;
 import com.domino.smerp.client.dto.response.ClientResponse;
+import com.domino.smerp.common.dto.PageResponse;
 import com.domino.smerp.common.exception.CustomException;
 import com.domino.smerp.common.exception.ErrorCode;
-import java.util.List;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -61,20 +64,40 @@ public class ClientServiceImpl implements ClientService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<ClientListResponse> findAllClients() {
+    public PageResponse<ClientListResponse> searchClients(String companyName, String businessNumber,
+        Pageable pageable) {
 
-        List<Client> clients = clientRepository.findAll();
+        BooleanExpression companyNameCondition =
+            (companyName != null && !companyName.isEmpty()) ? QClient.client.companyName.startsWith(
+                companyName) : null;
 
-        return clients.stream()
-                      .map(client -> ClientListResponse.builder()
-                                                       .companyName(client.getCompanyName())
-                                                       .businessNumber(client.getBusinessNumber())
-                                                       .ceoName(client.getCeoName())
-                                                       .phone(client.getPhone())
-                                                       .address(client.getAddress())
-                                                       .zipCode(client.getZipCode())
-                                                       .build())
-                      .toList();
+        BooleanExpression businessNumberCondition =
+            (businessNumber != null && !businessNumber.isEmpty())
+                ? QClient.client.businessNumber.startsWith(businessNumber) : null;
+
+        BooleanExpression condition = null;
+
+        if (companyNameCondition != null && businessNumberCondition != null) {
+            condition = companyNameCondition.and(businessNumberCondition);
+        } else if (companyNameCondition != null) {
+            condition = companyNameCondition;
+        } else if (businessNumberCondition != null) {
+            condition = businessNumberCondition;
+        }
+
+        Page<Client> page = (condition == null) ? clientRepository.findAll(pageable)
+            : clientRepository.findAll(condition, pageable);
+
+        Page<ClientListResponse> pageClient = page.map(client -> ClientListResponse.builder()
+                                                                                   .companyName(client.getCompanyName())
+                                                                                   .businessNumber(client.getBusinessNumber())
+                                                                                   .phone(client.getPhone())
+                                                                                   .ceoName(client.getCeoName())
+                                                                                   .address(client.getAddress())
+                                                                                   .zipCode(client.getZipCode())
+                                                                                   .build());
+
+        return PageResponse.from(pageClient);
     }
 
     @Override

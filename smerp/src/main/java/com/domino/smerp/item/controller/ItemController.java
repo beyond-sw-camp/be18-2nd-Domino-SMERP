@@ -2,7 +2,7 @@ package com.domino.smerp.item.controller;
 
 import com.domino.smerp.common.dto.PageResponse;
 import com.domino.smerp.item.dto.request.CreateItemRequest;
-import com.domino.smerp.item.dto.request.ItemSearchRequest;
+import com.domino.smerp.item.dto.request.SearchItemRequest;
 import com.domino.smerp.item.dto.request.UpdateItemRequest;
 import com.domino.smerp.item.dto.request.UpdateItemStatusRequest;
 import com.domino.smerp.item.dto.response.ItemDetailResponse;
@@ -29,6 +29,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class ItemController {
 
   private final ItemService itemService;
+  private final ItemManagementService itemManagementService;
 
   // 품목 생성
   @PostMapping
@@ -41,8 +42,7 @@ public class ItemController {
   // 품목 목록 조회 (검색조건은 쿼리파라미터로)
   @GetMapping
   public ResponseEntity<PageResponse<ItemListResponse>> getItems(
-      @ModelAttribute ItemSearchRequest keyword,
-      Pageable pageable) {
+      @ModelAttribute SearchItemRequest keyword, Pageable pageable) {
     return ResponseEntity.ok(itemService.searchItems(keyword, pageable));
   }
 
@@ -71,7 +71,9 @@ public class ItemController {
   // 품목 삭제
   @DeleteMapping("/{item-id}")
   public ResponseEntity<Void> deleteItem(@PathVariable("item-id") final Long itemId) {
-    itemService.deleteItem(itemId);
+    // itemService.deleteItem(itemId);
+    // itemService.softDeleteItem(itemId);
+    itemManagementService.deleteItemWithAllAssociations(itemId);
     return ResponseEntity.noContent().build();
   }
 }
