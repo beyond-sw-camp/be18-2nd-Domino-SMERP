@@ -2,14 +2,12 @@ package com.domino.smerp.item;
 
 import com.domino.smerp.common.dto.PageResponse;
 import com.domino.smerp.item.dto.request.CreateItemRequest;
-import com.domino.smerp.item.dto.request.ItemSearchRequest;
+import com.domino.smerp.item.dto.request.SearchItemRequest;
 import com.domino.smerp.item.dto.request.UpdateItemRequest;
 import com.domino.smerp.item.dto.request.UpdateItemStatusRequest;
 import com.domino.smerp.item.dto.response.ItemDetailResponse;
 import com.domino.smerp.item.dto.response.ItemListResponse;
 import com.domino.smerp.item.dto.response.ItemStatusResponse;
-import java.util.List;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 public interface ItemService {
@@ -18,7 +16,8 @@ public interface ItemService {
   ItemDetailResponse createItem(final CreateItemRequest request);
 
   // 품목 목록 조회
-  PageResponse<ItemListResponse> searchItems(final ItemSearchRequest keyword, final Pageable pageable);
+  PageResponse<ItemListResponse> searchItems(final SearchItemRequest keyword,
+      final Pageable pageable);
 
   // 품목 상세 조회
   ItemDetailResponse getItemById(final Long itemId);
@@ -31,4 +30,11 @@ public interface ItemService {
 
   // 품목 삭제
   void deleteItem(final Long itemId);
+
+  void softDeleteItem(final Long itemId);
+
+  // 공통 메소드
+  ItemStatus findItemStatusById(final Long itemStatusId);
+
+  Item findItemById(final Long itemId);
 }
