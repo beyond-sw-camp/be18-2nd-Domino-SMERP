@@ -3,6 +3,8 @@ package com.domino.smerp.bom.dto.response;
 import com.domino.smerp.bom.entity.Bom;
 import com.domino.smerp.item.Item;
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -20,6 +22,7 @@ public class BomListResponse {
   private String specification;  // 품목 규격
   private String itemStatus;    // 품목 구분
   private BigDecimal qty;       // 원재료 수량
+  private List<BomListResponse> children; //  계층 구조 표현
 
   public static BomListResponse fromEntity(final Bom bom) {
     Item item = bom.getChildItem();                  // 하위 품목 기준
@@ -30,6 +33,20 @@ public class BomListResponse {
         .specification(item.getSpecification())
         .itemStatus(item.getItemStatus().getStatus().getDescription())
         .qty(bom.getQty())
+        .children(new ArrayList<>()) // 기본 리스트는 비어있습니다.
+        .build();
+  }
+
+  // 자기 자신 기준
+  public static BomListResponse fromSelf(final Item item) {
+    return BomListResponse.builder()
+        .bomId(null)
+        .itemId(item.getItemId())
+        .itemName(item.getName())
+        .specification(item.getSpecification())
+        .itemStatus(item.getItemStatus().getStatus().getDescription())
+        .qty(BigDecimal.ONE)
+        .children(new ArrayList<>())
         .build();
   }
 

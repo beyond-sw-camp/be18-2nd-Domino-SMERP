@@ -12,12 +12,12 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class BomDetailResponse {
+
   private Long bomId;
   private Long parentItemId;
   private String parentItemName;
   private Long childItemId;
   private String childItemName;
-  private Integer depth;
   private String remark;
 
   public static BomDetailResponse fromEntity(final Bom bom) {
@@ -27,7 +27,6 @@ public class BomDetailResponse {
         .parentItemName(bom.getParentItem().getName())
         .childItemId(bom.getChildItem().getItemId())
         .childItemName(bom.getChildItem().getName())
-        .depth(bom.getDepth())
         .remark(bom.getRemark())
         .build();
   }
