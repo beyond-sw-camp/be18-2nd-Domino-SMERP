@@ -14,6 +14,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.AccessLevel;
@@ -50,6 +51,9 @@ public class Warehouse extends BaseEntity {
 
   @Column(nullable = false)
   private String zipcode;
+
+  @Column(name = "daily_capacity") //nullable o -> 공장용
+  private int dailyCapacity;
 
   @OneToMany(cascade = CascadeType.ALL, mappedBy = "warehouse", orphanRemoval = true)
   @Builder.Default
