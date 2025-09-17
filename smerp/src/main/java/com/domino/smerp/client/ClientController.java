@@ -4,9 +4,12 @@ import com.domino.smerp.client.dto.request.CreateClientRequest;
 import com.domino.smerp.client.dto.request.UpdateClientRequest;
 import com.domino.smerp.client.dto.response.ClientListResponse;
 import com.domino.smerp.client.dto.response.ClientResponse;
+import com.domino.smerp.common.dto.PageResponse;
 import jakarta.validation.Valid;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -41,9 +44,9 @@ public class ClientController {
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public List<ClientListResponse> findAllClients(@RequestParam(required = false) final String companyName, @RequestParam(required = false) final String businessNumber) {
+    public PageResponse<ClientListResponse> searchClients(@RequestParam(required = false) final String companyName, @RequestParam(required = false) final String businessNumber,@PageableDefault(size = 20, sort = "clientId", direction = Sort.Direction.DESC) Pageable pageable) {
 
-        return clientService.findAllClients(companyName,businessNumber);
+        return clientService.searchClients(companyName,businessNumber,pageable);
     }
 
     @GetMapping("/{clientId}")

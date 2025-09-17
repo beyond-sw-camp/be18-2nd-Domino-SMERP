@@ -4,11 +4,13 @@ import com.domino.smerp.client.dto.request.CreateClientRequest;
 import com.domino.smerp.client.dto.request.UpdateClientRequest;
 import com.domino.smerp.client.dto.response.ClientListResponse;
 import com.domino.smerp.client.dto.response.ClientResponse;
+import com.domino.smerp.common.dto.PageResponse;
 import com.domino.smerp.common.exception.CustomException;
 import com.domino.smerp.common.exception.ErrorCode;
 import com.querydsl.core.types.dsl.BooleanExpression;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -62,7 +64,8 @@ public class ClientServiceImpl implements ClientService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<ClientListResponse> findAllClients(String companyName, String businessNumber) {
+    public PageResponse<ClientListResponse> searchClients(String companyName, String businessNumber,
+        Pageable pageable) {
 
         BooleanExpression companyNameCondition =
             (companyName != null && !companyName.isEmpty()) ? QClient.client.companyName.startsWith(
@@ -82,19 +85,19 @@ public class ClientServiceImpl implements ClientService {
             condition = businessNumberCondition;
         }
 
-        List<Client> clients = (condition == null) ? clientRepository.findAll()
-            : (List<Client>) clientRepository.findAll(condition);
+        Page<Client> page = (condition == null) ? clientRepository.findAll(pageable)
+            : clientRepository.findAll(condition, pageable);
 
-        return clients.stream()
-                      .map(client -> ClientListResponse.builder()
-                                                       .companyName(client.getCompanyName())
-                                                       .businessNumber(client.getBusinessNumber())
-                                                       .ceoName(client.getCeoName())
-                                                       .phone(client.getPhone())
-                                                       .address(client.getAddress())
-                                                       .zipCode(client.getZipCode())
-                                                       .build())
-                      .toList();
+        Page<ClientListResponse> pageClient = page.map(client -> ClientListResponse.builder()
+                                                                                   .companyName(client.getCompanyName())
+                                                                                   .businessNumber(client.getBusinessNumber())
+                                                                                   .phone(client.getPhone())
+                                                                                   .ceoName(client.getCeoName())
+                                                                                   .address(client.getAddress())
+                                                                                   .zipCode(client.getZipCode())
+                                                                                   .build());
+
+        return PageResponse.from(pageClient);
     }
 
     @Override
