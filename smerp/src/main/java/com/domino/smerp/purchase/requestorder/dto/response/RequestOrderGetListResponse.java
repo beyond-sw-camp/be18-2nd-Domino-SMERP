@@ -6,6 +6,7 @@ import lombok.Getter;
 
 import java.math.BigDecimal;
 import java.time.Instant;
+import java.time.LocalDate;
 
 @Getter
 @Builder
@@ -13,8 +14,9 @@ import java.time.Instant;
 public class RequestOrderGetListResponse {
     private final Long roId;
     private final Long clientId;
-    private final Long itemId;
-    private final BigDecimal qty;
+    private final String itemName;   // 품목명 or "XXX 외 n건"
+    private final BigDecimal totalQty; // ✅ 품목 수량 총합
+    private final LocalDate deliveryDate;
     private final String status;
     private final String documentNo;
     private final Instant createdAt;

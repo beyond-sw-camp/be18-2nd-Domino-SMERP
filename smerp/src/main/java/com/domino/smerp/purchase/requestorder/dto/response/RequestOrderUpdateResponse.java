@@ -6,6 +6,7 @@ import lombok.Getter;
 
 import java.math.BigDecimal;
 import java.time.Instant;
+import java.time.LocalDate;
 
 @Getter
 @Builder
@@ -13,6 +14,7 @@ import java.time.Instant;
 public class RequestOrderUpdateResponse {
     private final Long roId;
     private final BigDecimal qty;
+    private final LocalDate deliveryDate;
     private final String remark;
     private final String status;
     private final String documentNo;

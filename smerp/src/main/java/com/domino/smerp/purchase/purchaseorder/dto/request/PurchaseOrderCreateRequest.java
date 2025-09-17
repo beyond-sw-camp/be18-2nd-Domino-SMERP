@@ -13,7 +13,7 @@ public class PurchaseOrderCreateRequest {
   private final Long roId;
   private final BigDecimal qty;
   private final BigDecimal surtax;
-  private final BigDecimal price;
+  private final BigDecimal price; // TODO: 압고단가 명 수정
   private final String remark;
   private final String documentNo;
 }
