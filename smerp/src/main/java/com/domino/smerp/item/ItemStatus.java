@@ -1,4 +1,4 @@
-package com.domino.smerp.item.entity;
+package com.domino.smerp.item;
 
 import com.domino.smerp.item.constants.ItemStatusStatus;
 import jakarta.persistence.Column;

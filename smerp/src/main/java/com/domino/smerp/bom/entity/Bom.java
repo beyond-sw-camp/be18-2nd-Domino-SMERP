@@ -1,7 +1,7 @@
 package com.domino.smerp.bom.entity;
 
 import com.domino.smerp.bom.dto.request.CreateBomRequest;
-import com.domino.smerp.item.entity.Item;
+import com.domino.smerp.item.Item;
 import jakarta.persistence.Column;
 import jakarta.persistence.ConstraintMode;
 import jakarta.persistence.Entity;

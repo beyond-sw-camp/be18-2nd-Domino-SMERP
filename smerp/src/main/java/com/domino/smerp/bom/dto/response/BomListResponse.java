@@ -1,7 +1,7 @@
 package com.domino.smerp.bom.dto.response;
 
 import com.domino.smerp.bom.entity.Bom;
-import com.domino.smerp.item.entity.Item;
+import com.domino.smerp.item.Item;
 import java.math.BigDecimal;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;

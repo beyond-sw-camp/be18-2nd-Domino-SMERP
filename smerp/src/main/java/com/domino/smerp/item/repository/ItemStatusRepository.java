@@ -1,7 +1,7 @@
 package com.domino.smerp.item.repository;
 
 
-import com.domino.smerp.item.entity.ItemStatus;
+import com.domino.smerp.item.ItemStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
