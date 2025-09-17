@@ -49,14 +49,16 @@ public class BomServiceImpl implements BomService {
     return CreateBomResponse.fromEntity(savedBom);
   }
 
-  @Override
-  @Transactional(readOnly = true)
-  public List<BomListResponse> getAllBoms();
+//  @Override
+//  @Transactional(readOnly = true)
+//  public List<BomListResponse> getAllBoms(){
+//
+//  };
 
   // 선택한 품목의 BOM 목록 조회
   @Override
   @Transactional(readOnly = true)
-  public List<BomListResponse> getBomByParentItemId(Long parentItemId) {
+  public List<BomListResponse> getBomByParentItemId(final Long parentItemId) {
     List<Bom> boms = bomRepository.findByParentItemItemId(parentItemId);
 
     return boms.stream()

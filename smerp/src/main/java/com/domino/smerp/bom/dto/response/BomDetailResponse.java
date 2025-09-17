@@ -20,7 +20,7 @@ public class BomDetailResponse {
   private Integer depth;
   private String remark;
 
-  public static BomDetailResponse fromEntity(Bom bom) {
+  public static BomDetailResponse fromEntity(final Bom bom) {
     return BomDetailResponse.builder()
         .bomId(bom.getBomId())
         .parentItemId(bom.getParentItem().getItemId())

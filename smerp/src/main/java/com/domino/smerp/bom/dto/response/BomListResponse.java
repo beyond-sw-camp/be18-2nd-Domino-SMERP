@@ -21,7 +21,7 @@ public class BomListResponse {
   private String itemStatus;    // 품목 구분
   private BigDecimal qty;       // 원재료 수량
 
-  public static BomListResponse fromEntity(Bom bom) {
+  public static BomListResponse fromEntity(final Bom bom) {
     Item item = bom.getChildItem();                  // 하위 품목 기준
     return BomListResponse.builder()
         .bomId(bom.getBomId())

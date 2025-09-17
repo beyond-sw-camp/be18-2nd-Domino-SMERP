@@ -12,7 +12,7 @@ public interface BomService {
   // BOM 생성
   CreateBomResponse createBom(final CreateBomRequest request);
   // BOM 목록 조회
-  List<BomListResponse> getAllBoms();
+  //List<BomListResponse> getAllBoms();
 
   // 선택한 품목의 BOM 목록 조회
   List<BomListResponse> getBomByParentItemId(final Long parentItemId);

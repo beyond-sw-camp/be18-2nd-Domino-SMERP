@@ -29,12 +29,12 @@ public class BomController {
     return ResponseEntity.ok(bomService.createBom(request));
   }
 
-  // BOM 전체 목록 조회
-  @GetMapping
-  public ResponseEntity<List<BomListResponse>> getAllBoms() {
-    // TODO: 서비스단에 findAll 구현 필요
-    return ResponseEntity.ok(bomService.getAllBoms());
-  }
+//  // BOM 전체 목록 조회
+//  @GetMapping
+//  public ResponseEntity<List<BomListResponse>> getAllBoms() {
+//    // TODO: 서비스단에 findAll 구현 필요
+//    return ResponseEntity.ok(bomService.getAllBoms());
+//  }
 
   // BOM 상세 조회
   @GetMapping("/{bom-id}")
