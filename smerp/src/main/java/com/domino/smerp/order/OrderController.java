@@ -1,10 +1,7 @@
 package com.domino.smerp.order;
 
 import com.domino.smerp.common.dto.PageResponse;
-import com.domino.smerp.order.dto.request.CreateOrderRequest;
-import com.domino.smerp.order.dto.request.SearchExcelOrderRequest;
-import com.domino.smerp.order.dto.request.SearchOrderRequest;
-import com.domino.smerp.order.dto.request.UpdateOrderRequest;
+import com.domino.smerp.order.dto.request.*;
 import com.domino.smerp.order.dto.response.*;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -66,5 +63,21 @@ public class OrderController {
             Pageable pageable
     ) {
         return ResponseEntity.ok(orderService.getExcelOrder(condition, pageable));
+    }
+
+    // 반품 등록 (POST)
+    @PostMapping("/returns")
+    public ResponseEntity<CreateReturnOrderResponse> createReturn(
+            @Valid @RequestBody CreateReturnOrderRequest request) {
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(orderService.createReturnOrder(request));
+    }
+
+    // 반품 현황 조회 (GET)
+    @GetMapping("/returns/excel")
+    public ResponseEntity<List<ExcelReturnOrderResponse>> getReturnOrders(
+            SearchExcelReturnOrderRequest condition,
+            Pageable pageable) {
+        return ResponseEntity.ok(orderService.getExcelReturnOrders(condition, pageable));
     }
 }

@@ -2,8 +2,10 @@ package com.domino.smerp.order.repository;
 
 import com.domino.smerp.order.Order;
 import com.domino.smerp.order.dto.request.SearchExcelOrderRequest;
+import com.domino.smerp.order.dto.request.SearchExcelReturnOrderRequest;
 import com.domino.smerp.order.dto.request.SearchOrderRequest;
 import com.domino.smerp.order.dto.response.ExcelOrderResponse;
+import com.domino.smerp.order.dto.response.ExcelReturnOrderResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -13,4 +15,7 @@ public interface OrderQueryRepository {
     Page<Order> searchOrders(SearchOrderRequest condition, Pageable pageable);
 
     List<ExcelOrderResponse> searchExcelOrders(SearchExcelOrderRequest condition, Pageable pageable);
+
+    List<ExcelReturnOrderResponse> searchExcelReturnOrders(SearchExcelReturnOrderRequest condition, Pageable pageable);
 }
+

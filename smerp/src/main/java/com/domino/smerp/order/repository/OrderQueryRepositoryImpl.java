@@ -7,8 +7,10 @@ import com.domino.smerp.order.Order;
 import com.domino.smerp.order.QOrder;
 import com.domino.smerp.order.constants.OrderStatus;
 import com.domino.smerp.order.dto.request.SearchExcelOrderRequest;
+import com.domino.smerp.order.dto.request.SearchExcelReturnOrderRequest;
 import com.domino.smerp.order.dto.request.SearchOrderRequest;
 import com.domino.smerp.order.dto.response.ExcelOrderResponse;
+import com.domino.smerp.order.dto.response.ExcelReturnOrderResponse;
 import com.domino.smerp.user.QUser;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.Projections;
@@ -23,6 +25,7 @@ import org.springframework.data.support.PageableExecutionUtils;
 import org.springframework.stereotype.Repository;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -111,6 +114,57 @@ public class OrderQueryRepositoryImpl implements OrderQueryRepository {
                 .fetch();
     }
 
+    @Override
+    public List<ExcelReturnOrderResponse> searchExcelReturnOrders(SearchExcelReturnOrderRequest condition, Pageable pageable) {
+        QOrder order = QOrder.order;
+        QClient client = QClient.client;
+        QItemOrder itemOrder = QItemOrder.itemOrder;
+        QItem item = QItem.item;
+
+        return queryFactory
+                .select(Projections.constructor(
+                        ExcelReturnOrderResponse.class,
+                        order.documentNo,
+                        client.companyName,
+                        item.name,
+                        itemOrder.qty.abs(),
+                        itemOrder.specialPrice,
+                        Expressions.numberTemplate(BigDecimal.class,
+                                "ROUND(ABS({0} * {1}) * 1.1, 2)",
+                                itemOrder.qty, itemOrder.specialPrice), // 환불금액: 절댓값
+                        order.remark
+                ))
+                .from(order)
+                .join(order.client, client)
+                .join(order.orderItems, itemOrder)
+                .join(itemOrder.item, item)
+                .where(
+                        documentNoContains(condition.getDocumentNo()),
+                        companyNameContains(condition.getCompanyName()),
+                        itemNameContains(condition.getItemName()),
+                        qtyEq(condition.getQty()),
+                        specialPriceEq(condition.getSpecialPrice()),
+                        refundAmountEq(condition.getRefundAmount()),
+                        remarkContains(condition.getRemark()),
+                        documentNoBetween(condition.getStartDocDate(), condition.getEndDocDate()), // ✅ 추가
+                        isReturnOrder(order.documentNo) // 반품만 조회
+                )
+                .orderBy(getOrderSpecifiers(pageable, order, client, itemOrder, item))
+                .fetch()
+                .stream()
+                .map(r -> ExcelReturnOrderResponse.builder()
+                        .documentNo(r.getDocumentNo())
+                        .companyName(r.getCompanyName())
+                        .itemName(r.getItemName())
+                        .qty(r.getQty())
+                        .specialPrice(r.getSpecialPrice())
+                        .refundAmount(r.getRefundAmount().setScale(2, RoundingMode.HALF_UP)) // ✅ 여기서 강제 처리
+                        .remark(r.getRemark())
+                        .build()
+                )
+                .toList();
+    }
+
     // BooleanExpression
     private BooleanExpression companyNameContains(String name) {
         return (name == null || name.isEmpty()) ? null : QClient.client.companyName.contains(name);
@@ -146,6 +200,15 @@ public class OrderQueryRepositoryImpl implements OrderQueryRepository {
 
     private BooleanExpression supplyAmountEq(BigDecimal supplyAmount) {
         return (supplyAmount == null) ? null : QItemOrder.itemOrder.qty.multiply(QItemOrder.itemOrder.specialPrice).eq(supplyAmount);
+    }
+
+    private BooleanExpression refundAmountEq(BigDecimal refundAmount) {
+        return (refundAmount == null) ? null :
+                QItemOrder.itemOrder.qty.multiply(QItemOrder.itemOrder.specialPrice).abs().eq(refundAmount);
+    }
+
+    private BooleanExpression isReturnOrder(com.querydsl.core.types.dsl.StringPath documentNo) {
+        return documentNo.contains("(-"); // "-" 포함된 전표번호만 반품
     }
 
     // 전표번호에서 날짜 부분만 잘라서 between 검색

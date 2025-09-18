@@ -1,7 +1,6 @@
 package com.domino.smerp.order.dto.request;
 
 import com.domino.smerp.itemorder.dto.request.ItemOrderRequest;
-import com.domino.smerp.order.constants.OrderStatus;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;

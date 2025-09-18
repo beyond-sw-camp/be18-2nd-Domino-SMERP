@@ -13,13 +13,9 @@ import com.domino.smerp.itemorder.ItemOrderRepository;
 import com.domino.smerp.itemorder.dto.request.ItemOrderRequest;
 import com.domino.smerp.itemorder.dto.request.UpdateItemOrderRequest;
 import com.domino.smerp.order.constants.OrderStatus;
-import com.domino.smerp.order.dto.request.CreateOrderRequest;
-import com.domino.smerp.order.dto.request.SearchExcelOrderRequest;
-import com.domino.smerp.order.dto.request.SearchOrderRequest;
-import com.domino.smerp.order.dto.request.UpdateOrderRequest;
+import com.domino.smerp.order.dto.request.*;
 import com.domino.smerp.order.dto.response.*;
 import com.domino.smerp.order.repository.OrderRepository;
-import com.domino.smerp.salesorder.repository.SalesOrderRepository;
 import com.domino.smerp.user.User;
 import com.domino.smerp.user.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -33,6 +29,7 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneOffset;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -47,7 +44,6 @@ public class OrderServiceImpl implements OrderService {
     private final ItemServiceImpl itemServiceImpl;
     private final ItemOrderRepository itemOrderRepository;
     private final DocumentNoGenerator documentNoGenerator;
-    private final SalesOrderRepository salesOrderRepository;
 
     // 공용 조회용 메서드
     public Order findOrderById(Long orderId) {
@@ -233,4 +229,114 @@ public class OrderServiceImpl implements OrderService {
     public List<ExcelOrderResponse> getExcelOrder(SearchExcelOrderRequest condition, Pageable pageable) {
         return orderRepository.searchExcelOrders(condition, pageable);
     }
+
+    // 반품 등록
+    @Override
+    @Transactional
+    public CreateReturnOrderResponse createReturnOrder(CreateReturnOrderRequest request) {
+        // 원 주문 조회
+        Order originalOrder = orderRepository.findByDocumentNo(request.getDocumentNo())
+                .orElseThrow(() -> new CustomException(ErrorCode.ORDER_NOT_FOUND));
+
+        User user = getUserByEmpNo(request.getEmpNo());
+
+        // 반품 전표 번호 생성
+        String documentNo = generateReturnDocumentNo(originalOrder.getDocumentNo());
+
+        Order returnOrder = Order.builder()
+                .client(originalOrder.getClient())
+                .user(user)
+                .status(OrderStatus.COMPLETED)  // 반품은 상태 고정
+                .remark(request.getRemark())
+                .documentNo(documentNo)
+                .deliveryDate(originalOrder.getDeliveryDate()) // delivery_at은 null 허용 안되니 원 주문값 복사
+                .build();
+
+        // 원 주문 품목 매핑
+        Map<Long, ItemOrder> originalItemMap = originalOrder.getOrderItems().stream()
+                .collect(Collectors.toMap(io -> io.getItem().getItemId(), io -> io));
+
+        // 기존 반품 전표들 조회
+        List<Order> existingReturns =
+                orderRepository.findByDocumentNoStartingWith(originalOrder.getDocumentNo() + "(-");
+
+        // 기존 반품 수량 누적
+        Map<Long, BigDecimal> alreadyReturnedQty = new HashMap<>();
+        existingReturns.forEach(r -> r.getOrderItems().forEach(returnItem -> alreadyReturnedQty.merge(
+                returnItem.getItem().getItemId(),
+                returnItem.getQty().abs(),   // qty는 음수로 저장했으니 절댓값 처리
+                BigDecimal::add
+        )));
+
+        // 요청 품목 검증 및 반품 품목 생성
+        request.getItems().forEach(itemReq -> {
+            ItemOrder originalItem = originalItemMap.get(itemReq.getItemId());
+            if (originalItem == null) {
+                throw new CustomException(ErrorCode.RETURN_ITEM_NOT_IN_ORDER);
+            }
+
+            // 누적 검증
+            BigDecimal originalQty = originalItem.getQty();
+            BigDecimal alreadyReturned = alreadyReturnedQty.getOrDefault(itemReq.getItemId(), BigDecimal.ZERO);
+            BigDecimal newReturnTotal = alreadyReturned.add(itemReq.getQty());
+
+            if (newReturnTotal.compareTo(originalQty) > 0) {
+                throw new CustomException(ErrorCode.RETURN_QTY_EXCEEDS_ORIGINAL);
+            }
+
+            // 반품은 음수 저장
+            BigDecimal qty = itemReq.getQty().negate();
+
+            ItemOrder returnItem = ItemOrder.builder()
+                    .order(returnOrder)
+                    .item(originalItem.getItem())
+                    .qty(qty)
+                    .specialPrice(originalItem.getSpecialPrice())
+                    .build();
+
+            returnOrder.addOrderItem(returnItem);
+        });
+
+        // 저장
+        orderRepository.save(returnOrder);
+        itemOrderRepository.saveAll(returnOrder.getOrderItems());
+
+        return CreateReturnOrderResponse.from(returnOrder.getDocumentNo());
+    }
+
+    private String generateReturnDocumentNo(String originalDocNo) {
+        // 원 주문 전표번호 + "(-" 로 시작하는 기존 반품 전표 조회
+        List<Order> existingReturns = orderRepository.findByDocumentNoStartingWith(originalDocNo + "(-");
+
+        // 기존 반품이 없다면 -1부터 시작
+        if (existingReturns.isEmpty()) {
+            return originalDocNo + "(-1)";
+        }
+
+        // 기존 반품 전표에서 가장 큰 (-숫자) 추출
+        int maxSuffix = existingReturns.stream()
+                .map(Order::getDocumentNo)
+                .map(docNo -> {
+                    int start = docNo.lastIndexOf("(-");
+                    int end = docNo.lastIndexOf(")");
+                    if (start != -1 && end != -1) {
+                        return Integer.parseInt(docNo.substring(start + 2, end));
+                    }
+                    return 0;
+                })
+                .max(Integer::compareTo)
+                .orElse(0);
+
+        // 새로운 반품 전표번호 = 원본 + (-(maxSuffix+1))
+        return originalDocNo + "(-" + (maxSuffix + 1) + ")";
+    }
+
+    // 판품 현황 조회
+    @Override
+    @Transactional(readOnly = true)
+    public List<ExcelReturnOrderResponse> getExcelReturnOrders(SearchExcelReturnOrderRequest condition, Pageable pageable) {
+        return orderRepository.searchExcelReturnOrders(condition, pageable);
+    }
+
+
 }
