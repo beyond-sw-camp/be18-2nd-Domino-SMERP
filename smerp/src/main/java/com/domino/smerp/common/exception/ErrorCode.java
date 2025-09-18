@@ -58,6 +58,7 @@ public enum ErrorCode {
     ITEMS_REQUIRED(HttpStatus.BAD_REQUEST, "ITEMS_REQUIRED", "주문에는 최소 1개 이상의 품목이 필요합니다."),
     INVALID_ORDER_REQUEST(HttpStatus.BAD_REQUEST, "INVALID_REQUEST", "잘못된 주문 요청입니다."),
     ORDER_ALREADY_APPROVED(HttpStatus.BAD_REQUEST, "ORDER_ALREADY_APPROVED", "이미 주문 승인이 완료되었습니다."),
+    INVALID_QUANTITY(HttpStatus.BAD_REQUEST, "INVALID_QUANTITY", "수량은 0보다 커야 합니다."),
 
     // sales_order - 판매와 관련된 예외 정보
     INVALID_ORDER_STATUS(HttpStatus.BAD_REQUEST, "INVALID_ORDER_STATUS", "해당 주문은 판매 생성이 불가능한 상태입니다."),

@@ -87,6 +87,13 @@ public class OrderServiceImpl implements OrderService {
                 .build();
     }
 
+    //수량 검증 메서드
+    private void validateQty(BigDecimal qty) {
+        if (qty == null || qty.compareTo(BigDecimal.ZERO) <= 0) {
+            throw new CustomException(ErrorCode.INVALID_QUANTITY);
+        }
+    }
+
     // 주문 등록
     @Override
     @Transactional
@@ -97,6 +104,7 @@ public class OrderServiceImpl implements OrderService {
         if (request.getDocumentDate() == null) {
             throw new CustomException(ErrorCode.INVALID_ORDER_REQUEST);
         }
+
 
         String documentNo = generateDocumentNoWithRetry(request.getDocumentDate());
 
@@ -113,7 +121,12 @@ public class OrderServiceImpl implements OrderService {
                 .documentNo(documentNo)
                 .build();
 
-        request.getItems().forEach(itemReq -> order.addOrderItem(toOrderItem(order, itemReq)));
+        request.getItems().forEach(itemReq -> {
+            validateQty(itemReq.getQty());                  //  검증
+            ItemOrder itemOrder = toOrderItem(order, itemReq); // 객체 생성
+            order.addOrderItem(itemOrder);                  // 연관관계 세팅
+        });
+
 
         orderRepository.save(order);
         itemOrderRepository.saveAll(order.getOrderItems());
@@ -153,11 +166,13 @@ public class OrderServiceImpl implements OrderService {
                 ItemOrder existing = existingItems.get(itemReq.getItemOrderId());
                 if (existing == null) throw new CustomException(ErrorCode.ITEM_NOT_FOUND);
 
+                validateQty(itemReq.getQty()); // 수량 음수 검증 추가
                 existing.updateQty(itemReq.getQty());
                 existing.updateSpecialPrice(itemReq.getSpecialPrice());
                 finalItems.add(existing);
                 existingItems.remove(itemReq.getItemOrderId());
             } else {
+                validateQty(itemReq.getQty()); // 수량 음수 검증 추가
                 Item item = itemServiceImpl.findItemById(itemReq.getItemId());
                 ItemOrder newItem = ItemOrder.builder()
                         .order(order)
