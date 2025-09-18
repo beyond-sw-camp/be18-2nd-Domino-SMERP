@@ -10,7 +10,7 @@ import java.time.LocalDate;
 @Getter
 @Builder
 @AllArgsConstructor
-public class OrderSearchRequest {
+public class SearchOrderRequest {
     private final String companyName;
     private final OrderStatus status;
     private final String userName;

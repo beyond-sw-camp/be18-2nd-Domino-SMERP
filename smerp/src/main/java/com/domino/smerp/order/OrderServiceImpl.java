@@ -14,7 +14,8 @@ import com.domino.smerp.itemorder.dto.request.ItemOrderRequest;
 import com.domino.smerp.itemorder.dto.request.UpdateItemOrderRequest;
 import com.domino.smerp.order.constants.OrderStatus;
 import com.domino.smerp.order.dto.request.CreateOrderRequest;
-import com.domino.smerp.order.dto.request.OrderSearchRequest;
+import com.domino.smerp.order.dto.request.SearchExcelOrderRequest;
+import com.domino.smerp.order.dto.request.SearchOrderRequest;
 import com.domino.smerp.order.dto.request.UpdateOrderRequest;
 import com.domino.smerp.order.dto.response.*;
 import com.domino.smerp.order.repository.OrderRepository;
@@ -123,7 +124,7 @@ public class OrderServiceImpl implements OrderService {
     // 주문 목록 조회
     @Override
     @Transactional(readOnly = true)
-    public PageResponse<ListOrderResponse> getOrders(OrderSearchRequest condition, Pageable pageable) {
+    public PageResponse<ListOrderResponse> getOrders(SearchOrderRequest condition, Pageable pageable) {
         Page<Order> page = orderRepository.searchOrders(condition, pageable);
         return PageResponse.from(page.map(ListOrderResponse::from));
     }
@@ -208,5 +209,12 @@ public class OrderServiceImpl implements OrderService {
         // 판매가 없을 때만 삭제 가능
         orderRepository.delete(order);
         return DeleteOrderResponse.from(order);
+    }
+
+    // 주문 현황
+    @Override
+    @Transactional(readOnly = true)
+    public List<ExcelOrderResponse> getExcelOrder(SearchExcelOrderRequest condition, Pageable pageable) {
+        return orderRepository.searchExcelOrders(condition, pageable);
     }
 }
