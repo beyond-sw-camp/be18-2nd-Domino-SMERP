@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
+@ToString
 @Table(name = "`order`")
 @Getter
 @SQLDelete(sql = "UPDATE `order` SET is_deleted = true WHERE order_id = ?")

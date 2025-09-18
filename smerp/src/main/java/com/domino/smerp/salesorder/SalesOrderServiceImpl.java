@@ -8,6 +8,7 @@ import com.domino.smerp.order.Order;
 import com.domino.smerp.order.constants.OrderStatus;
 import com.domino.smerp.order.repository.OrderRepository;
 import com.domino.smerp.salesorder.dto.request.CreateSalesOrderRequest;
+import com.domino.smerp.salesorder.dto.request.SearchExcelSalesOrderRequest;
 import com.domino.smerp.salesorder.dto.request.SearchSalesOrderRequest;
 import com.domino.smerp.salesorder.dto.request.UpdateSalesOrderRequest;
 import com.domino.smerp.salesorder.dto.response.*;
@@ -17,6 +18,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -122,4 +125,12 @@ public class SalesOrderServiceImpl implements SalesOrderService {
         salesOrderRepository.delete(salesOrder); // 실제 삭제 X → is_deleted = true 업데이트
         return DeleteSalesOrderResponse.from(salesOrder);
     }
+
+    // 주문 현황
+    @Override
+    @Transactional(readOnly = true)
+    public List<ExcelSalesOrderResponse> getExcelSalesOrder(SearchExcelSalesOrderRequest condition, Pageable pageable) {
+        return salesOrderRepository.searchExcelSalesOrder(condition, pageable);
+    }
+
 }

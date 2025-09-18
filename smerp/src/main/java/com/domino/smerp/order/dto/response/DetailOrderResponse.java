@@ -14,13 +14,13 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 public class DetailOrderResponse {
-    private String documentNo;     // 전표번호
-    private String companyName;    // 거래처명
-    private LocalDate deliveryDate;// 납기일자
-    private String userName;       // 영업 담당자
-    private String remark;         // 비고
-    private String status;         // 주문 상태
-    private List<DetailItemOrderResponse> items;
+    private final String documentNo;     // 전표번호
+    private final String companyName;    // 거래처명
+    private final LocalDate deliveryDate;// 납기일자
+    private final String userName;       // 영업 담당자
+    private final String remark;         // 비고
+    private final String status;         // 주문 상태
+    private final List<DetailItemOrderResponse> items;
 
     public static DetailOrderResponse from(Order order) {
         return DetailOrderResponse.builder()

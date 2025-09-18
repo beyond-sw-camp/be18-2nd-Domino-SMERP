@@ -201,8 +201,9 @@ public class OrderServiceImpl implements OrderService {
     @Transactional
     public DeleteOrderResponse deleteOrder(Long orderId) {
         Order order = findOrderById(orderId);
-        // 판매 생성 여부 확인
-        if (salesOrderRepository.existsByOrder(order)) {
+
+        // 주문 상태가 APPROVED인 경우 삭제 불가
+        if (order.getStatus() == OrderStatus.APPROVED) {
             throw new CustomException(ErrorCode.ORDER_ALREADY_APPROVED);
         }
 

@@ -2,10 +2,13 @@ package com.domino.smerp.salesorder.repository;
 
 import com.domino.smerp.order.Order;
 import com.domino.smerp.salesorder.SalesOrder;
+import com.domino.smerp.salesorder.dto.request.SearchExcelSalesOrderRequest;
+import com.domino.smerp.salesorder.dto.response.ExcelSalesOrderResponse;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface SalesOrderRepository extends JpaRepository<SalesOrder, Long>, SalesOrderQueryRepository {
@@ -28,5 +31,4 @@ public interface SalesOrderRepository extends JpaRepository<SalesOrder, Long>, S
             "LEFT JOIN FETCH oi.item " +
             "WHERE so.soId = :id")
     Optional<SalesOrder> findByIdWithDetails(@Param("id") Long id);
-
 }

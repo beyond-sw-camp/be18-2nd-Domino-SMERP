@@ -20,6 +20,7 @@ public interface OrderService {
     UpdateOrderResponse updateOrder(Long orderId, UpdateOrderRequest request);
 
     DeleteOrderResponse deleteOrder(Long orderId);
+
     List<ExcelOrderResponse> getExcelOrder(SearchExcelOrderRequest condition, Pageable pageable);
 }
 

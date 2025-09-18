@@ -2,6 +2,7 @@ package com.domino.smerp.salesorder;
 
 import com.domino.smerp.common.dto.PageResponse;
 import com.domino.smerp.salesorder.dto.request.CreateSalesOrderRequest;
+import com.domino.smerp.salesorder.dto.request.SearchExcelSalesOrderRequest;
 import com.domino.smerp.salesorder.dto.request.SearchSalesOrderRequest;
 import com.domino.smerp.salesorder.dto.request.UpdateSalesOrderRequest;
 import com.domino.smerp.salesorder.dto.response.*;
@@ -9,6 +10,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/sales-orders")
@@ -57,5 +60,14 @@ public class SalesOrderController {
             @PathVariable Long salesOrderId) {
         DeleteSalesOrderResponse response = salesOrderService.deleteSalesOrder(salesOrderId);
         return ResponseEntity.ok(response);
+    }
+
+    // 판매 현황 조회
+    @GetMapping("/excel")
+    public ResponseEntity<List<ExcelSalesOrderResponse>> getSalesOrderExcle(
+            SearchExcelSalesOrderRequest condition,
+            Pageable pageable
+    ) {
+        return ResponseEntity.ok(salesOrderService.getExcelSalesOrder (condition, pageable));
     }
 }

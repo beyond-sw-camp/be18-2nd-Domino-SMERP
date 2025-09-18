@@ -8,6 +8,7 @@ import lombok.*;
 import java.math.BigDecimal;
 
 @Entity
+@ToString
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
