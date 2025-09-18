@@ -38,8 +38,17 @@ public class BomCommandServiceImpl implements BomCommandService {
   @Override
   @Transactional
   public CreateBomResponse createBom(final CreateBomRequest request) {
-    Item parentItem = itemService.findItemByIdWithLock(request.getParentItemId());
-    Item childItem = itemService.findItemByIdWithLock(request.getChildItemId());
+    final Item parentItem;
+    final Item childItem;
+
+    // 품목 ID가 더 작은 쪽을 먼저 잠금 획득
+    if (request.getParentItemId() < request.getChildItemId()) {
+      parentItem = itemService.findItemByIdWithLock(request.getParentItemId());
+      childItem = itemService.findItemByIdWithLock(request.getChildItemId());
+    } else {
+      childItem = itemService.findItemByIdWithLock(request.getChildItemId());
+      parentItem = itemService.findItemByIdWithLock(request.getParentItemId());
+    }
 
     // 중복 BOM 관계 체크
     if (bomRepository.existsByParentItem_ItemIdAndChildItem_ItemId(
