@@ -1,7 +1,8 @@
 package com.domino.smerp.log;
 
-import com.domino.smerp.log.dto.LogListResponse;
-import com.domino.smerp.log.dto.LogResponse;
+import com.domino.smerp.log.dto.response.LogListResponse;
+import com.domino.smerp.log.dto.response.LogResponse;
+import com.domino.smerp.log.repository.LogRepository;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;

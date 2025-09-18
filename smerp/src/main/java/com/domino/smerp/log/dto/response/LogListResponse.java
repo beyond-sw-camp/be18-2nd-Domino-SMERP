@@ -1,4 +1,4 @@
-package com.domino.smerp.log.dto;
+package com.domino.smerp.log.dto.response;
 
 import com.domino.smerp.log.ActionType;
 import java.time.LocalDateTime;

@@ -3,7 +3,7 @@ package com.domino.smerp.log.audit;
 import com.domino.smerp.common.support.SpringContext;
 import com.domino.smerp.log.ActionType;
 import com.domino.smerp.log.Log;
-import com.domino.smerp.log.LogRepository;
+import com.domino.smerp.log.repository.LogRepository;
 import jakarta.persistence.PostLoad;
 import jakarta.persistence.PostPersist;
 import jakarta.persistence.PostRemove;
@@ -17,8 +17,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 public class AuditLogEntityListener {
-
-    // 엔티티 인스턴스 -> 스냅샷(문자열)
+    //TODO 개인정보 마스킹
+    //스냅샷
     private static final ThreadLocal<Map<Object, String>> SNAPSHOTS =
         ThreadLocal.withInitial(WeakHashMap::new);
 
@@ -35,10 +35,10 @@ public class AuditLogEntityListener {
 
     private String entityName(Object entity) { return entity.getClass().getSimpleName(); }
 
-    /** JSON 대신 사람이 읽기 쉬운 문자열로 변환 */
+
     private String toLogString(Object entity) {
         if (entity == null) return null;
-        // 엔티티에 toString()을 적절히 오버라이드해 두세요 (민감정보 마스킹!)
+
         return entityName(entity) + ":" + entity.toString();
     }
 
@@ -63,7 +63,7 @@ public class AuditLogEntityListener {
     }
 
     @PreUpdate
-    public void beforeUpdate(Object entity) { /* no-op */ }
+    public void beforeUpdate(Object entity) { }
 
     @PostUpdate
     public void afterUpdate(Object entity) {
