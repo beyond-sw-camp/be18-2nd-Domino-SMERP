@@ -14,6 +14,16 @@ public interface BomClosureRepository extends JpaRepository<BomClosure, BomClosu
 
 
   // command
+  @Modifying
+  @Query(value = """
+      INSERT INTO bom_closure (ancestor_item_id, descendant_item_id, depth)
+      VALUES (:ancestorId, :descendantId, :depth)
+      ON DUPLICATE KEY UPDATE depth = VALUES(depth)
+      """, nativeQuery = true)
+  void upsertBomClosure(@Param("ancestorId") Long ancestorId,
+      @Param("descendantId") Long descendantId,
+      @Param("depth") Integer depth);
+
   // 특정 품목을 조상으로 하는 모든 관계 삭제 (해당 품목의 모든 BOM 트리 삭제 시 사용)
   @Modifying
   @Query("DELETE FROM BomClosure bc WHERE bc.id.ancestorItemId = :ancestorItemId")
