@@ -16,6 +16,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class BomListResponse {
+
   private Long bomId;           // bom id
   private Long itemId;          // 품목 FK
   private String itemName;      // 품목 명

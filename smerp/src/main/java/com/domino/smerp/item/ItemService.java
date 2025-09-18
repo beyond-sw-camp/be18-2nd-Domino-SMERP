@@ -37,4 +37,7 @@ public interface ItemService {
   ItemStatus findItemStatusById(final Long itemStatusId);
 
   Item findItemById(final Long itemId);
+
+  // 비관적 락
+  Item findItemByIdWithLock(final Long itemId);
 }

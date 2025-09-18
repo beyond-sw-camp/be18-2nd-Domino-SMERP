@@ -136,6 +136,17 @@ public class ItemServiceImpl implements ItemService {
         .orElseThrow(() -> new CustomException(ErrorCode.ITEM_NOT_FOUND));
   }
 
+
+  // 품목 비관적 락 findById
+  @Override
+  @Transactional
+  public Item findItemByIdWithLock(final Long itemId) {
+    return itemRepository.findByIdWithPessimisticLock(itemId)
+        .orElseThrow(() -> new CustomException(ErrorCode.ITEM_NOT_FOUND));
+  }
+
+
+
   // 품목 코드 로직
   // REVIEW: 품목명 한글인 경우 어떻게 할 지?, 품목코드 명명 규칙 정해진게 있을까요?
   /*
