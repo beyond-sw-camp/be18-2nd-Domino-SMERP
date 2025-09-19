@@ -117,7 +117,7 @@ public class BomController {
     return ResponseEntity.ok().build();
   }
 
-  // BOM 선택 품목 캐시 재생성
+  // BOM 선택한 품목 캐시 재생성
   @PostMapping("/cache/refresh/{item-id}")
   public ResponseEntity<Void> refreshBomCache(final @PathVariable("item-id") Long itemId) {
     bomCommandService.rebuildBomCostCache(itemId);

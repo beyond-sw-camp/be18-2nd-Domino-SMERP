@@ -33,7 +33,8 @@ public class BomCacheBuilder {
 
     // 리프 노드
     if (children.isEmpty()) {
-      BigDecimal unitCost = current.getInboundUnitPrice() != null ? current.getInboundUnitPrice() : BigDecimal.ZERO;
+      BigDecimal unitCost =
+          current.getInboundUnitPrice() != null ? current.getInboundUnitPrice() : BigDecimal.ZERO;
       BigDecimal totalCost = accQty.multiply(unitCost);
 
       caches.add(BomCostCache.create(

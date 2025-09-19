@@ -23,4 +23,5 @@ public class CreateBomRequest {
   private BigDecimal qty;
 
   private String remark;
+
 }

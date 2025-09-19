@@ -12,8 +12,14 @@ public interface BomCommandService {
   // BOM 생성
   CreateBomResponse createBom(final CreateBomRequest request);
 
-  // BOM 수정(관계, 수량, 비고)
+  // BOM 관계 수정시 계층 재계산
+  void updateBomClosure(final Long parentId, final Long childId);
+
+  // BOM 수정(수량, 비고)
   BomDetailResponse updateBom(final Long bomId, final UpdateBomRequest request);
+
+  // BOM 관계 수정
+  BomDetailResponse updateBomRelation(final Long bomId, final UpdateBomRelationRequest request);
 
   // BOM 삭제 (부모 있으면 불가능)
   void deleteBom(final Long bomId);
@@ -21,19 +27,13 @@ public interface BomCommandService {
   // BOM 자식 있어도 강제 삭제
   void forceDeleteBom(final Long bomId);
 
-  // BOM 공통 findById
-  Bom findBomById(final Long bomId);
-
-  // BOM 관계 수정시 계층 재계산
-  void updateBomClosure(final Long parentId, final Long childId);
-
-  // BOM 캐시 재생성
-  void rebuildBomCostCache(final Long rootItemId);
-
-  // BOM 관계 수정
-  BomDetailResponse updateBomRelation(final Long bomId, final UpdateBomRelationRequest request);
-
   // BOM 전체 캐시 재생성
   void rebuildAllBomCache();
+
+  // BOM 선택한 품목 캐시 재생성
+  void rebuildBomCostCache(final Long rootItemId);
+
+  // BOM 공통 findById
+  Bom findBomById(final Long bomId);
 
 }

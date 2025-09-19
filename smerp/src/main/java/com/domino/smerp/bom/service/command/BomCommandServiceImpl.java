@@ -228,7 +228,7 @@ public class BomCommandServiceImpl implements BomCommandService {
     }
   }
 
-  // BOM 캐시 재생성 (Listener에서 호출됨)
+  // BOM 선택한 품목 캐시 재생성 (Listener에서 호출됨)
   @Override
   @Transactional
   public void rebuildBomCostCache(final Long rootItemId) {
