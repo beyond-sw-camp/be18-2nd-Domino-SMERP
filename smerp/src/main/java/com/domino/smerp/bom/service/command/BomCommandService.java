@@ -19,7 +19,7 @@ public interface BomCommandService {
   void deleteBom(final Long bomId);
 
   // BOM 자식 있어도 강제 삭제
-  void deleteForceBom(final Long bomId);
+  void forceDeleteBom(final Long bomId);
 
   // BOM 공통 findById
   Bom findBomById(final Long bomId);

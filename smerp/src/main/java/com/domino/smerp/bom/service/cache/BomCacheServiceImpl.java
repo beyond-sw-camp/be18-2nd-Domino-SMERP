@@ -34,7 +34,7 @@ public class BomCacheServiceImpl implements BomCacheService {
 
   // BOM 캐시 조회
   @Override
-  @Transactional
+  @Transactional(readOnly = true)
   public List<BomCostCache> getCacheByRootItemId(final Long rootItemId) {
     return cacheRepository.findByRootItemId(rootItemId);
   }

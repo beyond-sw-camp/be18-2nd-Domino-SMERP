@@ -5,10 +5,12 @@ import com.domino.smerp.bom.dto.response.BomDetailResponse;
 import com.domino.smerp.bom.dto.response.BomListResponse;
 import com.domino.smerp.bom.dto.response.BomRequirementResponse;
 import com.domino.smerp.bom.entity.Bom;
+import com.domino.smerp.bom.entity.BomClosure;
 import com.domino.smerp.bom.entity.BomCostCache;
 import com.domino.smerp.bom.repository.BomClosureRepository;
-import com.domino.smerp.bom.repository.BomCostCacheRepository;
 import com.domino.smerp.bom.repository.BomRepository;
+import com.domino.smerp.bom.repository.BomCostCacheRepository;
+import com.domino.smerp.bom.service.cache.BomCacheBuilder;
 import com.domino.smerp.common.exception.CustomException;
 import com.domino.smerp.common.exception.ErrorCode;
 import com.domino.smerp.item.Item;
@@ -27,11 +29,11 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class BomQueryServiceImpl implements BomQueryService {
 
-  private final BomClosureRepository bomClosureRepository;
   private final BomRepository bomRepository;
   private final BomCostCacheRepository bomCostCacheRepository;
+  private final BomClosureRepository bomClosureRepository;
+  private final BomCacheBuilder bomCacheBuilder;
   private final ItemService itemService;
-
 
   @Override
   @Transactional(readOnly = true)
@@ -41,18 +43,14 @@ public class BomQueryServiceImpl implements BomQueryService {
         .collect(Collectors.toList());
   }
 
-
-  // BOM 목록 조회 (직계 자식만)
   @Override
   @Transactional(readOnly = true)
   public List<BomListResponse> getBomByParentItemId(final Long parentItemId) {
-    List<Bom> boms = bomRepository.findByParentItem_ItemId(parentItemId);
-    return boms.stream()
+    return bomRepository.findByParentItem_ItemId(parentItemId).stream()
         .map(BomListResponse::fromEntity)
         .collect(Collectors.toList());
   }
 
-  // 특정 품목의 BOM 계층 구조 조회
   @Override
   @Transactional(readOnly = true)
   public List<BomListResponse> getBomDescendants(final Long itemId) {
@@ -62,8 +60,6 @@ public class BomQueryServiceImpl implements BomQueryService {
     return List.of(root);
   }
 
-
-  // BOM 상세 조회
   @Override
   @Transactional(readOnly = true)
   public BomDetailResponse getBomDetail(final Long bomId, final String direction) {
@@ -72,7 +68,6 @@ public class BomQueryServiceImpl implements BomQueryService {
     return BomDetailResponse.fromEntity(bom);
   }
 
-  // BOM 품목구분 목록 조회
   @Override
   @Transactional(readOnly = true)
   public List<BomListResponse> getBomsByItemStatusId(final Long itemStatusId) {
@@ -81,12 +76,9 @@ public class BomQueryServiceImpl implements BomQueryService {
         .collect(Collectors.toList());
   }
 
-  // BOM 상세 조회 (부모 품목 ID 기반)
   @Override
   @Transactional(readOnly = true)
   public BomDetailResponse getBomDetailByParentId(final Long parentItemId, final String direction) {
-    // 부모 품목 ID로 BOM을 찾고, 여러 개일 수 있으므로 적절한 로직이 필요합니다.
-    // 여기서는 간단히 첫 번째 BOM 관계를 반환하도록 가정합니다.
     Bom bom = bomRepository.findByParentItem_ItemId(parentItemId).stream()
         .findFirst()
         .orElseThrow(() -> new CustomException(ErrorCode.BOM_NOT_FOUND));
@@ -94,88 +86,40 @@ public class BomQueryServiceImpl implements BomQueryService {
   }
 
   /**
-   * BOM 소요량/원가 산출 (Lazy Build 적용) - 캐시 없으면 즉시 DFS로 빌드 후 저장
+   * BOM 소요량/원가 산출 (Lazy Build 적용)
    */
   @Override
   @Transactional(readOnly = true)
-  public List<BomRequirementResponse> calculateTotalQtyAndCost(final Long rootItemId) {
+  public BomCostResponse calculateTotalQtyAndCost(final Long rootItemId) {
+    // 1. 캐시 조회 (없으면 빌드)
     List<BomCostCache> caches = bomCostCacheRepository.findByRootItemId(rootItemId);
-
     if (caches.isEmpty()) {
-      // Lazy rebuild
       Item root = itemService.findItemById(rootItemId);
-      caches = rebuildBomCostCache(root);
+      caches = bomCacheBuilder.build(root);
       bomCostCacheRepository.saveAll(caches);
     }
 
-    return caches.stream()
-        .map(cache -> {
-          String childItemName = itemService.findItemById(cache.getChildItemId()).getName();
-          return BomRequirementResponse.fromEntity(cache, childItemName);
-        })
-        .collect(Collectors.toList());
+    // 2. 캐시 맵핑
+    Map<Long, BomCostCache> cacheMap = caches.stream()
+        .collect(Collectors.toMap(BomCostCache::getChildItemId, c -> c));
+
+    // 3. closure 관계 조회
+    List<BomClosure> allEdges = bomClosureRepository.findById_AncestorItemId(rootItemId);
+
+    // 4. 트리 빌드
+    return buildTree(rootItemId, allEdges, cacheMap, 0);
   }
 
-
-  /**
-   * Lazy Build용 캐시 생성 로직
-   */
-  private List<BomCostCache> rebuildBomCostCache(final Item root) {
-    List<BomCostCache> caches = new ArrayList<>();
-    dfsBuildCache(root, root, BigDecimal.ONE, 0, caches);
-    return caches;
+  @Override
+  @Transactional(readOnly = true)
+  public BigDecimal getTotalBomCost(final Long rootItemId) {
+    return bomCostCacheRepository.getTotalCost(rootItemId);
   }
 
-  /**
-   * DFS로 BOM 트리를 순회하며 누적 qty와 원가를 계산 (리프 기반)
-   */
-  private BigDecimal dfsBuildCache(
-      final Item root,
-      final Item current,
-      final BigDecimal accQty,
-      final int depth,
-      final List<BomCostCache> caches
-  ) {
-    final List<Bom> children = bomRepository.findByParentItem_ItemId(current.getItemId());
+  // ==========================
+  // 내부 유틸
+  // ==========================
 
-    // 리프 노드라면 → 원가 직접 계산
-    if (children.isEmpty()) {
-      final BigDecimal unitCost = current.getInboundUnitPrice();
-      final BigDecimal totalCost = accQty.multiply(unitCost);
-
-      caches.add(BomCostCache.create(
-          root.getItemId(),
-          current.getItemId(),
-          depth,
-          accQty,
-          totalCost
-      ));
-      return totalCost;
-    }
-
-    // 내부 노드라면 → 자식들의 총 원가 합산
-    BigDecimal totalCost = BigDecimal.ZERO;
-    for (final Bom childBom : children) {
-      final Item child = childBom.getChildItem();
-      final BigDecimal newAccQty = accQty.multiply(childBom.getQty());
-
-      BigDecimal childCost = dfsBuildCache(root, child, newAccQty, depth + 1, caches);
-      totalCost = totalCost.add(childCost);
-    }
-
-    // 내부 노드도 캐시에 기록 (리프 원가의 합을 단가 대신 저장)
-    caches.add(BomCostCache.create(
-        root.getItemId(),
-        current.getItemId(),
-        depth,
-        accQty,
-        totalCost
-    ));
-
-    return totalCost;
-  }
-
-  // 후손들 찾아오는 헬퍼메소드
   private void attachChildren(final BomListResponse parentNode) {
     List<Bom> children = bomRepository.findByParentItem_ItemId(parentNode.getItemId());
     for (Bom childBom : children) {
@@ -185,24 +129,39 @@ public class BomQueryServiceImpl implements BomQueryService {
     }
   }
 
-  // 캐시 기반 트리 빌드
-  private List<BomCostResponse> buildTreeFromCache(final List<BomCostCache> caches) {
-    Map<Long, BomCostResponse> map = new HashMap<>();
-    List<BomCostResponse> roots = new ArrayList<>();
+  private BomCostResponse buildTree(Long itemId,
+      List<BomClosure> allEdges,
+      Map<Long, BomCostCache> cacheMap,
+      int depth) {
+    BomCostCache cache = cacheMap.get(itemId);
+    if (cache == null) {
+      return null;
+    }
 
-    for (BomCostCache cache : caches) {
-      BomCostResponse node = BomCostResponse.fromCache(cache);
-      map.put(cache.getChildItemId(), node);
+    // 자식 노드 찾기
+    List<Long> childrenIds = allEdges.stream()
+        .filter(edge -> edge.getAncestorItemId().equals(itemId) && edge.getDepth() == 1)
+        .map(BomClosure::getDescendantItemId)
+        .toList();
 
-      if (cache.getDepth() == 1) {
-        roots.add(node); // root 직계 자식
-      } else {
-        BomCostResponse parent = map.get(cache.getRootItemId());
-        if (parent != null) {
-          parent.getChildren().add(node);
-        }
+    // 자식 노드 재귀 호출
+    List<BomCostResponse> children = new ArrayList<>();
+    BigDecimal totalCost = BigDecimal.ZERO;
+
+    for (Long childId : childrenIds) {
+      BomCostResponse childNode = buildTree(childId, allEdges, cacheMap, depth + 1);
+      if (childNode != null) {
+        children.add(childNode);
+        totalCost = totalCost.add(childNode.getTotalCost());
       }
     }
-    return roots;
+
+    // 내부 노드 → 자식 합계, 리프 노드 → 캐시 totalCost 그대로 사용
+    if (children.isEmpty()) {
+      totalCost = cache.getTotalCost();
+    }
+
+    return BomCostResponse.of(cache, depth, totalCost, children);
   }
+
 }

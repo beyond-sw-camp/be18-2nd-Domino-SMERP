@@ -3,6 +3,7 @@ package com.domino.smerp.bom.controller;
 import com.domino.smerp.bom.dto.request.CreateBomRequest;
 import com.domino.smerp.bom.dto.request.UpdateBomRequest;
 import com.domino.smerp.bom.dto.request.UpdateBomRelationRequest;
+import com.domino.smerp.bom.dto.response.BomCostResponse;
 import com.domino.smerp.bom.dto.response.BomDetailResponse;
 import com.domino.smerp.bom.dto.response.BomListResponse;
 import com.domino.smerp.bom.dto.response.BomRequirementResponse;
@@ -74,7 +75,7 @@ public class BomController {
 
   // BOM 소요량 산출
   @GetMapping("/items/{item-id}/requirements")
-  public ResponseEntity<List<BomRequirementResponse>> calculateTotalQtyAndCost(
+  public ResponseEntity<BomCostResponse> calculateTotalQtyAndCost(
       final @PathVariable("item-id") Long itemId) {
     return ResponseEntity.ok(bomQueryService.calculateTotalQtyAndCost(itemId));
   }
@@ -105,7 +106,7 @@ public class BomController {
   // BOM 강제 삭제
   @DeleteMapping("/{bom-id}/force")
   public ResponseEntity<Void> deleteForceBom(final @PathVariable("bom-id") Long bomId) {
-    bomCommandService.deleteForceBom(bomId);
+    bomCommandService.forceDeleteBom(bomId);
     return ResponseEntity.noContent().build();
   }
 

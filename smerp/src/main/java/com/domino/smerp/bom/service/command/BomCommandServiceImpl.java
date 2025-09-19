@@ -12,6 +12,7 @@ import com.domino.smerp.bom.event.BomChangedEvent;
 import com.domino.smerp.bom.repository.BomClosureRepository;
 import com.domino.smerp.bom.repository.BomCostCacheRepository;
 import com.domino.smerp.bom.repository.BomRepository;
+import com.domino.smerp.bom.service.cache.BomCacheBuilder;
 import com.domino.smerp.common.exception.CustomException;
 import com.domino.smerp.common.exception.ErrorCode;
 import com.domino.smerp.item.Item;
@@ -34,7 +35,9 @@ public class BomCommandServiceImpl implements BomCommandService {
   private final BomRepository bomRepository;
   private final BomClosureRepository bomClosureRepository;
   private final BomCostCacheRepository bomCostCacheRepository;
+  private final BomCacheBuilder bomCacheBuilder;
   private final ItemService itemService;
+
   private final ApplicationEventPublisher eventPublisher;
 
   private static final ConcurrentHashMap<Long, ReentrantLock> closureLocks = new ConcurrentHashMap<>();
@@ -137,19 +140,9 @@ public class BomCommandServiceImpl implements BomCommandService {
       throw new CustomException(ErrorCode.BOM_DELETE_CONFLICT);
     }
 
-//    수불/생산 이력 확인
-//    boolean hasMovements = movementRepository.existsByItemId(childItemId);
-//    if (hasMovements) {
-//      throw new CustomException(ErrorCode.ITEM_DELETE_CONFLICT);
-//    }
-//
-//    boolean hasProductions = productionResultRepository.existsByItemId(childItemId);
-//    if (hasProductions) {
-//      throw new CustomException(ErrorCode.ITEM_DELETE_CONFLICT);
-//    }
-
     // 삭제실행
     bomRepository.delete(bom);
+
     // 클로저 테이블 갱신
     updateBomClosure(parentId, childItemId);
 
@@ -160,7 +153,7 @@ public class BomCommandServiceImpl implements BomCommandService {
   // BOM 강제 삭제
   @Override
   @Transactional
-  public void deleteForceBom(final Long bomId) {
+  public void forceDeleteBom(final Long bomId) {
     Bom bom = findBomById(bomId);
 
     Long targetItemId = bom.getChildItem().getItemId();
@@ -231,7 +224,7 @@ public class BomCommandServiceImpl implements BomCommandService {
       }
     } finally {
       lock.unlock();
-      closureLocks.remove(parentId);
+      closureLocks.remove(parentId, lock);
     }
   }
 
@@ -240,12 +233,9 @@ public class BomCommandServiceImpl implements BomCommandService {
   @Transactional
   public void rebuildBomCostCache(final Long rootItemId) {
     bomCostCacheRepository.deleteByRootItemId(rootItemId);
-
     Item rootItem = itemService.findItemById(rootItemId);
 
-    List<BomCostCache> caches = new ArrayList<>();
-    dfsBuildCache(rootItem, rootItem, BigDecimal.ONE, 0, caches);
-
+    List<BomCostCache> caches = bomCacheBuilder.build(rootItem);
     bomCostCacheRepository.saveAll(caches);
   }
 
@@ -270,9 +260,10 @@ public class BomCommandServiceImpl implements BomCommandService {
       Item child = childBom.getChildItem();
       BigDecimal newAccQty = accQty.multiply(childBom.getQty());
       BigDecimal unitCost = child.getInboundUnitPrice();
+      BigDecimal totalCost = newAccQty.multiply(unitCost);
 
       caches.add(BomCostCache.create(root.getItemId(), child.getItemId(), depth + 1,
-          newAccQty, unitCost));
+          newAccQty, unitCost,totalCost));
 
       dfsBuildCache(root, child, newAccQty, depth + 1, caches);
     }

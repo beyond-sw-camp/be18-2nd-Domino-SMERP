@@ -53,11 +53,18 @@ public class BomCostCache {
 
 
   // 생성 메서드, update 메서드 등 비즈니스 로직은 서비스에서 구현
-  public static BomCostCache create(final Long rootItemId, final Long childItemId,
-      final Integer depth, final BigDecimal totalQty, final BigDecimal unitCost) {
+  public static BomCostCache create(
+      final Long rootItemId,
+      final Long childItemId,
+      final Integer depth,
+      final BigDecimal totalQty,
+      final BigDecimal unitCost, // 항상 단가를 받음
+      final BigDecimal totalCost
+
+  ) {
     final BigDecimal safeQty = totalQty != null ? totalQty : BigDecimal.ZERO;
     final BigDecimal safeUnitCost = unitCost != null ? unitCost : BigDecimal.ZERO;
-    final BigDecimal totalCost = safeQty.multiply(safeUnitCost);
+    final BigDecimal safeTotalCost = totalCost != null ? totalCost : BigDecimal.ZERO;
 
     return BomCostCache.builder()
         .rootItemId(rootItemId)

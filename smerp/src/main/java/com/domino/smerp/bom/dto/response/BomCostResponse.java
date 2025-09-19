@@ -8,25 +8,29 @@ import lombok.*;
 
 @Getter
 @Builder
-@AllArgsConstructor
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class BomCostResponse {
 
-  private Long itemId;             // 품목 ID
-  private String itemName;         // 품목명 (조회 시 ItemService 등으로 보강)
-  private BigDecimal totalQty;     // 누적 소요 수량
-  private BigDecimal unitCost;     // 단가
-  private BigDecimal totalCost;    // 누적 원가
-  private List<BomCostResponse> children = new ArrayList<>();
+  private final Long itemId;
+  private final String itemName;
+  private final BigDecimal qty;
+  private final BigDecimal unitCost;
+  private final BigDecimal totalCost;
+  private final int depth;
+  private final List<BomCostResponse> children;
 
-  // 캐시 기반 변환
-  public static BomCostResponse fromCache(final BomCostCache cache) {
+  public static BomCostResponse of(final BomCostCache cache,
+      final int depth,
+      final BigDecimal totalCost,
+      final List<BomCostResponse> children) {
     return BomCostResponse.builder()
         .itemId(cache.getChildItemId())
-        .totalQty(cache.getTotalQty())
+        .itemName("TODO: itemName") // 필요하면 Item join 결과 넣기
+        .qty(cache.getTotalQty())
         .unitCost(cache.getUnitCost())
-        .totalCost(cache.getTotalCost())
-        .children(new ArrayList<>())
+        .totalCost(totalCost != null ? totalCost : cache.getTotalCost())
+        .depth(depth)
+        .children(children != null ? children : List.of())
         .build();
   }
 }
