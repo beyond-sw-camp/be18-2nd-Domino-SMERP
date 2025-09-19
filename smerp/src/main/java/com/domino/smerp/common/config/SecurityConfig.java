@@ -59,7 +59,7 @@ public class SecurityConfig {
             corsConfiguration.setAllowedOriginPatterns(List.of("*"));
 
             corsConfiguration.setAllowedMethods(
-                Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+                Arrays.asList("GET", "POST", "PATCH", "DELETE", "OPTIONS"));
 
             corsConfiguration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type"));
 
