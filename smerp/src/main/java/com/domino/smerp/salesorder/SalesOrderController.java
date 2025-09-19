@@ -20,7 +20,7 @@ public class SalesOrderController {
 
     private final SalesOrderService salesOrderService;
 
-    // 주문 등록
+    // 판매 등록
     @PostMapping
     public ResponseEntity<CreateSalesOrderResponse> createSalesOrder(
             @RequestBody CreateSalesOrderRequest request) {
@@ -28,7 +28,7 @@ public class SalesOrderController {
         return ResponseEntity.ok(response);
     }
 
-    // 주문 목록 조회
+    // 판매 목록 조회
     @GetMapping
     public ResponseEntity<PageResponse<ListSalesOrderResponse>> getSalesOrders(
             SearchSalesOrderRequest condition,
@@ -37,7 +37,7 @@ public class SalesOrderController {
         return ResponseEntity.ok(response);
     }
 
-    // 주문 상세 조회
+    // 판매 상세 조회
     @GetMapping("/{salesOrderId}")
     public ResponseEntity<DetailSalesOrderResponse> getDetailSalesOrder(
             @PathVariable Long salesOrderId) {
@@ -45,7 +45,7 @@ public class SalesOrderController {
         return ResponseEntity.ok(response);
     }
 
-    // 주문 수정
+    // 판매 수정
     @PatchMapping("/{salesOrderId}")
     public ResponseEntity<UpdateSalesOrderResponse> updateSalesOrder(
             @PathVariable Long salesOrderId,
@@ -54,7 +54,7 @@ public class SalesOrderController {
         return ResponseEntity.ok(response);
     }
 
-    // 삭제
+    // 판매 삭제
     @DeleteMapping("/{salesOrderId}")
     public ResponseEntity<DeleteSalesOrderResponse> deleteSalesOrder(
             @PathVariable Long salesOrderId) {
@@ -62,9 +62,9 @@ public class SalesOrderController {
         return ResponseEntity.ok(response);
     }
 
-    // 판매 현황 조회
+    // 판매 현황 조회 get SalesOderSummary 수정
     @GetMapping("/summary")
-    public ResponseEntity<List<SummarySalesOrderResponse>> getSalesOrderExcle(
+    public ResponseEntity<List<SummarySalesOrderResponse>> getSalesOrderSummary(
             SearchSummarySalesOrderRequest condition,
             Pageable pageable
     ) {

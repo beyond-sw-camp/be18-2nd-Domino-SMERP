@@ -63,7 +63,7 @@ public class OrderController {
 
     // 반품 현황 조회 (GET)
     @GetMapping("/returns/summary")
-    public ResponseEntity<List<SummaryReturnOrderResponse>> getReturnOrders(SearchSummaryReturnOrderRequest condition, Pageable pageable) {
+    public ResponseEntity<List<SummaryReturnOrderResponse>> getReturnOrdersSummary(SearchSummaryReturnOrderRequest condition, Pageable pageable) {
         return ResponseEntity.ok(orderService.getSummaryReturnOrders(condition, pageable));
     }
 }

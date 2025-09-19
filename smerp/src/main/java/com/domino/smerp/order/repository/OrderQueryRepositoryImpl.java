@@ -44,9 +44,11 @@ public class OrderQueryRepositoryImpl implements OrderQueryRepository {
         QUser user = QUser.user;
 
         List<Order> results = queryFactory
-                .selectFrom(order)
+                .selectFrom(order).distinct() // 중복 제거
                 .join(order.client, client).fetchJoin()
                 .join(order.user, user).fetchJoin()
+                .leftJoin(order.orderItems, QItemOrder.itemOrder).fetchJoin()
+                .leftJoin(QItemOrder.itemOrder.item, QItem.item).fetchJoin()
                 .where(
                         companyNameContains(condition.getCompanyName()),
                         statusEq(condition.getStatus()),
@@ -57,7 +59,7 @@ public class OrderQueryRepositoryImpl implements OrderQueryRepository {
                 )
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
-                .orderBy(getOrderSpecifiers(pageable, order))   // 정렬 적용
+                .orderBy(getOrderSpecifiers(pageable, order))
                 .fetch();
 
         JPAQuery<Long> countQuery = queryFactory

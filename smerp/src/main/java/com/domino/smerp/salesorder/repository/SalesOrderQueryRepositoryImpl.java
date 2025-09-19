@@ -26,6 +26,9 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
+import static com.domino.smerp.item.QItem.item;
+import static com.domino.smerp.itemorder.QItemOrder.itemOrder;
+
 @Repository
 @RequiredArgsConstructor
 public class SalesOrderQueryRepositoryImpl implements SalesOrderQueryRepository {
@@ -45,6 +48,8 @@ public class SalesOrderQueryRepositoryImpl implements SalesOrderQueryRepository 
                 .join(so.order, order).fetchJoin()
                 .join(order.client, client).fetchJoin()
                 .join(order.user, user).fetchJoin()
+                .leftJoin(order.orderItems, itemOrder).fetchJoin()
+                .leftJoin(itemOrder.item, item).fetchJoin()
                 .where(
                         companyNameContains(condition.getCompanyName(), client),
                         userNameContains(condition.getUserName(), user),
@@ -56,6 +61,7 @@ public class SalesOrderQueryRepositoryImpl implements SalesOrderQueryRepository 
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
+
 
         // 카운트 쿼리 (distinct 불필요)
         JPAQuery<Long> countQuery = queryFactory
@@ -78,7 +84,7 @@ public class SalesOrderQueryRepositoryImpl implements SalesOrderQueryRepository 
 
     @Override
     public List<SummarySalesOrderResponse> searchSummarySalesOrder(SearchSummarySalesOrderRequest condition, Pageable pageable) {
-        QSalesOrder salesOrder = QSalesOrder.salesOrder;
+        QSalesOrder so = QSalesOrder.salesOrder;
         QOrder order = QOrder.order;
         QClient client = QClient.client;
         QItemOrder itemOrder = QItemOrder.itemOrder;
@@ -87,7 +93,7 @@ public class SalesOrderQueryRepositoryImpl implements SalesOrderQueryRepository 
         return queryFactory
                 .select(Projections.constructor(
                         SummarySalesOrderResponse.class,
-                        salesOrder.documentNo,
+                        so.documentNo,
                         item.name,
                         itemOrder.qty,
                         itemOrder.specialPrice,
@@ -101,16 +107,16 @@ public class SalesOrderQueryRepositoryImpl implements SalesOrderQueryRepository 
                                 itemOrder.qty, itemOrder.specialPrice),
                         client.companyName
                 ))
-                .from(salesOrder)
-                .join(salesOrder.order, order)
+                .from(so)
+                .join(so.order, order)
                 .join(order.orderItems, itemOrder)
                 .join(itemOrder.item, item)
                 .join(order.client, client)
                 .where(
                         companyNameContains(condition.getClientName(), client),
-                        documentNoContains(condition.getDocumentNo(), salesOrder),
+                        documentNoContains(condition.getDocumentNo(), so),
                         itemNameContains(condition.getItemName(), item),
-                        documentNoBetween(condition.getStartDocDate(), condition.getEndDocDate(), salesOrder)
+                        documentNoBetween(condition.getStartDocDate(), condition.getEndDocDate(), so)
                 )
                 .fetch();
     }

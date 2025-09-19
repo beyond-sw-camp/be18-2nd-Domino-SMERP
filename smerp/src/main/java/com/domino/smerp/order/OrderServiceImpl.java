@@ -160,7 +160,7 @@ public class OrderServiceImpl implements OrderService {
         for (UpdateItemOrderRequest itemReq : request.getItems()) {
             if (itemReq.getItemOrderId() != null) {
                 ItemOrder existing = existingItems.get(itemReq.getItemOrderId());
-                if (existing == null) throw new CustomException(ErrorCode.ITEM_NOT_FOUND);
+                if (existing == null) throw new CustomException(ErrorCode.RETURN_ITEM_NOT_FOUND_IN_ORDER);
 
                 validateQty(itemReq.getQty()); // 수량 음수 검증 추가
                 existing.updateQty(itemReq.getQty());
@@ -238,6 +238,11 @@ public class OrderServiceImpl implements OrderService {
         Order originalOrder = orderRepository.findByDocumentNo(request.getDocumentNo())
                 .orElseThrow(() -> new CustomException(ErrorCode.ORDER_NOT_FOUND));
 
+        // 반품 가능 상태 검증
+        if (originalOrder.getStatus() != OrderStatus.COMPLETED) {
+            throw new CustomException(ErrorCode.RETURN_ONLY_ALLOWED_AFTER_COMPLETED);
+        }
+
         User user = getUserByEmpNo(request.getEmpNo());
 
         // 반품 전표 번호 생성
@@ -272,10 +277,10 @@ public class OrderServiceImpl implements OrderService {
         request.getItems().forEach(itemReq -> {
             ItemOrder originalItem = originalItemMap.get(itemReq.getItemId());
             if (originalItem == null) {
-                throw new CustomException(ErrorCode.RETURN_ITEM_NOT_IN_ORDER);
+                throw new CustomException(ErrorCode.RETURN_ITEM_NOT_FOUND_IN_ORDER);
             }
 
-            // 누적 검증
+            // 누적 반품 수량 검증
             BigDecimal originalQty = originalItem.getQty();
             BigDecimal alreadyReturned = alreadyReturnedQty.getOrDefault(itemReq.getItemId(), BigDecimal.ZERO);
             BigDecimal newReturnTotal = alreadyReturned.add(itemReq.getQty());

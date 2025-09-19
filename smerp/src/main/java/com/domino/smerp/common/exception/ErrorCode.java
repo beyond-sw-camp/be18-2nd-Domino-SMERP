@@ -33,11 +33,11 @@ public enum ErrorCode {
     // item - 404
     ITEM_STATUS_NOT_FOUND(HttpStatus.NOT_FOUND, "ITEM_STATUS_NOT_FOUND", "존재하지 않는 품목 구분입니다."),
     ITEM_NOT_FOUND(HttpStatus.NOT_FOUND, "ITEM_NOT_FOUND", "존재하지 않는 품목입니다."),
-    ITEM_NOT_AVAILABLE(HttpStatus.NOT_FOUND,"ITEM_NOT_AVAILABLE", "더 이상 사용할 수 없는 품목입니다."),
+    ITEM_NOT_AVAILABLE(HttpStatus.NOT_FOUND, "ITEM_NOT_AVAILABLE", "더 이상 사용할 수 없는 품목입니다."),
     // item - 409
     DUPLICATE_ITEM(HttpStatus.CONFLICT, "DUPLICATE_ITEM", "이미 존재하는 품목입니다."),
     DUPLICATE_RFID(HttpStatus.CONFLICT, "DUPLICATE_RFID", "이미 등록된 RFID입니다."),
-    DUPLICATE_ITEM_CODE(HttpStatus.CONFLICT, "ITEM_CODE_DUPLICATED","이미 존재하는 품목 코드입니다."),
+    DUPLICATE_ITEM_CODE(HttpStatus.CONFLICT, "ITEM_CODE_DUPLICATED", "이미 존재하는 품목 코드입니다."),
     ITEM_DELETE_CONFLICT(HttpStatus.CONFLICT, "ITEM_DELETE_CONFLICT", "다른 데이터에서 참조 중이라 품목을 삭제할 수 없습니다.(수불이력)"),
 
 
@@ -48,10 +48,10 @@ public enum ErrorCode {
     // lot_number - 403
     LOTNUMBER_FORBIDDEN(HttpStatus.FORBIDDEN, "LOTNUMBER_FORBIDDEN", "해당 Lot.No은 관리자만 접근할 수 있습니다. 관리자에게 문의하세요"),
     // lot_number - 404
-    LOTNUMBER_NOT_FOUND(HttpStatus.NOT_FOUND,"LOTNUMBER_NOT_FOUND", "존재하지 않는 Lot.No입니다."),
-    LOTNUMBER_NOT_AVAILABLE(HttpStatus.NOT_FOUND,"LOTNUMBER_NOT_AVAILABLE", "더 이상 사용할 수 없는 Lot.No입니다."),
+    LOTNUMBER_NOT_FOUND(HttpStatus.NOT_FOUND, "LOTNUMBER_NOT_FOUND", "존재하지 않는 Lot.No입니다."),
+    LOTNUMBER_NOT_AVAILABLE(HttpStatus.NOT_FOUND, "LOTNUMBER_NOT_AVAILABLE", "더 이상 사용할 수 없는 Lot.No입니다."),
     // lot_number - 409
-    DUPLICATE_LOTNUMBER(HttpStatus.CONFLICT,"DUPLICATE_LOTNUMBER", "이미 사용중인 Lot.No입니다."),
+    DUPLICATE_LOTNUMBER(HttpStatus.CONFLICT, "DUPLICATE_LOTNUMBER", "이미 사용중인 Lot.No입니다."),
 
     // order - 주문과 관련된 예외 정보
     ORDER_NOT_FOUND(HttpStatus.NOT_FOUND, "ORDER_NOT_FOUND", "존재하지 않는 주문입니다."),
@@ -60,7 +60,9 @@ public enum ErrorCode {
     ORDER_ALREADY_APPROVED(HttpStatus.BAD_REQUEST, "ORDER_ALREADY_APPROVED", "이미 주문 승인이 완료되었습니다."),
     INVALID_QUANTITY(HttpStatus.BAD_REQUEST, "INVALID_QUANTITY", "수량은 0보다 커야 합니다."),
     RETURN_ITEM_NOT_IN_ORDER(HttpStatus.NOT_FOUND, "RETURN_ITEM_NOT_IN_ORDER", "반품 품목은 최소 1개 이상의 품목이 필요합니다."),
+    RETURN_ITEM_NOT_FOUND_IN_ORDER(HttpStatus.BAD_REQUEST, "RETURN_ITEM_NOT_FOUND_IN_ORDER", "주문에 등록되지 않은 품목입니다."),
     RETURN_QTY_EXCEEDS_ORIGINAL(HttpStatus.BAD_REQUEST, "RETURN_QTY_EXCEEDS_ORIGINAL", "반품 수량이 원 주문 수량을 초과할 수 없습니다."),
+    RETURN_ONLY_ALLOWED_AFTER_COMPLETED(HttpStatus.BAD_REQUEST, "RETURN_ONLY_ALLOWED_AFTER_COMPLETED", "완료된 주문 건에 대해서만 반품이 가능합니다."),
 
     // sales_order - 판매와 관련된 예외 정보
     INVALID_ORDER_STATUS(HttpStatus.BAD_REQUEST, "INVALID_ORDER_STATUS", "해당 주문은 판매 생성이 불가능한 상태입니다."),
