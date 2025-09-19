@@ -10,7 +10,7 @@ import java.time.LocalDate;
 @Getter
 @Builder
 @AllArgsConstructor
-public class SearchExcelSalesOrderRequest {
+public class SearchSummarySalesOrderRequest {
     private final String documentNo;
     private final String itemName;
     private final BigDecimal qty;

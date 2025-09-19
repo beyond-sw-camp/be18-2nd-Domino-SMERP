@@ -10,7 +10,7 @@ import java.time.LocalDate;
 @Getter
 @Builder
 @AllArgsConstructor
-public class SearchExcelReturnOrderRequest {
+public class SearchSummaryReturnOrderRequest {
     private final String documentNo;   // 반품 번호
     private final String companyName;  // 거래처명
     private final String itemName;     // 품목명

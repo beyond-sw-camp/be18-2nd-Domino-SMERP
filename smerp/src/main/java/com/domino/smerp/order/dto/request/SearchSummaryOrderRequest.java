@@ -1,6 +1,5 @@
 package com.domino.smerp.order.dto.request;
 
-import com.domino.smerp.order.constants.OrderStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -11,7 +10,7 @@ import java.time.LocalDate;
 @Getter
 @Builder
 @AllArgsConstructor
-public class SearchExcelOrderRequest {
+public class SearchSummaryOrderRequest {
     private final String documentNo;
     private final String companyName;
     private final String itemName;

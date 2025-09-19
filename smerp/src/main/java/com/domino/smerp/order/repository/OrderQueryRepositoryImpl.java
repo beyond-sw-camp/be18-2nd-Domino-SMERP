@@ -6,11 +6,11 @@ import com.domino.smerp.itemorder.QItemOrder;
 import com.domino.smerp.order.Order;
 import com.domino.smerp.order.QOrder;
 import com.domino.smerp.order.constants.OrderStatus;
-import com.domino.smerp.order.dto.request.SearchExcelOrderRequest;
-import com.domino.smerp.order.dto.request.SearchExcelReturnOrderRequest;
 import com.domino.smerp.order.dto.request.SearchOrderRequest;
-import com.domino.smerp.order.dto.response.ExcelOrderResponse;
-import com.domino.smerp.order.dto.response.ExcelReturnOrderResponse;
+import com.domino.smerp.order.dto.request.SearchSummaryOrderRequest;
+import com.domino.smerp.order.dto.request.SearchSummaryReturnOrderRequest;
+import com.domino.smerp.order.dto.response.SummaryOrderResponse;
+import com.domino.smerp.order.dto.response.SummaryReturnOrderResponse;
 import com.domino.smerp.user.QUser;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.Projections;
@@ -78,7 +78,7 @@ public class OrderQueryRepositoryImpl implements OrderQueryRepository {
     }
 
     @Override
-    public List<ExcelOrderResponse> searchExcelOrders(SearchExcelOrderRequest condition, Pageable pageable) {
+    public List<SummaryOrderResponse> searchSummaryOrders(SearchSummaryOrderRequest condition, Pageable pageable) {
         QOrder order = QOrder.order;
         QClient client = QClient.client;
         QItemOrder itemOrder = QItemOrder.itemOrder;
@@ -86,7 +86,7 @@ public class OrderQueryRepositoryImpl implements OrderQueryRepository {
 
         return queryFactory
                 .select(Projections.constructor(
-                        ExcelOrderResponse.class,
+                        SummaryOrderResponse.class,
                         order.documentNo,
                         client.companyName,
                         item.name,
@@ -115,7 +115,7 @@ public class OrderQueryRepositoryImpl implements OrderQueryRepository {
     }
 
     @Override
-    public List<ExcelReturnOrderResponse> searchExcelReturnOrders(SearchExcelReturnOrderRequest condition, Pageable pageable) {
+    public List<SummaryReturnOrderResponse> searchSummaryReturnOrders(SearchSummaryReturnOrderRequest condition, Pageable pageable) {
         QOrder order = QOrder.order;
         QClient client = QClient.client;
         QItemOrder itemOrder = QItemOrder.itemOrder;
@@ -123,7 +123,7 @@ public class OrderQueryRepositoryImpl implements OrderQueryRepository {
 
         return queryFactory
                 .select(Projections.constructor(
-                        ExcelReturnOrderResponse.class,
+                        SummaryReturnOrderResponse.class,
                         order.documentNo,
                         client.companyName,
                         item.name,
@@ -152,7 +152,7 @@ public class OrderQueryRepositoryImpl implements OrderQueryRepository {
                 .orderBy(getOrderSpecifiers(pageable, order, client, itemOrder, item))
                 .fetch()
                 .stream()
-                .map(r -> ExcelReturnOrderResponse.builder()
+                .map(r -> SummaryReturnOrderResponse.builder()
                         .documentNo(r.getDocumentNo())
                         .companyName(r.getCompanyName())
                         .itemName(r.getItemName())
@@ -215,7 +215,7 @@ public class OrderQueryRepositoryImpl implements OrderQueryRepository {
     private BooleanExpression documentNoBetween(LocalDate start, LocalDate end) {
         if (start != null && end != null) {
             String startStr = start.format(DateTimeFormatter.ofPattern("yyyy/MM/dd"));
-            String endStr   = end.format(DateTimeFormatter.ofPattern("yyyy/MM/dd"));
+            String endStr = end.format(DateTimeFormatter.ofPattern("yyyy/MM/dd"));
             return Expressions.stringTemplate(
                     "SUBSTRING_INDEX({0}, '-', 1)", QOrder.order.documentNo
             ).between(startStr, endStr);
@@ -238,12 +238,9 @@ public class OrderQueryRepositoryImpl implements OrderQueryRepository {
     private OrderSpecifier<?>[] getOrderSpecifiers(Pageable pageable, QOrder order) {
         return pageable.getSort().stream()
                 .map(sort -> switch (sort.getProperty()) {
-                    case "deliveryDate" ->
-                            sort.isAscending() ? order.deliveryDate.asc() : order.deliveryDate.desc();
-                    case "documentNo" ->
-                            sort.isAscending() ? order.documentNo.asc() : order.documentNo.desc();
-                    case "createdAt" ->
-                            sort.isAscending() ? order.createdAt.asc() : order.createdAt.desc();
+                    case "deliveryDate" -> sort.isAscending() ? order.deliveryDate.asc() : order.deliveryDate.desc();
+                    case "documentNo" -> sort.isAscending() ? order.documentNo.asc() : order.documentNo.desc();
+                    case "createdAt" -> sort.isAscending() ? order.createdAt.asc() : order.createdAt.desc();
                     default -> null;
                 })
                 .filter(Objects::nonNull)
@@ -254,14 +251,15 @@ public class OrderQueryRepositoryImpl implements OrderQueryRepository {
     private OrderSpecifier<?>[] getOrderSpecifiers(Pageable pageable, QOrder order, QClient client, QItemOrder itemOrder, QItem item) {
         return pageable.getSort().stream()
                 .map(sort -> switch (sort.getProperty()) {
-                    case "documentNo"    -> sort.isAscending() ? order.documentNo.asc() : order.documentNo.desc();
-                    case "companyName"   -> sort.isAscending() ? client.companyName.asc() : client.companyName.desc();
-                    case "itemName"      -> sort.isAscending() ? item.name.asc() : item.name.desc();
-                    case "qty"           -> sort.isAscending() ? itemOrder.qty.asc() : itemOrder.qty.desc();
-                    case "specialPrice"  -> sort.isAscending() ? itemOrder.specialPrice.asc() : itemOrder.specialPrice.desc();
-                    case "supplyAmount"  -> sort.isAscending() ? itemOrder.qty.multiply(itemOrder.specialPrice).asc()
+                    case "documentNo" -> sort.isAscending() ? order.documentNo.asc() : order.documentNo.desc();
+                    case "companyName" -> sort.isAscending() ? client.companyName.asc() : client.companyName.desc();
+                    case "itemName" -> sort.isAscending() ? item.name.asc() : item.name.desc();
+                    case "qty" -> sort.isAscending() ? itemOrder.qty.asc() : itemOrder.qty.desc();
+                    case "specialPrice" ->
+                            sort.isAscending() ? itemOrder.specialPrice.asc() : itemOrder.specialPrice.desc();
+                    case "supplyAmount" -> sort.isAscending() ? itemOrder.qty.multiply(itemOrder.specialPrice).asc()
                             : itemOrder.qty.multiply(itemOrder.specialPrice).desc();
-                    case "remark"        -> sort.isAscending() ? order.remark.asc() : order.remark.desc();
+                    case "remark" -> sort.isAscending() ? order.remark.asc() : order.remark.desc();
                     default -> null;
                 })
                 .filter(Objects::nonNull)

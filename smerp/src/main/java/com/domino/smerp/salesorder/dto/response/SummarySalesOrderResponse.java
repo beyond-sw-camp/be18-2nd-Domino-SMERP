@@ -9,7 +9,7 @@ import java.math.BigDecimal;
 @Getter
 @Builder
 @AllArgsConstructor
-public class ExcelSalesOrderResponse {
+public class SummarySalesOrderResponse {
     private final String documentNo;
     private final String itemName;
     private final BigDecimal qty;

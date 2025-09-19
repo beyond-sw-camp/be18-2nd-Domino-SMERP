@@ -22,16 +22,12 @@ public class OrderController {
     // 주문 등록 (POST)
     @PostMapping
     public ResponseEntity<CreateOrderResponse> createOrder(@Valid @RequestBody CreateOrderRequest request) {
-        return ResponseEntity.status(HttpStatus.CREATED)
-                .body(orderService.createOrder(request));
+        return ResponseEntity.status(HttpStatus.CREATED).body(orderService.createOrder(request));
     }
 
     // 주문 목록 조회 (GET)
     @GetMapping
-    public ResponseEntity<PageResponse<ListOrderResponse>> getOrders(
-            SearchOrderRequest condition,
-            Pageable pageable
-    ) {
+    public ResponseEntity<PageResponse<ListOrderResponse>> getOrders(SearchOrderRequest condition, Pageable pageable) {
         return ResponseEntity.ok(orderService.getOrders(condition, pageable));
     }
 
@@ -43,10 +39,7 @@ public class OrderController {
 
     // 주문 수정 (PATCH)
     @PatchMapping("/{orderId}")
-    public ResponseEntity<UpdateOrderResponse> updateOrder(
-            @PathVariable Long orderId,
-            @RequestBody @Valid UpdateOrderRequest request
-    ) {
+    public ResponseEntity<UpdateOrderResponse> updateOrder(@PathVariable Long orderId, @RequestBody @Valid UpdateOrderRequest request) {
         return ResponseEntity.ok(orderService.updateOrder(orderId, request));
     }
 
@@ -57,27 +50,20 @@ public class OrderController {
     }
 
     // 주문 현황 (GET)
-    @GetMapping("/excel")
-    public ResponseEntity<List<ExcelOrderResponse>> getOrderExcel(
-            SearchExcelOrderRequest condition,
-            Pageable pageable
-    ) {
-        return ResponseEntity.ok(orderService.getExcelOrder(condition, pageable));
+    @GetMapping("/summary")
+    public ResponseEntity<List<SummaryOrderResponse>> getOrderSummary(SearchSummaryOrderRequest condition, Pageable pageable) {
+        return ResponseEntity.ok(orderService.getSummaryOrder(condition, pageable));
     }
 
     // 반품 등록 (POST)
     @PostMapping("/returns")
-    public ResponseEntity<CreateReturnOrderResponse> createReturn(
-            @Valid @RequestBody CreateReturnOrderRequest request) {
-        return ResponseEntity.status(HttpStatus.CREATED)
-                .body(orderService.createReturnOrder(request));
+    public ResponseEntity<CreateReturnOrderResponse> createReturn(@Valid @RequestBody CreateReturnOrderRequest request) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(orderService.createReturnOrder(request));
     }
 
     // 반품 현황 조회 (GET)
-    @GetMapping("/returns/excel")
-    public ResponseEntity<List<ExcelReturnOrderResponse>> getReturnOrders(
-            SearchExcelReturnOrderRequest condition,
-            Pageable pageable) {
-        return ResponseEntity.ok(orderService.getExcelReturnOrders(condition, pageable));
+    @GetMapping("/returns/summary")
+    public ResponseEntity<List<SummaryReturnOrderResponse>> getReturnOrders(SearchSummaryReturnOrderRequest condition, Pageable pageable) {
+        return ResponseEntity.ok(orderService.getSummaryReturnOrders(condition, pageable));
     }
 }

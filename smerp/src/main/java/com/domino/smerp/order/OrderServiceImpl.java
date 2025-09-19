@@ -226,8 +226,8 @@ public class OrderServiceImpl implements OrderService {
     // 주문 현황
     @Override
     @Transactional(readOnly = true)
-    public List<ExcelOrderResponse> getExcelOrder(SearchExcelOrderRequest condition, Pageable pageable) {
-        return orderRepository.searchExcelOrders(condition, pageable);
+    public List<SummaryOrderResponse> getSummaryOrder(SearchSummaryOrderRequest condition, Pageable pageable) {
+        return orderRepository.searchSummaryOrders(condition, pageable);
     }
 
     // 반품 등록
@@ -304,6 +304,13 @@ public class OrderServiceImpl implements OrderService {
         return CreateReturnOrderResponse.from(returnOrder.getDocumentNo());
     }
 
+    // 판품 현황 조회
+    @Override
+    @Transactional(readOnly = true)
+    public List<SummaryReturnOrderResponse> getSummaryReturnOrders(SearchSummaryReturnOrderRequest condition, Pageable pageable) {
+        return orderRepository.searchSummaryReturnOrders(condition, pageable);
+    }
+
     private String generateReturnDocumentNo(String originalDocNo) {
         // 원 주문 전표번호 + "(-" 로 시작하는 기존 반품 전표 조회
         List<Order> existingReturns = orderRepository.findByDocumentNoStartingWith(originalDocNo + "(-");
@@ -329,13 +336,6 @@ public class OrderServiceImpl implements OrderService {
 
         // 새로운 반품 전표번호 = 원본 + (-(maxSuffix+1))
         return originalDocNo + "(-" + (maxSuffix + 1) + ")";
-    }
-
-    // 판품 현황 조회
-    @Override
-    @Transactional(readOnly = true)
-    public List<ExcelReturnOrderResponse> getExcelReturnOrders(SearchExcelReturnOrderRequest condition, Pageable pageable) {
-        return orderRepository.searchExcelReturnOrders(condition, pageable);
     }
 
 

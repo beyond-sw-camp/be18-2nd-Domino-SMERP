@@ -18,11 +18,11 @@ public interface OrderService {
 
     DeleteOrderResponse deleteOrder(Long orderId);
 
-    List<ExcelOrderResponse> getExcelOrder(SearchExcelOrderRequest condition, Pageable pageable);
+    List<SummaryOrderResponse> getSummaryOrder(SearchSummaryOrderRequest condition, Pageable pageable);
 
     CreateReturnOrderResponse createReturnOrder(CreateReturnOrderRequest request);
 
-    List<ExcelReturnOrderResponse> getExcelReturnOrders(SearchExcelReturnOrderRequest condition, Pageable pageable);
+    List<SummaryReturnOrderResponse> getSummaryReturnOrders(SearchSummaryReturnOrderRequest condition, Pageable pageable);
 }
 
 

@@ -2,7 +2,7 @@ package com.domino.smerp.salesorder;
 
 import com.domino.smerp.common.dto.PageResponse;
 import com.domino.smerp.salesorder.dto.request.CreateSalesOrderRequest;
-import com.domino.smerp.salesorder.dto.request.SearchExcelSalesOrderRequest;
+import com.domino.smerp.salesorder.dto.request.SearchSummarySalesOrderRequest;
 import com.domino.smerp.salesorder.dto.request.SearchSalesOrderRequest;
 import com.domino.smerp.salesorder.dto.request.UpdateSalesOrderRequest;
 import com.domino.smerp.salesorder.dto.response.*;
@@ -63,11 +63,11 @@ public class SalesOrderController {
     }
 
     // 판매 현황 조회
-    @GetMapping("/excel")
-    public ResponseEntity<List<ExcelSalesOrderResponse>> getSalesOrderExcle(
-            SearchExcelSalesOrderRequest condition,
+    @GetMapping("/summary")
+    public ResponseEntity<List<SummarySalesOrderResponse>> getSalesOrderExcle(
+            SearchSummarySalesOrderRequest condition,
             Pageable pageable
     ) {
-        return ResponseEntity.ok(salesOrderService.getExcelSalesOrder (condition, pageable));
+        return ResponseEntity.ok(salesOrderService.getSummarySalesOrder(condition, pageable));
     }
 }

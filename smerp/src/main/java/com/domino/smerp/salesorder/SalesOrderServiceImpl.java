@@ -8,8 +8,8 @@ import com.domino.smerp.order.Order;
 import com.domino.smerp.order.constants.OrderStatus;
 import com.domino.smerp.order.repository.OrderRepository;
 import com.domino.smerp.salesorder.dto.request.CreateSalesOrderRequest;
-import com.domino.smerp.salesorder.dto.request.SearchExcelSalesOrderRequest;
 import com.domino.smerp.salesorder.dto.request.SearchSalesOrderRequest;
+import com.domino.smerp.salesorder.dto.request.SearchSummarySalesOrderRequest;
 import com.domino.smerp.salesorder.dto.request.UpdateSalesOrderRequest;
 import com.domino.smerp.salesorder.dto.response.*;
 import com.domino.smerp.salesorder.repository.SalesOrderRepository;
@@ -50,7 +50,6 @@ public class SalesOrderServiceImpl implements SalesOrderService {
         if (request.getDocumentDate() == null) {
             throw new CustomException(ErrorCode.INVALID_ORDER_REQUEST);
         }
-
 
 
         // 전표번호 생성
@@ -129,8 +128,8 @@ public class SalesOrderServiceImpl implements SalesOrderService {
     // 주문 현황
     @Override
     @Transactional(readOnly = true)
-    public List<ExcelSalesOrderResponse> getExcelSalesOrder(SearchExcelSalesOrderRequest condition, Pageable pageable) {
-        return salesOrderRepository.searchExcelSalesOrder(condition, pageable);
+    public List<SummarySalesOrderResponse> getSummarySalesOrder(SearchSummarySalesOrderRequest condition, Pageable pageable) {
+        return salesOrderRepository.searchSummarySalesOrder(condition, pageable);
     }
 
 }

@@ -18,7 +18,6 @@ public interface OrderRepository extends JpaRepository<Order, Long>, OrderQueryR
             "LEFT JOIN FETCH o.orderItems oi " +
             "LEFT JOIN FETCH oi.item " +   // Item 까지 fetch join
             "WHERE o.orderId = :id")
-
     Optional<Order> findByIdWithDetails(@Param("id") Long id);
 
     // 전표 번호 기반 조회

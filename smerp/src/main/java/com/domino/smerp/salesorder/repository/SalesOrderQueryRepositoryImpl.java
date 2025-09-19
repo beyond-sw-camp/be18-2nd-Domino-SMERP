@@ -6,9 +6,9 @@ import com.domino.smerp.itemorder.QItemOrder;
 import com.domino.smerp.order.QOrder;
 import com.domino.smerp.salesorder.QSalesOrder;
 import com.domino.smerp.salesorder.SalesOrder;
-import com.domino.smerp.salesorder.dto.request.SearchExcelSalesOrderRequest;
 import com.domino.smerp.salesorder.dto.request.SearchSalesOrderRequest;
-import com.domino.smerp.salesorder.dto.response.ExcelSalesOrderResponse;
+import com.domino.smerp.salesorder.dto.request.SearchSummarySalesOrderRequest;
+import com.domino.smerp.salesorder.dto.response.SummarySalesOrderResponse;
 import com.domino.smerp.user.QUser;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
@@ -77,7 +77,7 @@ public class SalesOrderQueryRepositoryImpl implements SalesOrderQueryRepository 
     }
 
     @Override
-    public List<ExcelSalesOrderResponse> searchExcelSalesOrder(SearchExcelSalesOrderRequest condition, Pageable pageable) {
+    public List<SummarySalesOrderResponse> searchSummarySalesOrder(SearchSummarySalesOrderRequest condition, Pageable pageable) {
         QSalesOrder salesOrder = QSalesOrder.salesOrder;
         QOrder order = QOrder.order;
         QClient client = QClient.client;
@@ -86,7 +86,7 @@ public class SalesOrderQueryRepositoryImpl implements SalesOrderQueryRepository 
 
         return queryFactory
                 .select(Projections.constructor(
-                        ExcelSalesOrderResponse.class,
+                        SummarySalesOrderResponse.class,
                         salesOrder.documentNo,
                         item.name,
                         itemOrder.qty,
