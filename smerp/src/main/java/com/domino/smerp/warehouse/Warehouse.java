@@ -53,7 +53,8 @@ public class Warehouse extends BaseEntity {
   private String zipcode;
 
   @Column(name = "daily_capacity") //nullable o -> 공장용
-  private int dailyCapacity;
+  @Builder.Default
+  private BigDecimal dailyCapacity = new BigDecimal("1600.00");
 
   @OneToMany(cascade = CascadeType.ALL, mappedBy = "warehouse", orphanRemoval = true)
   @Builder.Default

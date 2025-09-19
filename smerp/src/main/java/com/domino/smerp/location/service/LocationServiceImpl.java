@@ -22,8 +22,8 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import stock.Stock;
-import stock.StockRepository;
+import com.domino.smerp.stock.Stock;
+import com.domino.smerp.stock.StockRepository;
 
 @Service
 @RequiredArgsConstructor

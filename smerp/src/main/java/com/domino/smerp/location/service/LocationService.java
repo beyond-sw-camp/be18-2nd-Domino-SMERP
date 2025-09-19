@@ -8,7 +8,7 @@ import com.domino.smerp.location.dto.response.LocationResponse;
 import com.domino.smerp.user.User;
 import java.math.BigDecimal;
 import java.util.List;
-import stock.Stock;
+import com.domino.smerp.stock.Stock;
 
 public interface LocationService {
 
