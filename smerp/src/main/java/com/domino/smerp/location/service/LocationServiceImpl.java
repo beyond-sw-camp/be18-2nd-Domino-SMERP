@@ -175,7 +175,7 @@ public class LocationServiceImpl implements LocationService {
   @Transactional
   public List<Stock> allocateStock(Long itemId, BigDecimal qty) {
 
-    List<Warehouse> availableWarehouses = warehouseRepository.findWarehousesWithFilledFalseLocations();
+    List<Warehouse> availableWarehouses = warehouseRepository.findAvailableWarehousesWithCurQty();
     if (availableWarehouses.isEmpty()) {
       throw new RuntimeException("빈 위치가 있는 창고가 없습니다.");
     }
@@ -189,7 +189,7 @@ public class LocationServiceImpl implements LocationService {
 
     for (Warehouse warehouse : availableWarehouses) {
 
-      List<Location> locations = locationRepository.findAvailableLocations(
+      List<Location> locations = locationRepository.findAvailableLocationsWithCurQty(
           warehouse.getId(),
           remainingQty
       );
@@ -198,16 +198,20 @@ public class LocationServiceImpl implements LocationService {
         //각 위치의 남은 공간
         BigDecimal available = loc.getMaxQty().subtract(
             loc.getCurQty() != null ? loc.getCurQty() : BigDecimal.ZERO
-        );
+        ); //cur qty 있으면 해당 값으로 빼기, 없으면 0 
 
         if(available.compareTo(remainingQty) <= 0) continue;
 
+        //남은 공간보다 가용 공간 크면 남은 공간만큼
+        //남은 공간보다 가용 공간이 작으면 남은 공간만큼
         BigDecimal allocateQty = remainingQty.min(available);
 
         Stock stock = Stock.builder()
             .location(loc)
+            .lotNo(null)
             .item(item)
             .qty(allocateQty)
+            .rfid(null)
             .build();
 
         stockRepository.save(stock);
@@ -215,7 +219,8 @@ public class LocationServiceImpl implements LocationService {
         createdStocks.add(stock);
 
         loc.setCurQty(
-            (loc.getCurQty() != null ? loc.getCurQty() : BigDecimal.ZERO).add(allocateQty)
+            (loc.getCurQty() != null ? loc.getCurQty() : BigDecimal.ZERO)
+                .add(allocateQty)
         );
 
         locationRepository.save(loc);
@@ -238,11 +243,12 @@ public class LocationServiceImpl implements LocationService {
 
   @Transactional
   @Override
-  public void removeStockForSale(Long itemId, BigDecimal qty, User user) {
+  public List<Stock> removeStockForSale(Long itemId, BigDecimal qty, User user) {
     
     BigDecimal remainQty = qty; //빼야할 수량
 
-    List<Warehouse> availableWarehouses = warehouseRepository.findWarehousesWithFilledFalseLocations();
+    List<Warehouse> availableWarehouses = warehouseRepository.findWarehousesWithStock(itemId);
+    List<Stock> stocksRemoved = new ArrayList<>();
 
     for(Warehouse warehouse : availableWarehouses) {
 
@@ -250,41 +256,38 @@ public class LocationServiceImpl implements LocationService {
       if(remainQty.compareTo(BigDecimal.ZERO) <= 0) break;
 
       //위치 단위로 재고 소진
-      List<Location> locations = locationRepository.findByWarehouseIdAndItemId(
-          warehouse.getId(), itemId
-      );
+      List<Stock> stocks = stockRepository.findByItemIdAndWarehouseId(itemId, warehouse.getId());
 
-      for(Location location : locations) {
+
+
+      for(Stock stock : stocks) {
         if(remainQty.compareTo(BigDecimal.ZERO) <= 0) break;
 
         //위치에 남아있는 재고 > 출고수량 : 출고수량만큼만 빼기
         //위치에 남은 재고 < 출고수량 : 남아있는 재고만큼만 빼기
-        BigDecimal removeQty = location.getCurQty().min(remainQty);
+
+        Location location = stock.getLocation();
+
+        //위치 중 해당 재고 자체만의 수량으로 비교
+        BigDecimal removeQty = stock.getQty().min(remainQty);
 
         //현 위치의 재고 감소
+        stock.setQty(stock.getQty().subtract(removeQty));
+        stockRepository.save(stock);
+
         location.setCurQty(location.getCurQty().subtract(removeQty));
+        locationRepository.save(location);
 
         //출고해야할 수량 감소
         remainQty = remainQty.subtract(removeQty);
 
         //재고 qty == 0이더라도 유지 -> 재고 삭제 x
 
-        StockMovement stockMovement = StockMovement.builder()
-            .departWarehouse(warehouse)
-            .arriveWarehouse(null)
-            .user(user)
-            .lotNo(null)
-            .transactionType(TransactionType.OUTBOUND)
-            .movedQty(removeQty.negate())
-            .srcDocType(SrcDocType.SALE)
-            .srcDocNo(null)
-            .totalQty(remainQty)
-            .transactionType(TransactionType.INBOUND)
-            .build();
-        stockMovementRepository.save(stockMovement);
+        stocksRemoved.add(stock);
 
       }
     }
+    return stocksRemoved;
   }
 
 

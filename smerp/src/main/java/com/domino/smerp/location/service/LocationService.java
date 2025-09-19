@@ -26,7 +26,7 @@ public interface LocationService {
 
   List<Stock> allocateStock(Long itemId, BigDecimal qty);
 
-  void removeStockForSale(Long itemId, BigDecimal qty, User user);
+  List<Stock> removeStockForSale(Long itemId, BigDecimal qty, User user);
 
   LocationResponse toLocationResponse(final Location location);
 

@@ -16,9 +16,9 @@ public interface LocationRepository extends JpaRepository<Location, Long> {
     SELECT l 
     FROM Location l
     WHERE l.warehouse.id = :warehouseId
-      AND (l.maxQty - l.curQty) >= :qty
+      AND COALESCE(l.curQty, 0) < l.maxQty
     ORDER BY l.curQty ASC
   """)
-  List<Location> findAvailableLocations(@Param("warehouseId") Long warehouseId,
+  List<Location> findAvailableLocationsWithCurQty(@Param("warehouseId") Long warehouseId,
       @Param("qty") BigDecimal qty);
 }
