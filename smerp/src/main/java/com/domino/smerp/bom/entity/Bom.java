@@ -1,6 +1,7 @@
 package com.domino.smerp.bom.entity;
 
 import com.domino.smerp.bom.dto.request.CreateBomRequest;
+import com.domino.smerp.bom.dto.request.UpdateBomRelationRequest;
 import com.domino.smerp.bom.dto.request.UpdateBomRequest;
 import com.domino.smerp.item.Item;
 import jakarta.persistence.Column;
@@ -75,13 +76,10 @@ public class Bom {
   }
 
   // update 메서드가 새로운 부모 품목 ID를 받아 관계를 수정하는 경우
-  // `UpdateBomRequest`에 `newParentItemId` 필드가 있어야 합니다.
-  public void updateRelation(final UpdateBomRequest request, final Item newParentItem) {
+  public void updateRelation(final UpdateBomRelationRequest request, final Item newParentItem) {
     if (newParentItem != null) {
       this.parentItem = newParentItem;
     }
-    // 수량 및 비고도 함께 업데이트 가능
-    this.update(request);
   }
 
 }

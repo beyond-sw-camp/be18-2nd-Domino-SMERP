@@ -17,6 +17,4 @@ public class UpdateBomRequest {
 
   private String remark;
 
-  private Long parentItemId;
-
 }

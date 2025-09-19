@@ -2,6 +2,7 @@ package com.domino.smerp.bom.controller;
 
 import com.domino.smerp.bom.dto.request.CreateBomRequest;
 import com.domino.smerp.bom.dto.request.UpdateBomRequest;
+import com.domino.smerp.bom.dto.request.UpdateBomRelationRequest;
 import com.domino.smerp.bom.dto.response.BomDetailResponse;
 import com.domino.smerp.bom.dto.response.BomListResponse;
 import com.domino.smerp.bom.dto.response.BomRequirementResponse;
@@ -43,6 +44,12 @@ public class BomController {
     return ResponseEntity.ok(bomQueryService.getBoms());
   }
 
+  // BOM 품목구분 목록 조회
+  @GetMapping("/item-status/{item-status-id}")
+  public ResponseEntity<List<BomListResponse>> getBomsByItemStatusId(
+      final @PathVariable("item-status-id") Long itemStatusId) {
+    return ResponseEntity.ok(bomQueryService.getBomsByItemStatusId(itemStatusId));
+  }
 
   // BOM 상세 조회
   @GetMapping("/{bom-id}")
@@ -50,7 +57,6 @@ public class BomController {
       final @RequestParam(defaultValue = "inbound") String direction) {
     return ResponseEntity.ok(bomQueryService.getBomDetail(bomId, direction));
   }
-
 
   // 특정 품목의 BOM 조회 (직계 자식만)
   @GetMapping("/items/{parent-item-id}")
@@ -66,34 +72,54 @@ public class BomController {
     return ResponseEntity.ok(bomQueryService.getBomDescendants(itemId));
   }
 
-  // TODO: 소요량 산출 API
+  // BOM 소요량 산출
   @GetMapping("/items/{item-id}/requirements")
   public ResponseEntity<List<BomRequirementResponse>> calculateTotalQtyAndCost(
       final @PathVariable("item-id") Long itemId) {
-    // 반환 DTO를 BomCostCache 대신 별도로 정의하는 것이 좋습니다.
     return ResponseEntity.ok(bomQueryService.calculateTotalQtyAndCost(itemId));
   }
 
-  // TODO: 수량/비고 수정 API
+  // BOM 수량/비고 수정
   @PatchMapping("/{bom-id}")
   public ResponseEntity<BomDetailResponse> updateBom(final @PathVariable("bom-id") Long bomId,
       final @RequestBody UpdateBomRequest request) {
     return ResponseEntity.ok(bomCommandService.updateBom(bomId, request));
   }
 
-  // TODO: BOM 삭제 API
+  // BOM 관계 수정
+  @PatchMapping("/{bom-id}/relations")
+  public ResponseEntity<BomDetailResponse> updateBomRelation(
+      final @PathVariable("bom-id") Long bomId,
+      final @RequestBody UpdateBomRelationRequest request) {
+    return ResponseEntity.ok(bomCommandService.updateBomRelation(bomId, request));
+  }
+
+
+  // BOM 삭제
   @DeleteMapping("/{bom-id}")
   public ResponseEntity<Void> deleteBom(final @PathVariable("bom-id") Long bomId) {
     bomCommandService.deleteBom(bomId);
     return ResponseEntity.noContent().build();
   }
 
-  // TODO: BOM 강제 삭제 API
+  // BOM 강제 삭제
   @DeleteMapping("/{bom-id}/force")
   public ResponseEntity<Void> deleteForceBom(final @PathVariable("bom-id") Long bomId) {
     bomCommandService.deleteForceBom(bomId);
     return ResponseEntity.noContent().build();
   }
 
+  // BOM 전체 캐시 재생성
+  @PostMapping("/cache/rebuild")
+  public ResponseEntity<Void> rebuildAllBomCache() {
+    bomCommandService.rebuildAllBomCache();
+    return ResponseEntity.ok().build();
+  }
 
+  // BOM 선택 품목 캐시 재생성
+  @PostMapping("/cache/refresh/{item-id}")
+  public ResponseEntity<Void> refreshBomCache(final @PathVariable("item-id") Long itemId) {
+    bomCommandService.rebuildBomCostCache(itemId);
+    return ResponseEntity.ok().build();
+  }
 }

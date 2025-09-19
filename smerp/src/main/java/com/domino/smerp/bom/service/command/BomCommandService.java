@@ -1,9 +1,11 @@
 package com.domino.smerp.bom.service.command;
 
 import com.domino.smerp.bom.dto.request.CreateBomRequest;
+import com.domino.smerp.bom.dto.request.UpdateBomRelationRequest;
 import com.domino.smerp.bom.dto.request.UpdateBomRequest;
 import com.domino.smerp.bom.dto.response.BomDetailResponse;
 import com.domino.smerp.bom.dto.response.CreateBomResponse;
+import com.domino.smerp.bom.entity.Bom;
 
 public interface BomCommandService {
 
@@ -19,10 +21,19 @@ public interface BomCommandService {
   // BOM 자식 있어도 강제 삭제
   void deleteForceBom(final Long bomId);
 
+  // BOM 공통 findById
+  Bom findBomById(final Long bomId);
+
   // BOM 관계 수정시 계층 재계산
   void updateBomClosure(final Long parentId, final Long childId);
 
   // BOM 캐시 재생성
   void rebuildBomCostCache(final Long rootItemId);
+
+  // BOM 관계 수정
+  BomDetailResponse updateBomRelation(final Long bomId, final UpdateBomRelationRequest request);
+
+  // BOM 전체 캐시 재생성
+  void rebuildAllBomCache();
 
 }

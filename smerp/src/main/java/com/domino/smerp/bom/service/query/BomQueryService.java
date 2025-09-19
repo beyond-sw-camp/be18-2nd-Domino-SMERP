@@ -17,4 +17,10 @@ public interface BomQueryService {
 
   List<BomRequirementResponse> calculateTotalQtyAndCost(final Long rootItemId);
 
+  // BOM 품목구분 목록 조회
+  List<BomListResponse> getBomsByItemStatusId(final Long itemStatusId);
+
+  // BOM 상세 조회
+  BomDetailResponse getBomDetailByParentId(final Long parentItemId, final String direction);
+
 }

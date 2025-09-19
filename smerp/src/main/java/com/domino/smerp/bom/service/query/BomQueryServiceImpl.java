@@ -72,6 +72,27 @@ public class BomQueryServiceImpl implements BomQueryService {
     return BomDetailResponse.fromEntity(bom);
   }
 
+  // BOM 품목구분 목록 조회
+  @Override
+  @Transactional(readOnly = true)
+  public List<BomListResponse> getBomsByItemStatusId(final Long itemStatusId) {
+    return bomRepository.findByChildItem_ItemStatus_ItemStatusId(itemStatusId).stream()
+        .map(BomListResponse::fromEntity)
+        .collect(Collectors.toList());
+  }
+
+  // BOM 상세 조회 (부모 품목 ID 기반)
+  @Override
+  @Transactional(readOnly = true)
+  public BomDetailResponse getBomDetailByParentId(final Long parentItemId, final String direction) {
+    // 부모 품목 ID로 BOM을 찾고, 여러 개일 수 있으므로 적절한 로직이 필요합니다.
+    // 여기서는 간단히 첫 번째 BOM 관계를 반환하도록 가정합니다.
+    Bom bom = bomRepository.findByParentItem_ItemId(parentItemId).stream()
+        .findFirst()
+        .orElseThrow(() -> new CustomException(ErrorCode.BOM_NOT_FOUND));
+    return BomDetailResponse.fromEntity(bom);
+  }
+
   /**
    * BOM 소요량/원가 산출 (Lazy Build 적용) - 캐시 없으면 즉시 DFS로 빌드 후 저장
    */
