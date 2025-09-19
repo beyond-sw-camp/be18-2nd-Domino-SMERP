@@ -275,7 +275,7 @@ public class LocationServiceImpl implements LocationService {
             .user(user)
             .lotNo(null)
             .transactionType(TransactionType.OUTBOUND)
-            .movedQty(removeQty)
+            .movedQty(removeQty.negate())
             .srcDocType(SrcDocType.SALE)
             .srcDocNo(null)
             .totalQty(remainQty)
