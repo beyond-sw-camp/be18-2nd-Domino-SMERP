@@ -12,6 +12,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import java.math.BigDecimal;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -51,6 +52,14 @@ public class Location {
   @Builder.Default
   private boolean filled = false;
 
+  @Column(nullable = false, precision = 12, scale = 2)
+  @Builder.Default
+  private BigDecimal maxQty = new BigDecimal("500.00");
+
+  @Column(nullable = false)
+  @Builder.Default
+  private BigDecimal curQty = BigDecimal.ZERO;
+
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "warehouse_id",
       nullable = false,
@@ -85,5 +94,8 @@ public class Location {
 
   }
 
+  public void setCurQty(BigDecimal curQty) {
+    this.curQty = curQty;
+  }
 
 }

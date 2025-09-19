@@ -5,6 +5,10 @@ import com.domino.smerp.location.dto.request.LocationIdListRequest;
 import com.domino.smerp.location.dto.response.LocationIdListResponse;
 import com.domino.smerp.location.dto.response.LocationListResponse;
 import com.domino.smerp.location.dto.response.LocationResponse;
+import com.domino.smerp.user.User;
+import java.math.BigDecimal;
+import java.util.List;
+import stock.Stock;
 
 public interface LocationService {
 
@@ -19,6 +23,10 @@ public interface LocationService {
 
   //재고를 삭제한 경우 받은 위치 id들에 해당하는 위치의 칸을 비움
   LocationIdListResponse unFillLocations(final LocationIdListRequest locationIdListRequest);
+
+  List<Stock> allocateStock(Long itemId, BigDecimal qty);
+
+  void removeStockForSale(Long itemId, BigDecimal qty, User user);
 
   LocationResponse toLocationResponse(final Location location);
 

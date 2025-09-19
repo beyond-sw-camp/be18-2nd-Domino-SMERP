@@ -1,19 +1,29 @@
 package com.domino.smerp.location.service;
 
+import com.domino.smerp.item.Item;
+import com.domino.smerp.item.repository.ItemRepository;
 import com.domino.smerp.location.Location;
 import com.domino.smerp.location.LocationRepository;
 import com.domino.smerp.location.dto.request.LocationIdListRequest;
 import com.domino.smerp.location.dto.response.LocationIdListResponse;
 import com.domino.smerp.location.dto.response.LocationListResponse;
 import com.domino.smerp.location.dto.response.LocationResponse;
+import com.domino.smerp.stockmovement.StockMovement;
+import com.domino.smerp.stockmovement.StockMovementRepository;
+import com.domino.smerp.stockmovement.constants.SrcDocType;
+import com.domino.smerp.stockmovement.constants.TransactionType;
+import com.domino.smerp.user.User;
 import com.domino.smerp.warehouse.Warehouse;
 import com.domino.smerp.warehouse.WarehouseRepository;
 import jakarta.persistence.EntityNotFoundException;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import stock.Stock;
+import stock.StockRepository;
 
 @Service
 @RequiredArgsConstructor
@@ -21,6 +31,9 @@ public class LocationServiceImpl implements LocationService {
 
   private final WarehouseRepository warehouseRepository;
   private final LocationRepository locationRepository;
+  private final StockRepository stockRepository;
+  private final ItemRepository itemRepository;
+  private final StockMovementRepository stockMovementRepository;
 
   //칸 생성(창고 생성 시)
   @Override
@@ -159,6 +172,123 @@ public class LocationServiceImpl implements LocationService {
   }
 
   @Override
+  @Transactional
+  public List<Stock> allocateStock(Long itemId, BigDecimal qty) {
+
+    List<Warehouse> availableWarehouses = warehouseRepository.findWarehousesWithFilledFalseLocations();
+    if (availableWarehouses.isEmpty()) {
+      throw new RuntimeException("빈 위치가 있는 창고가 없습니다.");
+    }
+
+    Item item = itemRepository.findById(itemId)
+        .orElseThrow(() -> new EntityNotFoundException("item not found by id"));
+
+    BigDecimal remainingQty = qty;
+
+    List<Stock> createdStocks = new ArrayList<>();
+
+    for (Warehouse warehouse : availableWarehouses) {
+
+      List<Location> locations = locationRepository.findAvailableLocations(
+          warehouse.getId(),
+          remainingQty
+      );
+
+      for (Location loc : locations) {
+        //각 위치의 남은 공간
+        BigDecimal available = loc.getMaxQty().subtract(
+            loc.getCurQty() != null ? loc.getCurQty() : BigDecimal.ZERO
+        );
+
+        if(available.compareTo(remainingQty) <= 0) continue;
+
+        BigDecimal allocateQty = remainingQty.min(available);
+
+        Stock stock = Stock.builder()
+            .location(loc)
+            .item(item)
+            .qty(allocateQty)
+            .build();
+
+        stockRepository.save(stock);
+
+        createdStocks.add(stock);
+
+        loc.setCurQty(
+            (loc.getCurQty() != null ? loc.getCurQty() : BigDecimal.ZERO).add(allocateQty)
+        );
+
+        locationRepository.save(loc);
+
+        remainingQty = remainingQty.subtract(allocateQty);
+        if (remainingQty.compareTo(BigDecimal.ZERO) == 0) break;
+      }
+
+      if (remainingQty.compareTo(BigDecimal.ZERO) == 0) break;
+    }
+
+    if (remainingQty.compareTo(BigDecimal.ZERO) > 0) {
+      throw new RuntimeException("수량을 모두 넣을 공간이 없습니다. 남은 수량: " + remainingQty);
+    }
+
+    return createdStocks;
+  }
+
+
+
+  @Transactional
+  @Override
+  public void removeStockForSale(Long itemId, BigDecimal qty, User user) {
+    
+    BigDecimal remainQty = qty; //빼야할 수량
+
+    List<Warehouse> availableWarehouses = warehouseRepository.findWarehousesWithFilledFalseLocations();
+
+    for(Warehouse warehouse : availableWarehouses) {
+
+      //출발 창고
+      if(remainQty.compareTo(BigDecimal.ZERO) <= 0) break;
+
+      //위치 단위로 재고 소진
+      List<Location> locations = locationRepository.findByWarehouseIdAndItemId(
+          warehouse.getId(), itemId
+      );
+
+      for(Location location : locations) {
+        if(remainQty.compareTo(BigDecimal.ZERO) <= 0) break;
+
+        //위치에 남아있는 재고 > 출고수량 : 출고수량만큼만 빼기
+        //위치에 남은 재고 < 출고수량 : 남아있는 재고만큼만 빼기
+        BigDecimal removeQty = location.getCurQty().min(remainQty);
+
+        //현 위치의 재고 감소
+        location.setCurQty(location.getCurQty().subtract(removeQty));
+
+        //출고해야할 수량 감소
+        remainQty = remainQty.subtract(removeQty);
+
+        //재고 qty == 0이더라도 유지 -> 재고 삭제 x
+
+        StockMovement stockMovement = StockMovement.builder()
+            .departWarehouse(warehouse)
+            .arriveWarehouse(null)
+            .user(user)
+            .lotNo(null)
+            .transactionType(TransactionType.OUTBOUND)
+            .movedQty(removeQty)
+            .srcDocType(SrcDocType.SALE)
+            .srcDocNo(null)
+            .totalQty(remainQty)
+            .transactionType(TransactionType.INBOUND)
+            .build();
+        stockMovementRepository.save(stockMovement);
+
+      }
+    }
+  }
+
+
+
   public LocationResponse toLocationResponse(final Location location) {
     return LocationResponse.builder()
         .id(location.getId())
