@@ -67,10 +67,10 @@ public class BomController {
   }
 
   // 특정 품목의 BOM 조회 (모든 자식들)
-  @GetMapping("/items/{item-id}/descendants")
-  public ResponseEntity<List<BomListResponse>> getBomDescendants(
+  @GetMapping("/items/{item-id}/inbound")
+  public ResponseEntity<List<BomListResponse>> getBomInbound(
       final @PathVariable("item-id") Long itemId) {
-    return ResponseEntity.ok(bomQueryService.getBomDescendants(itemId));
+    return ResponseEntity.ok(bomQueryService.getBomInbound(itemId));
   }
 
   // BOM 소요량 산출

@@ -41,6 +41,8 @@ public class BomCacheBuilder {
           root.getItemId(),
           current.getItemId(),
           depth,
+          current.getName(),
+          current.getItemStatus().getStatus(),
           accQty,
           unitCost,
           totalCost
@@ -60,6 +62,8 @@ public class BomCacheBuilder {
         root.getItemId(),
         current.getItemId(),
         depth,
+        current.getName(),
+        current.getItemStatus().getStatus(),
         accQty,
         BigDecimal.ZERO,
         totalCost

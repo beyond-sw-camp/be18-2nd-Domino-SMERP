@@ -8,7 +8,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 
-;
 
 @Getter
 @Builder
@@ -17,6 +16,7 @@ public class BomCostResponse {
 
   private final Long itemId;
   private final String itemName;
+  private final String itemStatus;
   private final BigDecimal qty;
   private final BigDecimal unitCost;
   private final BigDecimal totalCost;
@@ -29,7 +29,8 @@ public class BomCostResponse {
       final List<BomCostResponse> children) {
     return BomCostResponse.builder()
         .itemId(cache.getChildItemId())
-        .itemName("TODO: itemName") // 필요하면 Item join 결과 넣기
+        .itemName(cache.getItemName())
+        .itemStatus(cache.getItemStatus().getDescription())
         .qty(cache.getTotalQty())
         .unitCost(cache.getUnitCost())
         .totalCost(totalCost != null ? totalCost : cache.getTotalCost())

@@ -26,7 +26,7 @@ public class BomListResponse {
   private List<BomListResponse> children; //  계층 구조 표현
 
   public static BomListResponse fromEntity(final Bom bom) {
-    Item item = bom.getChildItem();                  // 하위 품목 기준
+    final Item item = bom.getChildItem();                  // 하위 품목 기준
     return BomListResponse.builder()
         .bomId(bom.getBomId())
         .itemId(item.getItemId())

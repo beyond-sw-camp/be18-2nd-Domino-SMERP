@@ -18,7 +18,6 @@ import com.domino.smerp.common.exception.ErrorCode;
 import com.domino.smerp.item.Item;
 import com.domino.smerp.item.ItemService;
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.ReentrantLock;
@@ -65,7 +64,7 @@ public class BomCommandServiceImpl implements BomCommandService {
       throw new CustomException(ErrorCode.BOM_DUPLICATE_RELATIONSHIP);
     }
 
-    Bom savedBom = bomRepository.save(Bom.create(request, parentItem, childItem));
+    final Bom savedBom = bomRepository.save(Bom.create(request, parentItem, childItem));
 
     // 클로저 업데이트
     updateBomClosure(parentItem.getItemId(), childItem.getItemId());
@@ -80,7 +79,7 @@ public class BomCommandServiceImpl implements BomCommandService {
   @Override
   @Transactional
   public BomDetailResponse updateBom(final Long bomId, final UpdateBomRequest request) {
-    Bom bom = findBomById(bomId);
+    final Bom bom = findBomById(bomId);
 
     // 수량과 비고만 업데이트
     bom.update(request);
@@ -98,11 +97,11 @@ public class BomCommandServiceImpl implements BomCommandService {
   @Transactional
   public BomDetailResponse updateBomRelation(final Long bomId,
       final UpdateBomRelationRequest request) {
-    Bom bom = findBomById(bomId);
+    final Bom bom = findBomById(bomId);
 
-    Long oldParentItemId = bom.getParentItem().getItemId();
-    Long newParentItemId = request.getNewParentItemId();
-    Long childItemId = bom.getChildItem().getItemId();
+    final Long oldParentItemId = bom.getParentItem().getItemId();
+    final Long newParentItemId = request.getNewParentItemId();
+    final Long childItemId = bom.getChildItem().getItemId();
 
     // 부모-자식 순환 참조 체크 (새로운 부모가 자식의 후손인 경우)
     if (bomClosureRepository.existsById_AncestorItemIdAndId_DescendantItemId(
@@ -110,7 +109,7 @@ public class BomCommandServiceImpl implements BomCommandService {
       throw new CustomException(ErrorCode.BOM_CIRCULAR_REFERENCE);
     }
 
-    Item newParentItem = itemService.findItemByIdWithLock(newParentItemId);
+    final Item newParentItem = itemService.findItemByIdWithLock(newParentItemId);
     bom.updateRelation(request, newParentItem);
 
     // 기존 관계의 클로저 삭제 후 새로운 관계의 클로저 업데이트
@@ -129,13 +128,13 @@ public class BomCommandServiceImpl implements BomCommandService {
   @Override
   @Transactional
   public void deleteBom(final Long bomId) {
-    Bom bom = findBomById(bomId);
+    final Bom bom = findBomById(bomId);
 
-    Long parentId = bom.getParentItem().getItemId();
-    Long childItemId = bom.getChildItem().getItemId();
+    final Long parentId = bom.getParentItem().getItemId();
+    final Long childItemId = bom.getChildItem().getItemId();
 
     // 1. 자식 BOM 존재 여부 확인
-    boolean hasChildren = bomRepository.existsByParentItem_ItemId(childItemId);
+    final boolean hasChildren = bomRepository.existsByParentItem_ItemId(childItemId);
     if (hasChildren) {
       throw new CustomException(ErrorCode.BOM_DELETE_CONFLICT);
     }
@@ -154,12 +153,12 @@ public class BomCommandServiceImpl implements BomCommandService {
   @Override
   @Transactional
   public void forceDeleteBom(final Long bomId) {
-    Bom bom = findBomById(bomId);
+    final Bom bom = findBomById(bomId);
 
-    Long targetItemId = bom.getChildItem().getItemId();
+    final Long targetItemId = bom.getChildItem().getItemId();
 
-    List<BomClosure> descendants = bomClosureRepository.findById_AncestorItemId(targetItemId);
-    List<Long> descendantItemIds = descendants.stream()
+    final List<BomClosure> descendants = bomClosureRepository.findById_AncestorItemId(targetItemId);
+    final List<Long> descendantItemIds = descendants.stream()
         .map(BomClosure::getDescendantItemId)
         .collect(Collectors.toList());
 
@@ -167,7 +166,7 @@ public class BomCommandServiceImpl implements BomCommandService {
     bomClosureRepository.deleteByDescendantItemId(targetItemId);
 
     // 상위 root 들 invalidate
-    List<BomClosure> ancestors = bomClosureRepository.findById_DescendantItemId(targetItemId);
+    final List<BomClosure> ancestors = bomClosureRepository.findById_DescendantItemId(targetItemId);
     ancestors.stream()
         .map(BomClosure::getAncestorItemId)
         .distinct()
@@ -190,7 +189,7 @@ public class BomCommandServiceImpl implements BomCommandService {
   @Transactional
   public void updateBomClosure(final Long parentId, final Long childId) {
     // 부모 ID에 대한 잠금 객체를 사용
-    ReentrantLock lock = closureLocks.computeIfAbsent(parentId, k -> new ReentrantLock());
+    final ReentrantLock lock = closureLocks.computeIfAbsent(parentId, k -> new ReentrantLock());
 
     lock.lock();
     try {
@@ -212,9 +211,9 @@ public class BomCommandServiceImpl implements BomCommandService {
       }
 
       // 2. 조상 × 자손 조합 모두 upsert
-      for (BomClosure ancestor : ancestors) {
-        for (BomClosure descendant : descendants) {
-          int depth = ancestor.getDepth() + descendant.getDepth() + 1;
+      for (final BomClosure ancestor : ancestors) {
+        for (final BomClosure descendant : descendants) {
+          final int depth = ancestor.getDepth() + descendant.getDepth() + 1;
           bomClosureRepository.upsertBomClosure(
               ancestor.getAncestorItemId(),
               descendant.getDescendantItemId(),
@@ -233,9 +232,9 @@ public class BomCommandServiceImpl implements BomCommandService {
   @Transactional
   public void rebuildBomCostCache(final Long rootItemId) {
     bomCostCacheRepository.deleteByRootItemId(rootItemId);
-    Item rootItem = itemService.findItemById(rootItemId);
+    final Item rootItem = itemService.findItemById(rootItemId);
 
-    List<BomCostCache> caches = bomCacheBuilder.build(rootItem);
+    final List<BomCostCache> caches = bomCacheBuilder.build(rootItem);
     bomCostCacheRepository.saveAll(caches);
   }
 
@@ -243,8 +242,8 @@ public class BomCommandServiceImpl implements BomCommandService {
   @Override
   @Transactional
   public void rebuildAllBomCache() {
-    List<Long> allRootItemIds = bomRepository.findAllRootItemIds();
-    for (Long rootItemId : allRootItemIds) {
+    final List<Long> allRootItemIds = bomRepository.findAllRootItemIds();
+    for (final Long rootItemId : allRootItemIds) {
       rebuildBomCostCache(rootItemId);
     }
   }
@@ -254,16 +253,23 @@ public class BomCommandServiceImpl implements BomCommandService {
       final Item root, final Item current, final BigDecimal accQty,
       final int depth, final List<BomCostCache> caches
   ) {
-    List<Bom> children = bomRepository.findByParentItem_ItemId(current.getItemId());
+    final List<Bom> children = bomRepository.findByParentItem_ItemId(current.getItemId());
 
-    for (Bom childBom : children) {
-      Item child = childBom.getChildItem();
-      BigDecimal newAccQty = accQty.multiply(childBom.getQty());
-      BigDecimal unitCost = child.getInboundUnitPrice();
-      BigDecimal totalCost = newAccQty.multiply(unitCost);
+    for (final Bom childBom : children) {
+      final Item child = childBom.getChildItem();
+      final BigDecimal newAccQty = accQty.multiply(childBom.getQty());
+      final BigDecimal unitCost = child.getInboundUnitPrice();
+      final BigDecimal totalCost = newAccQty.multiply(unitCost);
 
-      caches.add(BomCostCache.create(root.getItemId(), child.getItemId(), depth + 1,
-          newAccQty, unitCost,totalCost));
+      caches.add(BomCostCache.create(
+          root.getItemId(),
+          child.getItemId(),
+          depth + 1,
+          child.getName(),
+          child.getItemStatus().getStatus(),
+          newAccQty,
+          unitCost,
+          totalCost));
 
       dfsBuildCache(root, child, newAccQty, depth + 1, caches);
     }
