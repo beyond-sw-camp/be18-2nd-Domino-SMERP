@@ -16,7 +16,6 @@ public class DocumentNoGenerator {
 
     private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy/MM/dd");
 
-
     // 신규 전표번호 생성
 
     public String generate(LocalDate documentDate,
@@ -36,7 +35,6 @@ public class DocumentNoGenerator {
         }
         throw new CustomException(ErrorCode.DOCUMENT_NO_GENERATION_FAILED);
     }
-
 
     // 수정 시 기존 전표 유지, 날짜가 변경된 경우만 새 번호 생성
 

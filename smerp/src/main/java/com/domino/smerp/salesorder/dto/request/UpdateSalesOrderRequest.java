@@ -1,5 +1,6 @@
 package com.domino.smerp.salesorder.dto.request;
 
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
@@ -15,6 +16,7 @@ import java.time.LocalDate;
 @NoArgsConstructor(force = true)
 public class UpdateSalesOrderRequest {
 
+    @NotNull(message = "주문일자(document)는 필수 입력입니다.")
     private final LocalDate documentDate;  // 판매일자
 
     @Size(max = 100, message = "비고는 최대 100자까지 입력 가능합니다.")

@@ -23,7 +23,6 @@ public class SalesOrder extends BaseEntity {
     @Column(name = "sales_order_id")
     private Long soId;
 
-    // 주문 참조 (1:1)
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_id", nullable = false,
             foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))

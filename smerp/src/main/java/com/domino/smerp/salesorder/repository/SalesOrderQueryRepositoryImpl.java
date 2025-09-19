@@ -39,7 +39,7 @@ public class SalesOrderQueryRepositoryImpl implements SalesOrderQueryRepository 
         QClient client = QClient.client;
         QUser user = QUser.user;
 
-        // ✅ DISTINCT 추가 → 중복 row 제거
+        // DISTINCT 추가 → 중복 row 제거
         List<SalesOrder> results = queryFactory
                 .selectFrom(so).distinct()
                 .join(so.order, order).fetchJoin()
@@ -115,7 +115,7 @@ public class SalesOrderQueryRepositoryImpl implements SalesOrderQueryRepository 
                 .fetch();
     }
 
-    // ===================== 검색 조건 =====================
+    // 검색 조건
 
     private BooleanExpression companyNameContains(String name, QClient client) {
         return (name == null || name.isEmpty()) ? null : client.companyName.contains(name);
