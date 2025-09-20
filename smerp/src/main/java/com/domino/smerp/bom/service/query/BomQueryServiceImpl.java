@@ -1,9 +1,8 @@
 package com.domino.smerp.bom.service.query;
 
-import com.domino.smerp.bom.dto.response.BomCostResponse;
+import com.domino.smerp.bom.dto.response.BomCostCacheResponse;
 import com.domino.smerp.bom.dto.response.BomDetailResponse;
 import com.domino.smerp.bom.dto.response.BomListResponse;
-import com.domino.smerp.bom.dto.response.BomRequirementResponse;
 import com.domino.smerp.bom.entity.Bom;
 import com.domino.smerp.bom.entity.BomClosure;
 import com.domino.smerp.bom.entity.BomCostCache;
@@ -17,7 +16,6 @@ import com.domino.smerp.item.Item;
 import com.domino.smerp.item.ItemService;
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -90,7 +88,7 @@ public class BomQueryServiceImpl implements BomQueryService {
    */
   @Override
   @Transactional(readOnly = true)
-  public BomCostResponse calculateTotalQtyAndCost(final Long rootItemId) {
+  public BomCostCacheResponse calculateTotalQtyAndCost(final Long rootItemId) {
     // 1. 캐시 조회 (없으면 빌드)
     List<BomCostCache> caches = bomCostCacheRepository.findByRootItemId(rootItemId);
     if (caches.isEmpty()) {
@@ -103,8 +101,8 @@ public class BomQueryServiceImpl implements BomQueryService {
     final Map<Long, BomCostCache> cacheMap = caches.stream()
         .collect(Collectors.toMap(BomCostCache::getChildItemId, c -> c));
 
-    // 3. closure 관계 조회
-    final List<BomClosure> allEdges = bomClosureRepository.findById_AncestorItemId(rootItemId);
+    // 3. closure 관계 전체 조회 (루트만 X → 전체)
+    final List<BomClosure> allEdges = bomClosureRepository.findAll();
 
     // 4. 트리 빌드
     return buildTree(rootItemId, allEdges, cacheMap, 0);
@@ -129,39 +127,41 @@ public class BomQueryServiceImpl implements BomQueryService {
     }
   }
 
-  private BomCostResponse buildTree(final Long itemId,
+  // 계층으로 BOM 표현
+  private BomCostCacheResponse buildTree(
+      final Long itemId,
       final List<BomClosure> allEdges,
       final Map<Long, BomCostCache> cacheMap,
-      final int depth) {
+      final int depth
+  ) {
     final BomCostCache cache = cacheMap.get(itemId);
-    if (cache == null) {
-      return null;
-    }
+    if (cache == null) return null;
 
-    // 자식 노드 찾기
+    // 현재 노드 기준 직계 자식만 추출
     final List<Long> childrenIds = allEdges.stream()
-        .filter(edge -> edge.getAncestorItemId().equals(itemId) && edge.getDepth() == 1)
+        .filter(edge -> edge.getAncestorItemId().equals(itemId))
+        .filter(edge -> !edge.getDescendantItemId().equals(itemId))
+        .filter(edge -> edge.getDepth() == 1) // 직계
         .map(BomClosure::getDescendantItemId)
         .toList();
 
-    // 자식 노드 재귀 호출
-    final List<BomCostResponse> children = new ArrayList<>();
+    final List<BomCostCacheResponse> children = new ArrayList<>();
     BigDecimal totalCost = BigDecimal.ZERO;
 
     for (final Long childId : childrenIds) {
-      final BomCostResponse childNode = buildTree(childId, allEdges, cacheMap, depth + 1);
+      final BomCostCacheResponse childNode = buildTree(childId, allEdges, cacheMap, depth + 1);
       if (childNode != null) {
         children.add(childNode);
         totalCost = totalCost.add(childNode.getTotalCost());
       }
     }
 
-    // 내부 노드 → 자식 합계, 리프 노드 → 캐시 totalCost 그대로 사용
+    // leaf면 캐시 totalCost 그대로
     if (children.isEmpty()) {
       totalCost = cache.getTotalCost();
     }
 
-    return BomCostResponse.of(cache, depth, totalCost, children);
+    return BomCostCacheResponse.of(cache, depth, totalCost, children);
   }
 
 }

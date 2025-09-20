@@ -195,6 +195,11 @@ public class BomCommandServiceImpl implements BomCommandService {
     try {
       // 1. 자기 자신 노드 보장
       bomClosureRepository.upsertBomClosure(childId, childId, 0);
+      bomClosureRepository.upsertBomClosure(parentId, parentId, 0);
+
+      // 직계 관계 보장
+      bomClosureRepository.upsertBomClosure(parentId, childId, 1);
+
 
       List<BomClosure> ancestors = bomClosureRepository.findById_DescendantItemId(parentId);
       if (ancestors.isEmpty()) {
@@ -214,6 +219,14 @@ public class BomCommandServiceImpl implements BomCommandService {
       for (final BomClosure ancestor : ancestors) {
         for (final BomClosure descendant : descendants) {
           final int depth = ancestor.getDepth() + descendant.getDepth() + 1;
+
+          // 이미 직계로 넣은 (parent, child, depth=1)은 건너뛰기
+          if (ancestor.getAncestorItemId().equals(parentId) &&
+              descendant.getDescendantItemId().equals(childId) &&
+              depth == 1) {
+            continue;
+          }
+
           bomClosureRepository.upsertBomClosure(
               ancestor.getAncestorItemId(),
               descendant.getDescendantItemId(),
@@ -221,6 +234,7 @@ public class BomCommandServiceImpl implements BomCommandService {
           );
         }
       }
+
     } finally {
       lock.unlock();
       closureLocks.remove(parentId, lock);

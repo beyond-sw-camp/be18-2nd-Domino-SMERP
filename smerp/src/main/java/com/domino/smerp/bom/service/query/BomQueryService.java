@@ -1,9 +1,8 @@
 package com.domino.smerp.bom.service.query;
 
-import com.domino.smerp.bom.dto.response.BomCostResponse;
+import com.domino.smerp.bom.dto.response.BomCostCacheResponse;
 import com.domino.smerp.bom.dto.response.BomDetailResponse;
 import com.domino.smerp.bom.dto.response.BomListResponse;
-import com.domino.smerp.bom.dto.response.BomRequirementResponse;
 import java.math.BigDecimal;
 import java.util.List;
 
@@ -22,7 +21,7 @@ public interface BomQueryService {
   BomDetailResponse getBomDetail(final Long bomId, final String direction);
 
   // BOM 소요량 계산 및 산출
-  BomCostResponse calculateTotalQtyAndCost(final Long rootItemId);
+  BomCostCacheResponse calculateTotalQtyAndCost(final Long rootItemId);
 
   BigDecimal getTotalBomCost(final Long rootItemId);
 

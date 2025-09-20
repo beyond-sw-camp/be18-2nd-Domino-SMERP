@@ -3,10 +3,9 @@ package com.domino.smerp.bom.controller;
 import com.domino.smerp.bom.dto.request.CreateBomRequest;
 import com.domino.smerp.bom.dto.request.UpdateBomRequest;
 import com.domino.smerp.bom.dto.request.UpdateBomRelationRequest;
-import com.domino.smerp.bom.dto.response.BomCostResponse;
+import com.domino.smerp.bom.dto.response.BomCostCacheResponse;
 import com.domino.smerp.bom.dto.response.BomDetailResponse;
 import com.domino.smerp.bom.dto.response.BomListResponse;
-import com.domino.smerp.bom.dto.response.BomRequirementResponse;
 import com.domino.smerp.bom.dto.response.CreateBomResponse;
 import com.domino.smerp.bom.service.command.BomCommandService;
 import com.domino.smerp.bom.service.query.BomQueryService;
@@ -75,7 +74,7 @@ public class BomController {
 
   // BOM 소요량 산출
   @GetMapping("/items/{item-id}/requirements")
-  public ResponseEntity<BomCostResponse> calculateTotalQtyAndCost(
+  public ResponseEntity<BomCostCacheResponse> calculateTotalQtyAndCost(
       final @PathVariable("item-id") Long itemId) {
     return ResponseEntity.ok(bomQueryService.calculateTotalQtyAndCost(itemId));
   }
