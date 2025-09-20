@@ -37,5 +37,7 @@ public interface WarehouseRepository extends JpaRepository<Warehouse, Long> {
   """)
   List<Warehouse> findWarehousesWithStock(@Param("itemId") Long itemId);
 
+  Optional<Warehouse> findByName(String name);
+
 }
 
