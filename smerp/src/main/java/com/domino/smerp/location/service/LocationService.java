@@ -5,10 +5,6 @@ import com.domino.smerp.location.dto.request.LocationIdListRequest;
 import com.domino.smerp.location.dto.response.LocationIdListResponse;
 import com.domino.smerp.location.dto.response.LocationListResponse;
 import com.domino.smerp.location.dto.response.LocationResponse;
-import com.domino.smerp.user.User;
-import java.math.BigDecimal;
-import java.util.List;
-import com.domino.smerp.stock.Stock;
 
 public interface LocationService {
 

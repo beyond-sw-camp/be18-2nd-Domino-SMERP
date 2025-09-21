@@ -1,29 +1,19 @@
 package com.domino.smerp.location.service;
 
-import com.domino.smerp.item.Item;
-import com.domino.smerp.item.repository.ItemRepository;
 import com.domino.smerp.location.Location;
 import com.domino.smerp.location.LocationRepository;
 import com.domino.smerp.location.dto.request.LocationIdListRequest;
 import com.domino.smerp.location.dto.response.LocationIdListResponse;
 import com.domino.smerp.location.dto.response.LocationListResponse;
 import com.domino.smerp.location.dto.response.LocationResponse;
-import com.domino.smerp.stockmovement.StockMovement;
-import com.domino.smerp.stockmovement.StockMovementRepository;
-import com.domino.smerp.stockmovement.constants.SrcDocType;
-import com.domino.smerp.stockmovement.constants.TransactionType;
-import com.domino.smerp.user.User;
 import com.domino.smerp.warehouse.Warehouse;
 import com.domino.smerp.warehouse.WarehouseRepository;
 import jakarta.persistence.EntityNotFoundException;
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import com.domino.smerp.stock.Stock;
-import com.domino.smerp.stock.StockRepository;
 
 @Service
 @RequiredArgsConstructor

@@ -12,7 +12,7 @@ public interface WarehouseRepository extends JpaRepository<Warehouse, Long> {
 
   Boolean existsByName(String name);
 
-  Optional<Warehouse> findByItemId(Long itemId);
+//  Optional<Warehouse> findByItemId(Long itemId);
 
   @Query("SELECT DISTINCT w.id FROM Warehouse w " +
       "WHERE NOT EXISTS (" +
@@ -29,13 +29,13 @@ public interface WarehouseRepository extends JpaRepository<Warehouse, Long> {
   """)
   List<Warehouse> findAvailableWarehousesWithCurQty();
 
-  @Query("""
-    SELECT DISTINCT s.location.warehouse
-    FROM Stock s
-    WHERE s.item.itemId = :itemId
-      AND s.qty > 0
-  """)
-  List<Warehouse> findWarehousesWithStock(@Param("itemId") Long itemId);
+//  @Query("""
+//    SELECT DISTINCT s.location.warehouse
+//    FROM Stock s
+//    WHERE s.item.itemId = :itemId
+//      AND s.qty > 0
+//  """)
+//  List<Warehouse> findWarehousesWithStock(@Param("itemId") Long itemId);
 
   Optional<Warehouse> findByName(String name);
 
