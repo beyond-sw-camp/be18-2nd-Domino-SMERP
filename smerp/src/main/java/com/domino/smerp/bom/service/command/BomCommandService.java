@@ -27,12 +27,6 @@ public interface BomCommandService {
   // BOM 자식 있어도 강제 삭제
   void forceDeleteBom(final Long bomId);
 
-  // BOM 전체 캐시 재생성
-  void rebuildAllBomCache();
-
-  // BOM 선택한 품목 캐시 재생성
-  void rebuildBomCostCache(final Long rootItemId);
-
   // BOM 공통 findById
   Bom findBomById(final Long bomId);
 

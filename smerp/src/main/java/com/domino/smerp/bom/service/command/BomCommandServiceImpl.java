@@ -13,6 +13,7 @@ import com.domino.smerp.bom.repository.BomClosureRepository;
 import com.domino.smerp.bom.repository.BomCostCacheRepository;
 import com.domino.smerp.bom.repository.BomRepository;
 import com.domino.smerp.bom.service.cache.BomCacheBuilder;
+import com.domino.smerp.bom.service.cache.BomCacheService;
 import com.domino.smerp.common.exception.CustomException;
 import com.domino.smerp.common.exception.ErrorCode;
 import com.domino.smerp.item.Item;
@@ -31,11 +32,12 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class BomCommandServiceImpl implements BomCommandService {
 
+  private final ItemService itemService;
+
   private final BomRepository bomRepository;
   private final BomClosureRepository bomClosureRepository;
-  private final BomCostCacheRepository bomCostCacheRepository;
+  private final BomCacheService bomCacheService;
   private final BomCacheBuilder bomCacheBuilder;
-  private final ItemService itemService;
 
   private final ApplicationEventPublisher eventPublisher;
 
@@ -238,55 +240,6 @@ public class BomCommandServiceImpl implements BomCommandService {
     } finally {
       lock.unlock();
       closureLocks.remove(parentId, lock);
-    }
-  }
-
-  // BOM 선택한 품목 캐시 재생성 (Listener에서 호출됨)
-  @Override
-  @Transactional
-  public void rebuildBomCostCache(final Long rootItemId) {
-    bomCostCacheRepository.deleteByRootItemId(rootItemId);
-    final Item rootItem = itemService.findItemById(rootItemId);
-
-    final List<BomCostCache> caches = bomCacheBuilder.build(rootItem);
-    bomCostCacheRepository.saveAll(caches);
-  }
-
-  // BOM 전체 캐시 재생성
-  @Override
-  @Transactional
-  public void rebuildAllBomCache() {
-    bomCostCacheRepository.deleteAll();
-    final List<Long> allRootItemIds = bomRepository.findAllRootItemIds();
-    for (final Long rootItemId : allRootItemIds) {
-      rebuildBomCostCache(rootItemId);
-    }
-  }
-
-
-  private void dfsBuildCache(
-      final Item root, final Item current, final BigDecimal accQty,
-      final int depth, final List<BomCostCache> caches
-  ) {
-    final List<Bom> children = bomRepository.findByParentItem_ItemId(current.getItemId());
-
-    for (final Bom childBom : children) {
-      final Item child = childBom.getChildItem();
-      final BigDecimal newAccQty = accQty.multiply(childBom.getQty());
-      final BigDecimal unitCost = child.getInboundUnitPrice();
-      final BigDecimal totalCost = newAccQty.multiply(unitCost);
-
-      caches.add(BomCostCache.create(
-          root.getItemId(),
-          child.getItemId(),
-          depth + 1,
-          child.getName(),
-          child.getItemStatus().getStatus(),
-          newAccQty,
-          unitCost,
-          totalCost));
-
-      dfsBuildCache(root, child, newAccQty, depth + 1, caches);
     }
   }
 }

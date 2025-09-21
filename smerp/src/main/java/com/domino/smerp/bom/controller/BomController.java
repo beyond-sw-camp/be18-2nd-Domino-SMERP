@@ -7,6 +7,7 @@ import com.domino.smerp.bom.dto.response.BomCostCacheResponse;
 import com.domino.smerp.bom.dto.response.BomDetailResponse;
 import com.domino.smerp.bom.dto.response.BomListResponse;
 import com.domino.smerp.bom.dto.response.CreateBomResponse;
+import com.domino.smerp.bom.service.cache.BomCacheService;
 import com.domino.smerp.bom.service.command.BomCommandService;
 import com.domino.smerp.bom.service.query.BomQueryService;
 import jakarta.validation.Valid;
@@ -28,6 +29,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class BomController {
 
+  private final BomCacheService bomCacheService;
   private final BomCommandService bomCommandService;
   private final BomQueryService bomQueryService;
 
@@ -112,14 +114,14 @@ public class BomController {
   // BOM 전체 캐시 재생성
   @PostMapping("/cache/rebuild")
   public ResponseEntity<Void> rebuildAllBomCache() {
-    bomCommandService.rebuildAllBomCache();
+    bomCacheService.rebuildAllBomCache();
     return ResponseEntity.ok().build();
   }
 
   // BOM 선택한 품목 캐시 재생성
   @PostMapping("/cache/refresh/{item-id}")
   public ResponseEntity<Void> refreshBomCache(final @PathVariable("item-id") Long itemId) {
-    bomCommandService.rebuildBomCostCache(itemId);
+    bomCacheService.rebuildBomCostCache(itemId);
     return ResponseEntity.ok().build();
   }
 }

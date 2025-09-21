@@ -6,6 +6,7 @@ import com.domino.smerp.bom.dto.response.BomListResponse;
 import com.domino.smerp.bom.entity.Bom;
 import com.domino.smerp.bom.entity.BomClosure;
 import com.domino.smerp.bom.entity.BomCostCache;
+import com.domino.smerp.bom.event.BomChangedEvent;
 import com.domino.smerp.bom.repository.BomClosureRepository;
 import com.domino.smerp.bom.repository.BomRepository;
 import com.domino.smerp.bom.repository.BomCostCacheRepository;
@@ -20,6 +21,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,11 +29,14 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class BomQueryServiceImpl implements BomQueryService {
 
+  private final ItemService itemService;
+
   private final BomRepository bomRepository;
   private final BomCostCacheRepository bomCostCacheRepository;
   private final BomClosureRepository bomClosureRepository;
   private final BomCacheBuilder bomCacheBuilder;
-  private final ItemService itemService;
+
+  private final ApplicationEventPublisher eventPublisher;
 
   @Override
   @Transactional(readOnly = true)
@@ -93,7 +98,8 @@ public class BomQueryServiceImpl implements BomQueryService {
     List<BomCostCache> caches = bomCostCacheRepository.findByRootItemId(rootItemId);
     if (caches.isEmpty()) {
       final Item root = itemService.findItemById(rootItemId);
-      caches = bomCacheBuilder.build(root);
+      eventPublisher.publishEvent(new BomChangedEvent(rootItemId));
+      //caches = bomCacheBuilder.build(root);
       bomCostCacheRepository.saveAll(caches);
     }
 
