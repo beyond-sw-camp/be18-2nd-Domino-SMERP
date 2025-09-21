@@ -42,10 +42,8 @@ public class ProductionPlan extends BaseEntity {
   @Enumerated(EnumType.STRING)
   private Status status = Status.PENDING;
 
-  @Column
   private String remark;
-
-  @Column
+  
   private String title;
 
   @Column(name = "is_deleted", nullable = false)
