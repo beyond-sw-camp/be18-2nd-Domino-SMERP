@@ -256,6 +256,7 @@ public class BomCommandServiceImpl implements BomCommandService {
   @Override
   @Transactional
   public void rebuildAllBomCache() {
+    bomCostCacheRepository.deleteAll();
     final List<Long> allRootItemIds = bomRepository.findAllRootItemIds();
     for (final Long rootItemId : allRootItemIds) {
       rebuildBomCostCache(rootItemId);
