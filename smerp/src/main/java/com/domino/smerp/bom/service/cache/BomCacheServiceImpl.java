@@ -7,9 +7,11 @@ import com.domino.smerp.item.Item;
 import com.domino.smerp.item.ItemService;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class BomCacheServiceImpl implements BomCacheService {
@@ -44,6 +46,18 @@ public class BomCacheServiceImpl implements BomCacheService {
     return bomCostCacheRepository.findByRootItemId(rootItemId);
   }
 
+  // BOM 전체 캐시 재생성
+  @Override
+  @Transactional
+  public void rebuildAllBomCache() {
+    bomCostCacheRepository.deleteAll();
+    final List<Long> allRootItemIds = bomRepository.findAllRootItemIds();
+    log.info("전체 RootItemIds = {}", allRootItemIds);
+    for (final Long rootItemId : allRootItemIds) {
+      rebuildBomCostCache(rootItemId);
+    }
+  }
+
   // BOM 선택한 품목 캐시 재생성 (Listener에서 호출됨)
   @Override
   @Transactional
@@ -53,17 +67,6 @@ public class BomCacheServiceImpl implements BomCacheService {
 
     final List<BomCostCache> caches = bomCacheBuilder.build(rootItem);
     bomCostCacheRepository.saveAll(caches);
-  }
-
-  // BOM 전체 캐시 재생성
-  @Override
-  @Transactional
-  public void rebuildAllBomCache() {
-    bomCostCacheRepository.deleteAll();
-    final List<Long> allRootItemIds = bomRepository.findAllRootItemIds();
-    for (final Long rootItemId : allRootItemIds) {
-      rebuildBomCostCache(rootItemId);
-    }
   }
 
 

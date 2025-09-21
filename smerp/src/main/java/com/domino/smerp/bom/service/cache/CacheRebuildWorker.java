@@ -45,7 +45,7 @@ public class CacheRebuildWorker {
 
   @PostConstruct
   public void init() {
-    CompletableFuture.runAsync(this::startWorker); // 별도 스레드에서 돌려야 함
+    CompletableFuture.runAsync(this::startWorker,cacheExecutor); // cacheExecutor풀 활용
   }
 
     // 에러 발생한 코드
