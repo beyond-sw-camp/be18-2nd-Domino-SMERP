@@ -13,11 +13,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface BomRepository extends JpaRepository<Bom, Long> , BomQueryRepository {
 
-  // 모든 BOM 루트 품목 ID 조회
-  // 다른 BOM의 자식 품목이 아닌 모든 품목의 ID를 찾습니다.
-  @Query("SELECT DISTINCT b.parentItem.itemId FROM Bom b WHERE b.parentItem.itemId NOT IN (SELECT bc.childItem.itemId FROM Bom bc)")
-  List<Long> findAllRootItemIds();
-
   // 부모 품목 ID 기준 조회
   List<Bom> findByParentItem_ItemId(final Long parentItemId);
 

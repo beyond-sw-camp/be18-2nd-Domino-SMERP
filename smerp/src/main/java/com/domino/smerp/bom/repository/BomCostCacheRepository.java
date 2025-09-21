@@ -1,7 +1,7 @@
 package com.domino.smerp.bom.repository;
 
 import com.domino.smerp.bom.entity.BomCostCache;
-import com.domino.smerp.bom.repository.query.BomCostCacheQueryRepository;
+import com.domino.smerp.bom.repository.cache.BomCostCacheQueryRepository;
 import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
