@@ -27,12 +27,8 @@ public interface BomRepository extends JpaRepository<Bom, Long> , BomQueryReposi
   // 부모 ID + 자식 ID 조합 존재 여부 체크
   boolean existsByParentItem_ItemIdAndChildItem_ItemId(final Long parentItemId, final Long childItemId);
 
-  // 추가: 부모 품목 ID와 자식 품목 ID로 특정 BOM 관계 조회
-  Optional<Bom> findByParentItem_ItemIdAndChildItem_ItemId(final Long parentItemId, final Long childItemId);
-
   // bom삭제
   boolean existsByParentItem_ItemId(final Long childItemId);
-
 
   // 특정 자식 품목 ID 여러 개 삭제
   @Modifying
