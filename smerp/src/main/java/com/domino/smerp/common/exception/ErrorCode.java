@@ -12,6 +12,7 @@ public enum ErrorCode {
     DUPLICATE_PHONE(HttpStatus.CONFLICT, "DUPLICATE_PHONE", "이미 등록된 전화번호입니다."),
     DUPLICATE_LOGINID(HttpStatus.CONFLICT, "DUPLICATE_LOGINID", "이미 사용 중인 아이디입니다."),
     DUPLICATE_SSN(HttpStatus.CONFLICT, "DUPLICATE_SSN", "이미 등록된 주민번호입니다."),
+    USER_BAD_REQUIRED(HttpStatus.BAD_REQUEST,"USER_BAD_REQUIRED","잘못된 경로요청입니다."),
 
     //client - 거래처와 관련된 예외 정보
     CLIENT_NOT_FOUND(HttpStatus.NOT_FOUND, "CLIENT_NOT_FOUND", "존재하지 않는 거래처입니다."),

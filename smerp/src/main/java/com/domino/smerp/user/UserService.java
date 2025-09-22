@@ -12,5 +12,6 @@ public interface UserService {
     PageResponse<UserListResponse> searchUsers(String name, String deptTitle, Pageable pageable);
     void deleteUser(Long userId);
     UserResponse findUserByEnpNo(String enpNo);
-    void updateUser(String enpNo,UpdateUserRequest request);;
+    void updateUser(String enpNo,UpdateUserRequest request);
+    UserResponse findUserByLoginId(String loginId);
 }

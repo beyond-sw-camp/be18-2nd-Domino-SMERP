@@ -149,7 +149,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    @Transactional
+    @Transactional(readOnly = true)
     public void updateUser(final String enpNo, final UpdateUserRequest request) {
 
         if (userRepository.existsByPhone(request.getPhone())) {
@@ -166,6 +166,32 @@ public class UserServiceImpl implements UserService {
                                                 ErrorCode.CLIENT_NOT_FOUND));
             user.updateClient(client);
         }
+    }
+
+    @Override
+    public UserResponse findUserByLoginId(String loginId) {
+        User user = userRepository.findByLoginId(loginId)
+                                  .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+
+        Client client = user.getClient();
+
+        String decryptSsn = ssnEncryptor.decryptSsn(user.getSsn());
+
+        return UserResponse.builder()
+                           .userId(user.getUserId())
+                           .name(user.getName())
+                           .email(user.getEmail())
+                           .phone(user.getPhone())
+                           .address(user.getAddress())
+                           .ssn(decryptSsn.substring(0, 8) + "******")
+                           .hireDate(user.getHireDate())
+                           .fireDate(user.getFireDate())
+                           .loginId(user.getLoginId())
+                           .deptTitle(user.getDeptTitle())
+                           .role(user.getRole())
+                           .empNo(user.getEmpNo())
+                           .companyName(client != null ? client.getCompanyName() : "거래처 아님")
+                           .build();
     }
 
     private String generateEmpNo(LocalDate hireDate) {

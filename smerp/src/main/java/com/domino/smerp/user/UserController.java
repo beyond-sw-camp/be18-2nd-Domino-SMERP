@@ -11,6 +11,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -45,9 +46,15 @@ public class UserController {
     }
 
     @GetMapping("/{enpNo}")
-    public UserResponse findUserById(@PathVariable final String enpNo) {
+    public UserResponse findUserByEnpNo(@PathVariable final String enpNo) {
 
         return userService.findUserByEnpNo(enpNo);
+    }
+
+    @GetMapping("/my-info")
+    public UserResponse findUserByLoginId() {
+        String loginId = SecurityContextHolder.getContext().getAuthentication().getName();
+        return userService.findUserByLoginId(loginId);
     }
 
     @DeleteMapping("/{userId}")
