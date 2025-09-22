@@ -2,12 +2,14 @@ package com.domino.smerp.lotno;
 
 import com.domino.smerp.common.BaseEntity;
 import com.domino.smerp.item.Item;
+import com.domino.smerp.log.audit.AuditLogEntityListener;
 import com.domino.smerp.lotno.constants.LotNumberStatus;
 import com.domino.smerp.lotno.dto.request.CreateLotNumberRequest;
 import com.domino.smerp.lotno.dto.request.UpdateLotNumberRequest;
 import jakarta.persistence.Column;
 import jakarta.persistence.ConstraintMode;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EntityListeners;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
@@ -24,11 +26,16 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 import org.hibernate.annotations.SQLRestriction;
+import org.hibernate.envers.Audited;
 
 @Entity
 @Getter
 @Builder
+@ToString
+@Audited
+@EntityListeners(AuditLogEntityListener.class)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Table(name = "lot_number")
