@@ -29,13 +29,13 @@ public interface WarehouseRepository extends JpaRepository<Warehouse, Long> {
   """)
   List<Warehouse> findAvailableWarehousesWithCurQty();
 
-//  @Query("""
-//    SELECT DISTINCT s.location.warehouse
-//    FROM Stock s
-//    WHERE s.item.itemId = :itemId
-//      AND s.qty > 0
-//  """)
-//  List<Warehouse> findWarehousesWithStock(@Param("itemId") Long itemId);
+  @Query("""
+    SELECT DISTINCT s.location.warehouse
+    FROM Stock s
+    WHERE s.item.itemId = :itemId
+      AND s.qty > 0
+  """)
+  List<Warehouse> findWarehousesWithStock(@Param("itemId") Long itemId);
 
   Optional<Warehouse> findByName(String name);
 

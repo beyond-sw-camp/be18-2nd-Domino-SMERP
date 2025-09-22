@@ -40,10 +40,11 @@ public class ProductionPlan extends BaseEntity {
 
   @Column(nullable = false)
   @Enumerated(EnumType.STRING)
+  @Builder.Default
   private Status status = Status.PENDING;
 
   private String remark;
-  
+
   private String title;
 
   @Column(name = "is_deleted", nullable = false)
@@ -54,6 +55,7 @@ public class ProductionPlan extends BaseEntity {
   private String documentNo;
 
   @Column(precision = 12, scale = 2)
+  @Builder.Default
   private BigDecimal qty = BigDecimal.ZERO;
 
   //user
