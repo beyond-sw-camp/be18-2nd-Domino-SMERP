@@ -8,6 +8,7 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public class ClientListResponse {
+    private final Long clientId;
     private final String businessNumber;
     private final String companyName;
     private final String phone;
