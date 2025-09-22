@@ -14,7 +14,7 @@ public class CreateReturnOrderResponse {
     public static CreateReturnOrderResponse from(String documentNo) {
         return CreateReturnOrderResponse.builder()
                 .documentNo(documentNo)
-                .message("반품 등록이 완료되었습니다.")
+                .message("반품 등록이 완료됐습니다.")
                 .build();
     }
 }
