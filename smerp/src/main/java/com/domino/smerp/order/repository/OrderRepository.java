@@ -20,6 +20,13 @@ public interface OrderRepository extends JpaRepository<Order, Long>, OrderQueryR
             "WHERE o.orderId = :id")
     Optional<Order> findByIdWithDetails(@Param("id") Long id);
 
+    // delete 메소드 분리
+    @Query("SELECT o FROM Order o " +
+            "JOIN FETCH o.client " +
+            "JOIN FETCH o.user " +
+            "WHERE o.orderId = :id")
+    Optional<Order> findByIdForDelete(@Param("id") Long id);
+
     // 전표 번호 기반 조회
     Optional<Order> findByDocumentNo(String documentNo);
 

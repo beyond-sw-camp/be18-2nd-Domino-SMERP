@@ -211,7 +211,8 @@ public class OrderServiceImpl implements OrderService {
     @Override
     @Transactional
     public DeleteOrderResponse deleteOrder(Long orderId) {
-        Order order = findOrderById(orderId);
+        Order order = orderRepository.findByIdForDelete(orderId)
+                .orElseThrow(() -> new CustomException(ErrorCode.ORDER_NOT_FOUND));
 
         // 주문 상태가 APPROVED인 경우 삭제 불가
         if (order.getStatus() == OrderStatus.APPROVED) {

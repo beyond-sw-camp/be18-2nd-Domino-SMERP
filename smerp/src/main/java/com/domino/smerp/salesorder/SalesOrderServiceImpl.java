@@ -69,7 +69,7 @@ public class SalesOrderServiceImpl implements SalesOrderService {
         return CreateSalesOrderResponse.from(salesOrder);
     }
 
-    // 주문 목록 조회
+    // 판매 목록 조회
     @Override
     @Transactional(readOnly = true)
     public PageResponse<ListSalesOrderResponse> getSalesOrders(SearchSalesOrderRequest condition, Pageable pageable) {
@@ -80,7 +80,7 @@ public class SalesOrderServiceImpl implements SalesOrderService {
         return PageResponse.from(dtoPage);
     }
 
-    // 주문 상세 조회
+    // 판매 상세 조회
     @Override
     @Transactional(readOnly = true)
     public DetailSalesOrderResponse getDetailSalesOrder(Long salesOrderId) {
@@ -89,7 +89,7 @@ public class SalesOrderServiceImpl implements SalesOrderService {
         return DetailSalesOrderResponse.from(salesOrder);
     }
 
-    // 주문 수정
+    // 판매 수정
     @Override
     @Transactional
     public UpdateSalesOrderResponse updateSalesOrder(Long salesOrderId, UpdateSalesOrderRequest request) {
@@ -114,7 +114,7 @@ public class SalesOrderServiceImpl implements SalesOrderService {
         return UpdateSalesOrderResponse.from(salesOrderRepository.save(salesOrder));
     }
 
-    // 주문 삭제
+    // 판매 삭제
     @Override
     @Transactional
     public DeleteSalesOrderResponse deleteSalesOrder(Long salesOrderId) {
@@ -125,7 +125,7 @@ public class SalesOrderServiceImpl implements SalesOrderService {
         return DeleteSalesOrderResponse.from(salesOrder);
     }
 
-    // 주문 현황
+    // 판매 현황
     @Override
     @Transactional(readOnly = true)
     public List<SummarySalesOrderResponse> getSummarySalesOrder(SearchSummarySalesOrderRequest condition, Pageable pageable) {

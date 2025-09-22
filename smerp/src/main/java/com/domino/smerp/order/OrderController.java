@@ -43,7 +43,7 @@ public class OrderController {
         return ResponseEntity.ok(orderService.updateOrder(orderId, request));
     }
 
-    // 삭제 (soft-delete 고려 시 patch로 유지 가능)
+    // 삭제 (soft-delete)
     @DeleteMapping("/{orderId}")
     public ResponseEntity<DeleteOrderResponse> deleteOrder(@PathVariable Long orderId) {
         return ResponseEntity.ok(orderService.deleteOrder(orderId));
