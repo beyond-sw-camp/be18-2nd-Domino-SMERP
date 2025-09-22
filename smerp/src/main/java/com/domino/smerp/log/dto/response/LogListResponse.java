@@ -10,6 +10,7 @@ import lombok.Getter;
 @Builder
 @AllArgsConstructor
 public class LogListResponse {
+    private final Long logId;
     private final LocalDateTime doAt;
     private final String entity;
     private final ActionType action;

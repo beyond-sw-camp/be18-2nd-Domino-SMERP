@@ -89,6 +89,7 @@ public class ClientServiceImpl implements ClientService {
             : clientRepository.findAll(condition, pageable);
 
         Page<ClientListResponse> pageClient = page.map(client -> ClientListResponse.builder()
+                                                                                   .clientId(client.getClientId())
                                                                                    .companyName(client.getCompanyName())
                                                                                    .businessNumber(client.getBusinessNumber())
                                                                                    .phone(client.getPhone())

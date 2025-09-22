@@ -25,7 +25,7 @@ public class AuditLogEntityListener {
     private LogRepository logs() { return SpringContext.getBean(LogRepository.class); }
 
     private String actor() {
-        String actor = "system";
+        String actor = "";
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if (auth != null && auth.isAuthenticated() && auth.getName() != null) {
             actor = auth.getName();
@@ -39,7 +39,7 @@ public class AuditLogEntityListener {
     private String toLogString(Object entity) {
         if (entity == null) return null;
 
-        return entityName(entity) + ":" + entity.toString();
+        return entity.toString();
     }
 
     @PostLoad
