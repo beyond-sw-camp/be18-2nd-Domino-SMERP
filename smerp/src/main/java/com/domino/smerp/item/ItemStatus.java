@@ -9,9 +9,6 @@ import lombok.ToString;
 import org.hibernate.envers.Audited;
 
 @Entity
-@ToString
-@Audited
-@EntityListeners(AuditLogEntityListener.class)
 @Getter
 @NoArgsConstructor
 @Table(name = "item_status")
