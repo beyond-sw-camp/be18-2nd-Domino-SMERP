@@ -16,6 +16,7 @@ import java.time.format.DateTimeFormatter;
 @Entity
 @Getter
 @Builder
+@ToString
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Table(name = "purchase_order")
@@ -32,10 +33,19 @@ public class PurchaseOrder extends BaseEntity {
   @Comment("발주 FK")
   private RequestOrder requestOrder;
 
+  @Column(name = "warehouse_name", nullable = false, length = 50)
+  private String warehouseName;
+
   @Column(name = "qty", nullable = false, precision = 12, scale = 3)
   private BigDecimal qty; // 수량 (발주와 다를 수 있음)
 
-  @Column(name = "surtax", nullable = false, precision = 12, scale = 2)
+  @Column(name = "inbound_unit_price", nullable = false, precision = 12, scale = 2)
+  private BigDecimal inboundUnitPrice;
+
+    @Column(name = "special_price", precision = 12, scale = 2, updatable = false)
+    private BigDecimal specialPrice;  // 특별단가
+
+    @Column(name = "surtax", nullable = false, precision = 12, scale = 2)
   private BigDecimal surtax; // 부가세
 
   @Column(name = "price", nullable = false, precision = 12, scale = 2)
@@ -68,12 +78,23 @@ public class PurchaseOrder extends BaseEntity {
     this.remark = remark;
   }
 
+  public void updateInboundUnitPrice(final BigDecimal inboundUnitPrice) {
+    this.inboundUnitPrice = inboundUnitPrice;
+  }
+
+  public void updateWarehouseName(String warehouseName) {
+        this.warehouseName = warehouseName;
+    }
+
   // Soft Delete
   public void delete() {this.isDeleted = true;}
 
-  public void updateDocumentNo(LocalDate newDate, int newSequence) {
+  public void updateDocumentNo(final LocalDate newDate, int newSequence) {
     this.documentNo = String.format("%s-%d",
         newDate.format(DateTimeFormatter.ofPattern("yyyy/MM/dd")),
         newSequence);
   }
+    public void updateSpecialPrice(BigDecimal specialPrice, BigDecimal inboundUnitPrice) {
+        this.specialPrice = (specialPrice != null) ? specialPrice : inboundUnitPrice;
+    }
 }

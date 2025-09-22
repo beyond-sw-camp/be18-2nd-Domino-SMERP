@@ -36,6 +36,9 @@ public class ItemRequestOrder {
     @Column(name = "inbound_unit_price", nullable = false, precision = 12, scale = 2)
     private BigDecimal inboundUnitPrice; // 입고 단가
 
+    @Column(name = "special_price", nullable = false, precision = 12, scale = 2)
+    private BigDecimal specialPrice; // 특별단가
+
     // ====== 도메인 메서드 ======
     public void updateQty(BigDecimal qty) {
         this.qty = qty;

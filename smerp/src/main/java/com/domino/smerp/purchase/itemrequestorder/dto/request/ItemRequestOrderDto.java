@@ -14,4 +14,6 @@ public class ItemRequestOrderDto {
     private final String name;
     private final BigDecimal qty;      // 수량
     private final BigDecimal inboundUnitPrice; // 입고단가
+    private final BigDecimal specialPrice; // 요청 시 선택 입력
+
 }

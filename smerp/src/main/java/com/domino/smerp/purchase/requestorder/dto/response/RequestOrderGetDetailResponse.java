@@ -1,6 +1,8 @@
 package com.domino.smerp.purchase.requestorder.dto.response;
 
 import com.domino.smerp.purchase.itemrequestorder.dto.request.ItemRequestOrderDto;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -14,15 +16,24 @@ import java.util.List;
 @Builder
 @AllArgsConstructor(access = lombok.AccessLevel.PRIVATE)
 public class RequestOrderGetDetailResponse {
-    private final Long roId;
-    private final Long userId;
-    private final Long clientId;
-    private final LocalDate deliveryDate;
-    private final String status;
-    private final String remark;
     private final String documentNo;
+
+    private String empNo; // 사번
+
+    private final String companyName;  // 거래처 회사명
+
+    private final LocalDate deliveryDate;
+
+    private final String status;
+
+    private final String remark;
+
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "UTC")
     private final Instant createdAt;
+
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "UTC")
     private final Instant updatedAt;
+
     private final List<ItemRequestOrderDto> items;
 
     @Getter
@@ -31,5 +42,7 @@ public class RequestOrderGetDetailResponse {
         private final Long itemId;
         private final BigDecimal qty;
         private final BigDecimal inboundUnitPrice;
+        private final BigDecimal specialPrice; // 요청 시 선택 입력
+
     }
 }

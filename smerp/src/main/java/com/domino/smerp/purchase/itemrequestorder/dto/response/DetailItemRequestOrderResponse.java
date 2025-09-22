@@ -18,7 +18,8 @@ public class DetailItemRequestOrderResponse {
     private final String specification; // 규격
     private final String unit;          // 단위
     private final BigDecimal qty;       // 발주 수량
-    private final BigDecimal unitPrice; // 단가 (입고단가 or 출고단가)
+    private final BigDecimal inBoundUnitPrice; // 단가 (입고단가 or 출고단가)
+    private final BigDecimal specialPrice; // 요청 시 선택 입력
     private final BigDecimal supplyAmount; // 공급가액 (qty * unitPrice)
     private final BigDecimal tax;       // 부가세
     private final BigDecimal totalAmount; // 총액 (공급가액 + 부가세)

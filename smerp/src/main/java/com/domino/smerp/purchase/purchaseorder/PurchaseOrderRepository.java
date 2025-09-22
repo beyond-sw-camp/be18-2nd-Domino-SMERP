@@ -10,11 +10,12 @@ import java.util.Optional;
 @Repository
 public interface PurchaseOrderRepository extends JpaRepository<PurchaseOrder, Long> {
 
-  // ✅ 상세 조회: fetch join
-  @Query("select purchaseOrder from PurchaseOrder purchaseOrder " +
-      "join fetch purchaseOrder.requestOrder " +
-      "where purchaseOrder.poId = :poId")
-  Optional<PurchaseOrder> findByIdWithRequestOrder(@Param("poId") final Long poId);
+    // ✅ 상세 조회: RequestOrder + ItemRequestOrder까지 fetch join
+    @Query("select purchaseOrder from PurchaseOrder purchaseOrder " +
+            "join fetch purchaseOrder.requestOrder requestOrder " +
+            "join fetch requestOrder.items itemRequestOrder " +
+            "where purchaseOrder.poId = :poId")
+    Optional<PurchaseOrder> findByIdWithRequestOrderAndItems(@Param("poId") final Long poId);
 
   // ✅ 구매 수정
   @Query("SELECT MAX(CAST(SUBSTRING(p.documentNo, 12) AS int)) " +

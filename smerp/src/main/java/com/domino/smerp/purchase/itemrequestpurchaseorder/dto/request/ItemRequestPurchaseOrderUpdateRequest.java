@@ -10,6 +10,9 @@ import java.math.BigDecimal;
 @Builder
 @AllArgsConstructor(access = lombok.AccessLevel.PRIVATE)
 public class ItemRequestPurchaseOrderUpdateRequest {
-    private final BigDecimal qty;
-    private final BigDecimal inboundUnitPrice; // 입고 단가
+    private final Long itemId;         // 품목 ID
+    private final String name;
+    private final BigDecimal qty;  // 변경할 수량
+    private final BigDecimal specialPrice; // 요청 시 선택 입력
+
 }

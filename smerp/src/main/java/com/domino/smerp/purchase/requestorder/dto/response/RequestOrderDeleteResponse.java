@@ -10,8 +10,5 @@ import java.time.Instant;
 @Builder
 @AllArgsConstructor(access = lombok.AccessLevel.PRIVATE)
 public class RequestOrderDeleteResponse {
-    private final Long roId;
-    private final boolean isDeleted;
-    private final Instant deletedAt;
     private final String message;
 }

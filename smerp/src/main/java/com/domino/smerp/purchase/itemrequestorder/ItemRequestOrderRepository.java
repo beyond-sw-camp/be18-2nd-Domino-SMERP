@@ -19,5 +19,8 @@ public interface ItemRequestOrderRepository extends JpaRepository<ItemRequestOrd
 
     // ✅ 특정 발주와 연관된 품목 전체 삭제 (발주 수정 시 기존 품목 제거용)
     void deleteByRequestOrder(RequestOrder requestOrder);
+
+    // ✅ 특정 품목 name으로 조회
+    List<ItemRequestOrder> findByItem_Name(String name);
 }
 

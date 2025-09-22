@@ -9,9 +9,5 @@ import lombok.Getter;
 @Builder
 @AllArgsConstructor(access = lombok.AccessLevel.PRIVATE)
 public class PurchaseOrderDeleteResponse {
-
-  private final Long poId;
-  private final boolean isDeleted;
-  private final Instant deletedAt;
   private final String message;
 }

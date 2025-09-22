@@ -2,6 +2,9 @@ package com.domino.smerp.purchase.purchaseorder.dto.request;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -11,9 +14,20 @@ import lombok.Getter;
 @AllArgsConstructor(access = lombok.AccessLevel.PRIVATE)
 public class PurchaseOrderUpdateRequest {
 
-  private final BigDecimal qty;
-  private final BigDecimal surtax;
-  private final BigDecimal price;
-  private final String remark;
-  private final LocalDate newDocDate; // yyyy/MM/dd, 전표 날짜 변경 시 사용 (null이면 변경 없음)
+    @NotNull(message = "일자는 필수 입력입니다.")
+    private final String documentNo;
+
+    @NotNull(message = "창고명은 필수 입력입니다.")
+    private String warehouseName;
+
+    @NotNull(message = "수량은 필수 입력입니다.")
+    private final BigDecimal qty;
+
+    @NotNull(message = "입고단가는 필수 입력입니다.")
+    private final BigDecimal inboundUnitPrice;
+
+    @Size(max = 100, message = "비고는 최대 100자까지 입력 가능합니다.")
+    private final String remark;
+
+    private final LocalDate newDocDate; // 전표번호 자동 생성 시 날짜 기준
 }

@@ -1,10 +1,12 @@
 package com.domino.smerp.purchase.requestorder;
 
+import com.domino.smerp.client.Client;
 import com.domino.smerp.common.BaseEntity;
 import com.domino.smerp.purchase.itemrequestorder.ItemRequestOrder;
 import com.domino.smerp.purchase.purchaseorder.PurchaseOrder;
 import com.domino.smerp.purchase.requestorder.constants.RequestOrderStatus;
 import com.domino.smerp.purchase.requestpurchaseorder.RequestPurchaseOrder;
+import com.domino.smerp.user.User;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -18,6 +20,7 @@ import java.util.List;
 @Entity
 @Getter
 @Builder
+@ToString
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Table(name = "request_order")
@@ -37,11 +40,17 @@ public class RequestOrder extends BaseEntity {
     @OneToOne(mappedBy = "requestOrder", fetch = FetchType.LAZY)
     private PurchaseOrder purchaseOrder;
 
-    @Column(name = "user_id", nullable = false)
-    private Long userId; // 작성자 FK
+    // 사용자 (User) 매핑
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false,
+            foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
+    private User user;
 
-    @Column(name = "client_id", nullable = false)
-    private Long clientId; // 거래처 FK
+    // 거래처 (Client) 매핑
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "client_id", nullable = false,
+            foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
+    private Client client;
 
     @Column(name = "delivery_date", nullable = false)
     private LocalDate deliveryDate; // 납기일자
@@ -80,9 +89,9 @@ public class RequestOrder extends BaseEntity {
     this.isDeleted = true;
     }
 
-    public void updateDocumentNo(LocalDate newDate, int newSequence) {
-    this.documentNo = String.format("%s-%d",
-            newDate.format(DateTimeFormatter.ofPattern("yyyy/MM/dd")),
-            newSequence);
+    public void updateDocumentNo(final LocalDate newDate, int newSequence) {
+        this.documentNo = String.format("%s-%d",
+                newDate.format(DateTimeFormatter.ofPattern("yyyy/MM/dd")),
+                newSequence);
     }
 }

@@ -1,20 +1,36 @@
 package com.domino.smerp.purchase.requestpurchaseorder.dto.response;
 
+import com.domino.smerp.purchase.requestpurchaseorder.constants.RequestPurchaseOrderStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.math.BigDecimal;
+import java.util.List;
 
 @Getter
 @Builder
 @AllArgsConstructor
 public class RequestPurchaseOrderCreateResponse {
+    private final String documentNo;   // 전표 번호
 
-    private final Long rpoId;            // 구매요청 PK
-    private final Long userId;           // 작성자 FK
-    private final LocalDate deliveryDate;// 납기요청일자
-    private final String documentNo;     // 전표번호
-    private final LocalDateTime createdAt; // 생성일시
+    private String empNo; // 사번
+
+    private final RequestPurchaseOrderStatus status; // 상태
+
+    private final String message;      // 처리 메시지
+
+    private final List<ItemDetail> items; // 요청 품목 리스트
+
+    private String remark; // 비고
+
+    @Getter
+    @AllArgsConstructor
+    public static class ItemDetail {
+        private final Long itemId;
+        private final BigDecimal qty;
+        private final BigDecimal inboundUnitPrice;
+        private final BigDecimal specialPrice; // 요청 시 선택 입력
+    }
 }
+

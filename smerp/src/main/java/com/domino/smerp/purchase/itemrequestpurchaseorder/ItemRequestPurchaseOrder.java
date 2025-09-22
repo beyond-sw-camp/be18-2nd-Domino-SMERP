@@ -30,6 +30,12 @@ public class ItemRequestPurchaseOrder {
             foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
     private Item item; // 품목 FK
 
+    @Column(name = "inbound_unit_price", nullable = false, precision = 12, scale = 2)
+    private BigDecimal inboundUnitPrice; // 입고 단가
+
+    @Column(name = "special_price", nullable = false, precision = 12, scale = 2)
+    private BigDecimal specialPrice; // 특별단가
+
     @Column(name = "qty", nullable = false, precision = 12, scale = 3)
     private BigDecimal qty; // 수량
 

@@ -10,9 +10,5 @@ import java.time.LocalDateTime;
 @Builder
 @AllArgsConstructor
 public class RequestPurchaseOrderDeleteResponse {
-
-    private final Long rpoId;
-    private final boolean isDeleted;
-    private final LocalDateTime deletedAt;
     private final String message;
 }

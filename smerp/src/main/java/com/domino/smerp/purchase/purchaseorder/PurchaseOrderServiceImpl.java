@@ -12,6 +12,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -27,23 +28,54 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
   @Override
   @Transactional
   public PurchaseOrderCreateResponse createPurchaseOrder(final PurchaseOrderCreateRequest request) {
+      // 단가 유효성 검사
+      if (request.getInboundUnitPrice() == null || request.getInboundUnitPrice().compareTo(BigDecimal.ZERO) <= 0) {
+          throw new IllegalArgumentException("단가가 올바르지 않습니다.");
+      }
     // TODO: 실제로는 RequestOrderRepository 에서 roId를 조회해야 함
-    // 예시: RequestOrder requestOrder = requestOrderRepository.findById(request.getRoId())
-    //         .orElseThrow(() -> new EntityNotFoundException("발주 전표를 찾을 수 없습니다. id=" + request.getRoId()));
-
-    // RequestOrder requestOrder = null; // 임시 placeholder
-
     RequestOrder requestOrder = requestOrderRepository.findById(request.getRoId())
-        .orElseThrow(() -> new EntityNotFoundException("발주 전표를 조회할 수 없습니다." + request.getRoId()));
+        .orElseThrow(() -> new EntityNotFoundException("발주 전표를 조회할 수 없습니다."));
+
+    // 자동 계산 로직
+      BigDecimal surtax = request.getQty()
+              .multiply(request.getInboundUnitPrice())
+              .multiply(BigDecimal.valueOf(0.1));
+
+      BigDecimal price = request.getQty()
+              .multiply(request.getInboundUnitPrice())
+              .add(surtax);
+
+      BigDecimal unitPrice = requestOrder.getItems().get(0).getSpecialPrice();
+
+      // 1. 전표번호(documentNo) 결정
+      String documentNo = null;   // 블록 밖에서 선언 & 초기화
+
+      if (request.getDocumentNo() != null && !request.getDocumentNo().isBlank()) {
+          // 사용자가 직접 입력한 전표번호를 그대로 사용
+          documentNo = request.getDocumentNo();
+          int lastSeq = purchaseOrderRepository.findLastSequenceByDate(request.getDocumentNo()).orElse(0);
+          documentNo = String.format("%s-%d", request.getDocumentNo(), lastSeq + 1);
+      } else {
+          // 사용자가 입력 안 했을 경우 → 자동 생성
+          LocalDate docDate = request.getNewDocDate() != null
+                  ? request.getNewDocDate()
+                  : LocalDate.now();
+
+          String dateString = docDate.format(DateTimeFormatter.ofPattern("yyyy/MM/dd"));
+          int lastSeq = purchaseOrderRepository.findLastSequenceByDate(dateString).orElse(0);
+          documentNo = String.format("%s-%d", dateString, lastSeq + 1); // 같은 변수에 재할당
+      }
 
     // 엔티티 변환 (빌더 패턴)
     PurchaseOrder entity = PurchaseOrder.builder()
         .requestOrder(requestOrder)
         .qty(request.getQty())
-        .surtax(request.getSurtax())
-        .price(request.getPrice())
+        .inboundUnitPrice(request.getInboundUnitPrice())
+        .surtax(surtax)
+        .price(price)
         .remark(request.getRemark())
-        .documentNo(request.getDocumentNo())
+        .documentNo(documentNo)   // 수정: request.getDocumentNo() → documentNo
+        .warehouseName(request.getWarehouseName())
         .build();
 
     // 저장
@@ -51,10 +83,12 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
 
     // 응답 변환 (빌더 패턴)
     return PurchaseOrderCreateResponse.builder()
-        .poId(saved.getPoId())
-        .roId(saved.getRequestOrder() != null ? saved.getRequestOrder().getRoId() : null)
+        .companyName(entity.getRequestOrder().getClient().getCompanyName())
+        .empNo(entity.getRequestOrder().getUser().getEmpNo())
         .qty(saved.getQty())
+        .inboundUnitPrice(saved.getInboundUnitPrice())
         .documentNo(saved.getDocumentNo())
+        .warehouseName(saved.getWarehouseName())
         .createdAt(saved.getCreatedAt())
         .build();
   }
@@ -68,11 +102,12 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
     PageRequest pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
     return purchaseOrderRepository.findAll(pageable)
         .map(entity -> PurchaseOrderGetListResponse.builder()
-            .poId(entity.getPoId())
-//            .roId(entity.getRequestOrder().getRoId())
+            .empNo(entity.getRequestOrder().getUser().getEmpNo())
+            .companyName(entity.getRequestOrder().getClient().getCompanyName())
             .qty(entity.getQty())
             .remark(entity.getRemark())
             .documentNo(entity.getDocumentNo())
+            .warehouseName(entity.getWarehouseName())
             .createdAt(entity.getCreatedAt())
             .updatedAt(entity.getUpdatedAt())
             .build())
@@ -83,50 +118,23 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
   @Override
   @Transactional(readOnly = true)
   public PurchaseOrderGetDetailResponse getPurchaseOrderById(final Long poId) {
-    PurchaseOrder entity = purchaseOrderRepository.findById(poId)
-        .orElseThrow(() -> new EntityNotFoundException("구매 전표를 조회할 수 없습니다. id=" + poId));
+    PurchaseOrder entity = purchaseOrderRepository.findByIdWithRequestOrderAndItems(poId)
+        .orElseThrow(() -> new EntityNotFoundException("구매 전표를 조회할 수 없습니다." + poId));
 
     return PurchaseOrderGetDetailResponse.builder()
-        .poId(entity.getPoId())
-        .roId(entity.getRequestOrder().getRoId())
+        .empNo(entity.getRequestOrder().getUser().getEmpNo())
+        .companyName(entity.getRequestOrder().getClient().getCompanyName())
         .qty(entity.getQty())
+        .inboundUnitPrice(entity.getInboundUnitPrice())
         .surtax(entity.getSurtax())
         .price(entity.getPrice())
         .remark(entity.getRemark())
         .documentNo(entity.getDocumentNo())
+        .warehouseName(entity.getWarehouseName())
         .createdAt(entity.getCreatedAt())
         .updatedAt(entity.getUpdatedAt())
         .build();
   }
-
-//  // ✅ 구매 수정
-//  @Override
-//  @Transactional
-//  public PurchaseOrderUpdateResponse updatePurchaseOrder(final Long poId,
-//      final PurchaseOrderUpdateRequest request) {
-//    PurchaseOrder entity = purchaseOrderRepository.findById(poId)
-//        .orElseThrow(() -> new EntityNotFoundException("구매 전표를 조회할 수 없습니다. id=" + poId));
-//
-//    // 엔티티 도메인 메서드 활용
-//    entity.updateQty(request.getQty());
-//    entity.updateSurtax(request.getSurtax());
-//    entity.updatePrice(request.getPrice());
-//    entity.updateRemark(request.getRemark());
-//    // documentNo 변경 요청이 있을 경우
-//    if (request.getNewDocDate() != null) {
-//      LocalDate newDate = request.getNewDocDate();
-//      int lastSeq = 0; // TODO: repository 로직 반영 예정
-//      entity.updateDocumentNo(newDate, lastSeq + 1);
-//    }
-//
-//    return PurchaseOrderUpdateResponse.builder()
-//        .poId(entity.getPoId())
-//        .qty(entity.getQty())
-//        .remark(entity.getRemark())
-//        .documentNo(entity.getDocumentNo())
-//        .updatedAt(entity.getUpdatedAt())
-//        .build();
-//  }
 
     // ✅ 구매 수정
     @Override
@@ -134,13 +142,35 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
     public PurchaseOrderUpdateResponse updatePurchaseOrder(final Long poId,
                                                            final PurchaseOrderUpdateRequest request) {
         PurchaseOrder entity = purchaseOrderRepository.findById(poId)
-                .orElseThrow(() -> new EntityNotFoundException("구매 전표를 조회할 수 없습니다. id=" + poId));
+                .orElseThrow(() -> new EntityNotFoundException("구매 전표를 조회할 수 없습니다."));
+
+        // 단가 유효성 검사 추가
+        if (request.getInboundUnitPrice() == null || request.getInboundUnitPrice().compareTo(BigDecimal.ZERO) <= 0) {
+            throw new IllegalArgumentException("단가가 올바르지 않습니다.");
+        }
 
         // 엔티티 도메인 메서드 활용
         entity.updateQty(request.getQty());
-        entity.updateSurtax(request.getSurtax());
-        entity.updatePrice(request.getPrice());
+        entity.updateInboundUnitPrice(request.getInboundUnitPrice());
+        entity.updateWarehouseName(request.getWarehouseName());
+
+        BigDecimal surtax = request.getQty()
+                .multiply(request.getInboundUnitPrice())
+                .multiply(BigDecimal.valueOf(0.1));
+
+        BigDecimal price = request.getQty()
+                .multiply(request.getInboundUnitPrice())
+                .add(surtax);
+
+        BigDecimal unitPrice = entity.getRequestOrder()
+                .getItems()
+                .get(0)
+                .getSpecialPrice();
+
+        entity.updateSurtax(surtax);
+        entity.updatePrice(price);
         entity.updateRemark(request.getRemark());
+        entity.updateInboundUnitPrice(unitPrice);
 
         // documentNo 변경 요청이 있을 경우
         if (request.getNewDocDate() != null) {
@@ -155,8 +185,11 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
         }
 
         return PurchaseOrderUpdateResponse.builder()
-                .poId(entity.getPoId())
+                .empNo(entity.getRequestOrder().getUser().getEmpNo())
+                .companyName(entity.getRequestOrder().getClient().getCompanyName())
                 .qty(entity.getQty())
+                .inboundUnitPrice(entity.getInboundUnitPrice())
+                .specialPrice(entity.getSpecialPrice())
                 .remark(entity.getRemark())
                 .documentNo(entity.getDocumentNo())
                 .updatedAt(entity.getUpdatedAt())
@@ -169,14 +202,11 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
   @Transactional
   public PurchaseOrderDeleteResponse deletePurchaseOrder(final Long poId) {
     PurchaseOrder entity = purchaseOrderRepository.findById(poId)
-        .orElseThrow(() -> new EntityNotFoundException("조회할 수 없습니다. id=" + poId));
+        .orElseThrow(() -> new EntityNotFoundException("구매 전표를 조회할 수 없습니다."));
 
     entity.delete(); // 엔티티 도메인 메서드: isDeleted=true, updatedAt=now
 
     return PurchaseOrderDeleteResponse.builder()
-        .poId(entity.getPoId())
-        .isDeleted(entity.isDeleted())
-        .deletedAt(entity.getUpdatedAt())
         .message("구매 전표가 삭제되었습니다.")
         .build();
   }
