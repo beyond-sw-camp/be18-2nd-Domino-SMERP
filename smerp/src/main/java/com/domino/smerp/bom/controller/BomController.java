@@ -1,12 +1,11 @@
 package com.domino.smerp.bom.controller;
 
 import com.domino.smerp.bom.dto.request.CreateBomRequest;
-import com.domino.smerp.bom.dto.request.UpdateBomRequest;
 import com.domino.smerp.bom.dto.request.UpdateBomRelationRequest;
+import com.domino.smerp.bom.dto.request.UpdateBomRequest;
 import com.domino.smerp.bom.dto.response.BomCostCacheResponse;
 import com.domino.smerp.bom.dto.response.BomDetailResponse;
 import com.domino.smerp.bom.dto.response.BomListResponse;
-import com.domino.smerp.bom.dto.response.CreateBomResponse;
 import com.domino.smerp.bom.service.cache.BomCacheService;
 import com.domino.smerp.bom.service.command.BomCommandService;
 import com.domino.smerp.bom.service.query.BomQueryService;
@@ -35,7 +34,7 @@ public class BomController {
 
   // BOM 관계 생성
   @PostMapping
-  public ResponseEntity<CreateBomResponse> createBom(
+  public ResponseEntity<BomDetailResponse> createBom(
       final @Valid @RequestBody CreateBomRequest request) {
     return ResponseEntity.ok(bomCommandService.createBom(request));
   }

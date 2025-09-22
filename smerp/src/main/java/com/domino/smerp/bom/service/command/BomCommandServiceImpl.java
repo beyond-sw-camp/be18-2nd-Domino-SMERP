@@ -4,13 +4,10 @@ import com.domino.smerp.bom.dto.request.CreateBomRequest;
 import com.domino.smerp.bom.dto.request.UpdateBomRelationRequest;
 import com.domino.smerp.bom.dto.request.UpdateBomRequest;
 import com.domino.smerp.bom.dto.response.BomDetailResponse;
-import com.domino.smerp.bom.dto.response.CreateBomResponse;
 import com.domino.smerp.bom.entity.Bom;
 import com.domino.smerp.bom.entity.BomClosure;
-import com.domino.smerp.bom.entity.BomCostCache;
 import com.domino.smerp.bom.event.BomChangedEvent;
 import com.domino.smerp.bom.repository.BomClosureRepository;
-import com.domino.smerp.bom.repository.BomCostCacheRepository;
 import com.domino.smerp.bom.repository.BomRepository;
 import com.domino.smerp.bom.service.cache.BomCacheBuilder;
 import com.domino.smerp.bom.service.cache.BomCacheService;
@@ -18,7 +15,6 @@ import com.domino.smerp.common.exception.CustomException;
 import com.domino.smerp.common.exception.ErrorCode;
 import com.domino.smerp.item.Item;
 import com.domino.smerp.item.ItemService;
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.ReentrantLock;
@@ -47,7 +43,7 @@ public class BomCommandServiceImpl implements BomCommandService {
   // BOM 생성
   @Override
   @Transactional
-  public CreateBomResponse createBom(final CreateBomRequest request) {
+  public BomDetailResponse createBom(final CreateBomRequest request) {
     final Item parentItem;
     final Item childItem;
 
@@ -74,7 +70,7 @@ public class BomCommandServiceImpl implements BomCommandService {
     // 이벤트 발행 → Listener에서 캐시 갱신
     eventPublisher.publishEvent(new BomChangedEvent(parentItem.getItemId()));
 
-    return CreateBomResponse.fromEntity(savedBom);
+    return BomDetailResponse.fromEntity(savedBom);
   }
 
   // BOM 수정

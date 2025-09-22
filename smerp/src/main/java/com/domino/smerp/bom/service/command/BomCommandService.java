@@ -4,13 +4,12 @@ import com.domino.smerp.bom.dto.request.CreateBomRequest;
 import com.domino.smerp.bom.dto.request.UpdateBomRelationRequest;
 import com.domino.smerp.bom.dto.request.UpdateBomRequest;
 import com.domino.smerp.bom.dto.response.BomDetailResponse;
-import com.domino.smerp.bom.dto.response.CreateBomResponse;
 import com.domino.smerp.bom.entity.Bom;
 
 public interface BomCommandService {
 
   // BOM 생성
-  CreateBomResponse createBom(final CreateBomRequest request);
+  BomDetailResponse createBom(final CreateBomRequest request);
 
   // BOM 관계 수정시 계층 재계산
   void updateBomClosure(final Long parentId, final Long childId);
