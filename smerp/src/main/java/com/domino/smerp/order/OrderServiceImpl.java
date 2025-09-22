@@ -28,10 +28,7 @@ import java.math.BigDecimal;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneOffset;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -83,7 +80,7 @@ public class OrderServiceImpl implements OrderService {
                 .build();
     }
 
-    //수량 검증 메서드
+    // 수량 검증 메서드
     private void validateQty(BigDecimal qty) {
         if (qty == null || qty.compareTo(BigDecimal.ZERO) <= 0) {
             throw new CustomException(ErrorCode.INVALID_QUANTITY);
@@ -101,7 +98,6 @@ public class OrderServiceImpl implements OrderService {
             throw new CustomException(ErrorCode.INVALID_ORDER_REQUEST);
         }
 
-
         String documentNo = generateDocumentNoWithRetry(request.getDocumentDate());
 
         Instant deliveryDateInstant = request.getDeliveryDate() != null
@@ -118,11 +114,10 @@ public class OrderServiceImpl implements OrderService {
                 .build();
 
         request.getItems().forEach(itemReq -> {
-            validateQty(itemReq.getQty());                  //  검증
+            validateQty(itemReq.getQty());                  // 검증
             ItemOrder itemOrder = toOrderItem(order, itemReq); // 객체 생성
             order.addOrderItem(itemOrder);                  // 연관관계 세팅
         });
-
 
         orderRepository.save(order);
         itemOrderRepository.saveAll(order.getOrderItems());
@@ -162,13 +157,13 @@ public class OrderServiceImpl implements OrderService {
                 ItemOrder existing = existingItems.get(itemReq.getItemOrderId());
                 if (existing == null) throw new CustomException(ErrorCode.RETURN_ITEM_NOT_FOUND_IN_ORDER);
 
-                validateQty(itemReq.getQty()); // 수량 음수 검증 추가
+                validateQty(itemReq.getQty()); // 수량 검증
                 existing.updateQty(itemReq.getQty());
                 existing.updateSpecialPrice(itemReq.getSpecialPrice());
                 finalItems.add(existing);
                 existingItems.remove(itemReq.getItemOrderId());
             } else {
-                validateQty(itemReq.getQty()); // 수량 음수 검증 추가
+                validateQty(itemReq.getQty()); // 수량 검증
                 Item item = itemServiceImpl.findItemById(itemReq.getItemId());
                 ItemOrder newItem = ItemOrder.builder()
                         .order(order)
@@ -246,8 +241,15 @@ public class OrderServiceImpl implements OrderService {
 
         User user = getUserByEmpNo(request.getEmpNo());
 
-        // 반품 전표 번호 생성
-        String documentNo = generateReturnDocumentNo(originalOrder.getDocumentNo());
+        // 기존 반품 전표들 조회
+        List<Order> existingReturns =
+                orderRepository.findByDocumentNoStartingWith(originalOrder.getDocumentNo() + "(-");
+
+        // 반품 전표번호 생성 (유틸 사용)
+        String documentNo = documentNoGenerator.generateReturnDocumentNo(
+                originalOrder.getDocumentNo(),
+                existingReturns.stream().map(Order::getDocumentNo).toList()
+        );
 
         Order returnOrder = Order.builder()
                 .client(originalOrder.getClient())
@@ -261,10 +263,6 @@ public class OrderServiceImpl implements OrderService {
         // 원 주문 품목 매핑
         Map<Long, ItemOrder> originalItemMap = originalOrder.getOrderItems().stream()
                 .collect(Collectors.toMap(io -> io.getItem().getItemId(), io -> io));
-
-        // 기존 반품 전표들 조회
-        List<Order> existingReturns =
-                orderRepository.findByDocumentNoStartingWith(originalOrder.getDocumentNo() + "(-");
 
         // 기존 반품 수량 누적
         Map<Long, BigDecimal> alreadyReturnedQty = new HashMap<>();
@@ -316,33 +314,4 @@ public class OrderServiceImpl implements OrderService {
     public List<SummaryReturnOrderResponse> getSummaryReturnOrders(SearchSummaryReturnOrderRequest condition, Pageable pageable) {
         return orderRepository.searchSummaryReturnOrders(condition, pageable);
     }
-
-    private String generateReturnDocumentNo(String originalDocNo) {
-        // 원 주문 전표번호 + "(-" 로 시작하는 기존 반품 전표 조회
-        List<Order> existingReturns = orderRepository.findByDocumentNoStartingWith(originalDocNo + "(-");
-
-        // 기존 반품이 없다면 -1부터 시작
-        if (existingReturns.isEmpty()) {
-            return originalDocNo + "(-1)";
-        }
-
-        // 기존 반품 전표에서 가장 큰 (-숫자) 추출
-        int maxSuffix = existingReturns.stream()
-                .map(Order::getDocumentNo)
-                .map(docNo -> {
-                    int start = docNo.lastIndexOf("(-");
-                    int end = docNo.lastIndexOf(")");
-                    if (start != -1 && end != -1) {
-                        return Integer.parseInt(docNo.substring(start + 2, end));
-                    }
-                    return 0;
-                })
-                .max(Integer::compareTo)
-                .orElse(0);
-
-        // 새로운 반품 전표번호 = 원본 + (-(maxSuffix+1))
-        return originalDocNo + "(-" + (maxSuffix + 1) + ")";
-    }
-
-
 }

@@ -20,7 +20,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Service
@@ -31,6 +30,17 @@ public class SalesOrderServiceImpl implements SalesOrderService {
     private final OrderRepository orderRepository;
     private final DocumentNoGenerator documentNoGenerator;
 
+    // 공통 판매 전표일 검증 메서드
+    private void validateSalesOrderDate(Order order, LocalDate salesOrderDate) {
+        if (salesOrderDate == null) {
+            throw new CustomException(ErrorCode.INVALID_ORDER_REQUEST);
+        }
+        LocalDate orderDate = documentNoGenerator.extractDate(order.getDocumentNo());
+        if (salesOrderDate.isBefore(orderDate)) {
+            throw new CustomException(ErrorCode.SALES_ORDER_DATE_BEFORE_ORDER_DATE);
+        }
+    }
+
     // 판매 등록
     @Override
     @Transactional
@@ -39,26 +49,18 @@ public class SalesOrderServiceImpl implements SalesOrderService {
         Order order = orderRepository.findByDocumentNo(request.getOrderDocumentNo())
                 .orElseThrow(() -> new CustomException(ErrorCode.ORDER_NOT_FOUND));
 
-        // 주문 상태가 APPROVED가 아닌 경우 에외 발생
+        // 주문 상태가 APPROVED가 아닌 경우 예외 발생
         if (order.getStatus() != OrderStatus.APPROVED) {
             throw new CustomException(ErrorCode.INVALID_ORDER_STATUS);
         }
 
-        // 판매 전표일이 주문 전표일보다 빠르면 예외
-        LocalDate orderDate = documentNoGenerator.extractDate(order.getDocumentNo());
-        if (request.getDocumentDate().isBefore(orderDate)) {
-            throw new CustomException(ErrorCode.SALES_ORDER_DATE_BEFORE_ORDER_DATE);
-        }
+        // 판매 전표일 검증 (null + 순서)
+        validateSalesOrderDate(order, request.getDocumentDate());
 
         // 이미 삭제되지 않은 판매가 존재하는 경우 예외 발생
         if (salesOrderRepository.existsByOrderAndIsDeletedFalse(order)) {
             throw new CustomException(ErrorCode.SALES_ORDER_ALREADY_EXISTS);
         }
-
-        if (request.getDocumentDate() == null) {
-            throw new CustomException(ErrorCode.INVALID_ORDER_REQUEST);
-        }
-
 
         // 전표번호 생성
         String documentNo = documentNoGenerator.generate(
@@ -76,6 +78,7 @@ public class SalesOrderServiceImpl implements SalesOrderService {
         salesOrderRepository.save(salesOrder);
         return CreateSalesOrderResponse.from(salesOrder);
     }
+
 
     // 판매 목록 조회
     @Override
@@ -104,12 +107,13 @@ public class SalesOrderServiceImpl implements SalesOrderService {
         SalesOrder salesOrder = salesOrderRepository.findByIdWithDetails(salesOrderId)
                 .orElseThrow(() -> new CustomException(ErrorCode.SALES_ORDER_NOT_FOUND));
 
-        // 전표번호 갱신 로직
+        if (salesOrder.getOrder().getStatus() == OrderStatus.COMPLETED) {
+            throw new CustomException(ErrorCode.SALES_ORDER_ALREADY_COMPLETED);
+        }
+
         if (request.getDocumentDate() != null) {
-            LocalDate orderDate = documentNoGenerator.extractDate(salesOrder.getOrder().getDocumentNo());
-            if (request.getDocumentDate().isBefore(orderDate)) {
-                throw new CustomException(ErrorCode.SALES_ORDER_DATE_BEFORE_ORDER_DATE);
-            }
+            // 판매 전표일 검증
+            validateSalesOrderDate(salesOrder.getOrder(), request.getDocumentDate());
 
             String newDocNo = documentNoGenerator.generateOrKeep(
                     salesOrder.getDocumentNo(),
@@ -135,7 +139,11 @@ public class SalesOrderServiceImpl implements SalesOrderService {
         SalesOrder salesOrder = salesOrderRepository.findById(salesOrderId)
                 .orElseThrow(() -> new CustomException(ErrorCode.SALES_ORDER_NOT_FOUND));
 
-        salesOrderRepository.delete(salesOrder); // 실제 삭제 X → is_deleted = true 업데이트
+        if (salesOrder.getOrder().getStatus() == OrderStatus.COMPLETED) {
+            throw new CustomException(ErrorCode.SALES_ORDER_ALREADY_COMPLETED);
+        }
+
+        salesOrderRepository.delete(salesOrder);
         return DeleteSalesOrderResponse.from(salesOrder);
     }
 

@@ -7,6 +7,7 @@ import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
 
@@ -61,5 +62,26 @@ public class DocumentNoGenerator {
             throw new CustomException(ErrorCode.INVALID_ORDER_REQUEST);
         }
         return LocalDate.parse(documentNo.substring(0, 10), FORMATTER);
+    }
+
+    // 반품 전표번호 생성 (원본 + (-(번호)))
+    public String generateReturnDocumentNo(String originalDocNo, List<String> existingReturnNos) {
+        if (existingReturnNos == null || existingReturnNos.isEmpty()) {
+            return originalDocNo + "(-1)";
+        }
+
+        int maxSuffix = existingReturnNos.stream()
+                .map(docNo -> {
+                    int start = docNo.lastIndexOf("(-");
+                    int end = docNo.lastIndexOf(")");
+                    if (start != -1 && end != -1) {
+                        return Integer.parseInt(docNo.substring(start + 2, end));
+                    }
+                    return 0;
+                })
+                .max(Integer::compareTo)
+                .orElse(0);
+
+        return originalDocNo + "(-" + (maxSuffix + 1) + ")";
     }
 }
