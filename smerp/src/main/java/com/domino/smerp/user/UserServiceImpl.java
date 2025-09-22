@@ -2,6 +2,7 @@ package com.domino.smerp.user;
 
 import com.domino.smerp.client.Client;
 import com.domino.smerp.client.ClientRepository;
+import com.domino.smerp.common.dto.PageResponse;
 import com.domino.smerp.common.encrypt.SsnEncryptor;
 import com.domino.smerp.common.exception.CustomException;
 import com.domino.smerp.common.exception.ErrorCode;
@@ -9,11 +10,12 @@ import com.domino.smerp.user.dto.request.CreateUserRequest;
 import com.domino.smerp.user.dto.request.UpdateUserRequest;
 import com.domino.smerp.user.dto.response.UserListResponse;
 import com.domino.smerp.user.dto.response.UserResponse;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.List;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -76,20 +78,37 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<UserListResponse> findAllUsers() {
+    public PageResponse<UserListResponse> searchUsers(String name, String deptTitle,
+        Pageable pageable) {
 
-        List<User> allUser = userRepository.findAll();
+        BooleanExpression nameCondition =
+            (name != null && !name.isEmpty()) ? QUser.user.name.startsWith(name) : null;
+        BooleanExpression deptCondition =
+            (deptTitle != null && !deptTitle.isEmpty()) ? QUser.user.deptTitle.startsWith(deptTitle)
+                : null;
+        BooleanExpression condition = null;
 
-        return allUser.stream()
-                      .map(users -> UserListResponse.builder()
-                                                    .name(users.getName())
-                                                    .email(users.getEmail())
-                                                    .address(users.getAddress())
-                                                    .phone(users.getPhone())
-                                                    .deptTitle(users.getDeptTitle())
-                                                    .role(users.getRole())
-                                                    .build())
-                      .collect(Collectors.toList());
+        if (nameCondition != null && deptCondition != null) {
+            condition = nameCondition.and(deptCondition);
+        } else if (nameCondition != null) {
+            condition = nameCondition;
+        } else if (deptCondition != null) {
+            condition = deptCondition;
+        }
+
+        Page<User> page = (condition == null) ? userRepository.findAll(pageable)
+            : userRepository.findAll(condition, pageable);
+
+        Page<UserListResponse> pageUser = page.map(user -> UserListResponse.builder()
+                                                                           .name(user.getName())
+                                                                           .email(user.getEmail())
+                                                                           .phone(user.getPhone())
+                                                                           .address(user.getAddress())
+                                                                           .deptTitle(user.getDeptTitle())
+                                                                           .role(user.getRole())
+                                                                           .empNo(user.getEmpNo())
+                                                                           .build());
+        return PageResponse.from(pageUser);
     }
 
     @Override
@@ -103,9 +122,9 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional(readOnly = true)
-    public UserResponse findUserById(final Long userId) {
+    public UserResponse findUserByEnpNo(final String enpNo) {
 
-        User user = userRepository.findById(userId)
+        User user = userRepository.findByEmpNo(enpNo)
                                   .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
         Client client = user.getClient();
@@ -118,31 +137,33 @@ public class UserServiceImpl implements UserService {
                            .email(user.getEmail())
                            .phone(user.getPhone())
                            .address(user.getAddress())
-                           .ssn(decryptSsn.substring(0,8)+"******")
+                           .ssn(decryptSsn.substring(0, 8) + "******")
                            .hireDate(user.getHireDate())
                            .fireDate(user.getFireDate())
                            .loginId(user.getLoginId())
                            .deptTitle(user.getDeptTitle())
                            .role(user.getRole())
                            .empNo(user.getEmpNo())
-                           .clientName(client != null ? client.getCompanyName() : "거래처 아님")
+                           .companyName(client != null ? client.getCompanyName() : "거래처 아님")
                            .build();
     }
 
     @Override
     @Transactional
-    public void updateUser(final Long userId, final UpdateUserRequest request) {
+    public void updateUser(final String enpNo, final UpdateUserRequest request) {
 
         if (userRepository.existsByPhone(request.getPhone())) {
             throw new CustomException(ErrorCode.DUPLICATE_PHONE);
         }
 
-        User user = userRepository.findById(userId)
+        User user = userRepository.findByEmpNo(enpNo)
                                   .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
         user.updateUser(request);
 
-        if(request.getCompanyName()!=null) {
-            Client client = clientRepository.findByCompanyName(request.getCompanyName()).orElseThrow(() -> new CustomException(ErrorCode.CLIENT_NOT_FOUND));
+        if (request.getCompanyName() != null) {
+            Client client = clientRepository.findByCompanyName(request.getCompanyName())
+                                            .orElseThrow(() -> new CustomException(
+                                                ErrorCode.CLIENT_NOT_FOUND));
             user.updateClient(client);
         }
     }
