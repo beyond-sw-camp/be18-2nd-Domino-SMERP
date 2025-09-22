@@ -32,6 +32,8 @@ public class SecurityConfig {
                             .anyRequest()
                             .authenticated()
             )
+            .anonymous(anonymous -> anonymous
+                .principal("SYSTEM"))
             .formLogin(form -> form.disable())
             .httpBasic(basic -> basic.disable())
             .sessionManagement(sessionManagement -> sessionManagement.maximumSessions(1));

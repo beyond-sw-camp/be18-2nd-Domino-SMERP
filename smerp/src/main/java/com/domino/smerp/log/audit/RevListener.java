@@ -9,10 +9,10 @@ public class RevListener implements RevisionListener {
     public void newRevision(Object revisionEntity) {
         RevInfo rev = (RevInfo) revisionEntity;
         // SecurityContext에서 사용자명 꺼내기 (미로그인 환경이면 'system')
-        String actor = "system";
+        String actor = "";
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if (auth != null && auth.isAuthenticated()) {
-            actor = String.valueOf(auth.getName());
+            actor = auth.getName();
         }
         rev.setActor(actor);
     }

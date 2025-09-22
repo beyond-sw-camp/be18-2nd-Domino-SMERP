@@ -144,7 +144,7 @@ public class UserServiceImpl implements UserService {
                            .deptTitle(user.getDeptTitle())
                            .role(user.getRole())
                            .empNo(user.getEmpNo())
-                           .clientName(client != null ? client.getCompanyName() : "거래처 아님")
+                           .companyName(client != null ? client.getCompanyName() : "거래처 아님")
                            .build();
     }
 
