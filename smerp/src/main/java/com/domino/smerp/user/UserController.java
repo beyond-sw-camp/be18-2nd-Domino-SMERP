@@ -44,10 +44,10 @@ public class UserController {
         return userService.searchUsers(name, deptTitle,pageable);
     }
 
-    @GetMapping("/{userId}")
-    public UserResponse findUserById(@PathVariable final Long userId) {
+    @GetMapping("/{enpNo}")
+    public UserResponse findUserById(@PathVariable final String enpNo) {
 
-        return userService.findUserById(userId);
+        return userService.findUserByEnpNo(enpNo);
     }
 
     @DeleteMapping("/{userId}")
@@ -57,11 +57,11 @@ public class UserController {
         userService.deleteUser(userId);
     }
 
-    @PatchMapping("/{userId}")
+    @PatchMapping("/{enpNo}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void updateUser(@PathVariable final Long userId,
+    public void updateUser(@PathVariable final String enpNo,
         @Valid @RequestBody final UpdateUserRequest request) {
 
-        userService.updateUser(userId, request);
+        userService.updateUser(enpNo, request);
     }
 }

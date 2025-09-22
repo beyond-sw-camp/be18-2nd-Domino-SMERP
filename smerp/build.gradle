@@ -31,6 +31,9 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-security'
 
+    //envers
+    implementation 'org.hibernate.orm:hibernate-envers'
+
 	// DB Driver
 	runtimeOnly 'org.mariadb.jdbc:mariadb-java-client'
 
