@@ -1,0 +1,17 @@
+package com.domino.smerp.log.dto.response;
+
+import com.domino.smerp.log.ActionType;
+import java.time.LocalDateTime;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+
+@Getter
+@Builder
+@AllArgsConstructor
+public class LogListResponse {
+    private final LocalDateTime doAt;
+    private final String entity;
+    private final ActionType action;
+    private final String actor;
+}
