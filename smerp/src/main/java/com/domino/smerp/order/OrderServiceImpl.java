@@ -87,6 +87,13 @@ public class OrderServiceImpl implements OrderService {
         }
     }
 
+    // 특별가격 검증 메서드
+    private void validateSpecialPrice(BigDecimal specialPrice) {
+        if (specialPrice != null && specialPrice.compareTo(BigDecimal.ZERO) <= 0) {
+            throw new CustomException(ErrorCode.INVALID_SPECIAL_PRICE);
+        }
+    }
+
     // 주문 등록
     @Override
     @Transactional
@@ -114,7 +121,8 @@ public class OrderServiceImpl implements OrderService {
                 .build();
 
         request.getItems().forEach(itemReq -> {
-            validateQty(itemReq.getQty());                  // 검증
+            validateQty(itemReq.getQty());
+            validateSpecialPrice(itemReq.getSpecialPrice());  // 검증
             ItemOrder itemOrder = toOrderItem(order, itemReq); // 객체 생성
             order.addOrderItem(itemOrder);                  // 연관관계 세팅
         });
@@ -157,13 +165,17 @@ public class OrderServiceImpl implements OrderService {
                 ItemOrder existing = existingItems.get(itemReq.getItemOrderId());
                 if (existing == null) throw new CustomException(ErrorCode.RETURN_ITEM_NOT_FOUND_IN_ORDER);
 
-                validateQty(itemReq.getQty()); // 수량 검증
+                validateQty(itemReq.getQty());
+                validateSpecialPrice(itemReq.getSpecialPrice()); // 검증
+
                 existing.updateQty(itemReq.getQty());
                 existing.updateSpecialPrice(itemReq.getSpecialPrice());
                 finalItems.add(existing);
                 existingItems.remove(itemReq.getItemOrderId());
             } else {
-                validateQty(itemReq.getQty()); // 수량 검증
+                validateQty(itemReq.getQty());
+                validateSpecialPrice(itemReq.getSpecialPrice()); // 검증
+
                 Item item = itemServiceImpl.findItemById(itemReq.getItemId());
                 ItemOrder newItem = ItemOrder.builder()
                         .order(order)

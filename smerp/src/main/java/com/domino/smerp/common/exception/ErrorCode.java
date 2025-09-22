@@ -59,10 +59,12 @@ public enum ErrorCode {
     INVALID_ORDER_REQUEST(HttpStatus.BAD_REQUEST, "INVALID_REQUEST", "잘못된 주문 요청입니다."),
     ORDER_ALREADY_APPROVED(HttpStatus.BAD_REQUEST, "ORDER_ALREADY_APPROVED", "이미 주문 승인이 완료되었습니다."),
     INVALID_QUANTITY(HttpStatus.BAD_REQUEST, "INVALID_QUANTITY", "수량은 0보다 커야 합니다."),
+    INVALID_SPECIAL_PRICE(HttpStatus.BAD_REQUEST, "INVALID_SPECIAL_PRICE", "특별가격은 0보다 커야 합니다."),
     RETURN_ITEM_NOT_IN_ORDER(HttpStatus.NOT_FOUND, "RETURN_ITEM_NOT_IN_ORDER", "반품 품목은 최소 1개 이상의 품목이 필요합니다."),
     RETURN_ITEM_NOT_FOUND_IN_ORDER(HttpStatus.BAD_REQUEST, "RETURN_ITEM_NOT_FOUND_IN_ORDER", "주문에 등록되지 않은 품목입니다."),
     RETURN_QTY_EXCEEDS_ORIGINAL(HttpStatus.BAD_REQUEST, "RETURN_QTY_EXCEEDS_ORIGINAL", "반품 수량이 원 주문 수량을 초과할 수 없습니다."),
     RETURN_ONLY_ALLOWED_AFTER_COMPLETED(HttpStatus.BAD_REQUEST, "RETURN_ONLY_ALLOWED_AFTER_COMPLETED", "완료된 주문 건에 대해서만 반품이 가능합니다."),
+
 
     // sales_order - 판매와 관련된 예외 정보
     INVALID_ORDER_STATUS(HttpStatus.BAD_REQUEST, "INVALID_ORDER_STATUS", "해당 주문은 판매 생성이 불가능한 상태입니다."),
