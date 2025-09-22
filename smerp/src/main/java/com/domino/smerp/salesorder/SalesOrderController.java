@@ -62,7 +62,7 @@ public class SalesOrderController {
         return ResponseEntity.ok(response);
     }
 
-    // 판매 현황 조회 get SalesOderSummary 수정
+    // 판매 현황 조회
     @GetMapping("/summary")
     public ResponseEntity<List<SummarySalesOrderResponse>> getSalesOrderSummary(
             SearchSummarySalesOrderRequest condition,

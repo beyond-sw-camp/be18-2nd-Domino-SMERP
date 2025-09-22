@@ -54,4 +54,12 @@ public class DocumentNoGenerator {
 
         return generate(newDocDate, findMaxSeqByPrefix);
     }
+
+    // 전표번호에서 날짜 추출
+    public LocalDate extractDate(String documentNo) {
+        if (documentNo == null || documentNo.length() < 10) {
+            throw new CustomException(ErrorCode.INVALID_ORDER_REQUEST);
+        }
+        return LocalDate.parse(documentNo.substring(0, 10), FORMATTER);
+    }
 }

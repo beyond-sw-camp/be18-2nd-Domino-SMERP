@@ -310,7 +310,7 @@ public class OrderServiceImpl implements OrderService {
         return CreateReturnOrderResponse.from(returnOrder.getDocumentNo());
     }
 
-    // 판품 현황 조회
+    // 반품 현황
     @Override
     @Transactional(readOnly = true)
     public List<SummaryReturnOrderResponse> getSummaryReturnOrders(SearchSummaryReturnOrderRequest condition, Pageable pageable) {

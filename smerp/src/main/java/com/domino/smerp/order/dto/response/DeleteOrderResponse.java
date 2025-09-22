@@ -9,12 +9,12 @@ import lombok.Getter;
 @Builder
 @AllArgsConstructor
 public class DeleteOrderResponse {
-    private final Long orderId;
+    private final String documentNo;
     private final String message;
 
     public static DeleteOrderResponse from(Order order) {
         return DeleteOrderResponse.builder()
-                .orderId(order.getOrderId())
+                .documentNo(order.getDocumentNo())
                 .message("주문이 삭제가 완료됐습니다.")
                 .build();
     }

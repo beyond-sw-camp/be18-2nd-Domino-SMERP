@@ -68,6 +68,7 @@ public enum ErrorCode {
     INVALID_ORDER_STATUS(HttpStatus.BAD_REQUEST, "INVALID_ORDER_STATUS", "해당 주문은 판매 생성이 불가능한 상태입니다."),
     SALES_ORDER_NOT_FOUND(HttpStatus.NOT_FOUND, "SALES_ORDER_NOT_FOUND", "존재하지 않는 판매입니다."),
     SALES_ORDER_ALREADY_EXISTS(HttpStatus.CONFLICT, "SALES_ORDER_ALREADY_EXISTS", "이미 존재하는 판매 전표가 있습니다."),
+    SALES_ORDER_DATE_BEFORE_ORDER_DATE(HttpStatus.BAD_REQUEST, "SALES_ORDER_DATE_BEFORE_ORDER_DATE", "판매 전표일은 주문 전표일보다 빠를 수 없습니다."),
 
     // 전표 생성 예외 정보
     DOCUMENT_NO_GENERATION_FAILED(HttpStatus.CONFLICT, "DOCUMENT_NO_GENERATION_FAILED", "전표번호 생성에 실패했습니다.");

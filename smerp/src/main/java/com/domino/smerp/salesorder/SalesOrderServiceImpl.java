@@ -19,6 +19,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Service
@@ -40,6 +42,12 @@ public class SalesOrderServiceImpl implements SalesOrderService {
         // 주문 상태가 APPROVED가 아닌 경우 에외 발생
         if (order.getStatus() != OrderStatus.APPROVED) {
             throw new CustomException(ErrorCode.INVALID_ORDER_STATUS);
+        }
+
+        // 판매 전표일이 주문 전표일보다 빠르면 예외
+        LocalDate orderDate = documentNoGenerator.extractDate(order.getDocumentNo());
+        if (request.getDocumentDate().isBefore(orderDate)) {
+            throw new CustomException(ErrorCode.SALES_ORDER_DATE_BEFORE_ORDER_DATE);
         }
 
         // 이미 삭제되지 않은 판매가 존재하는 경우 예외 발생
@@ -98,6 +106,11 @@ public class SalesOrderServiceImpl implements SalesOrderService {
 
         // 전표번호 갱신 로직
         if (request.getDocumentDate() != null) {
+            LocalDate orderDate = documentNoGenerator.extractDate(salesOrder.getOrder().getDocumentNo());
+            if (request.getDocumentDate().isBefore(orderDate)) {
+                throw new CustomException(ErrorCode.SALES_ORDER_DATE_BEFORE_ORDER_DATE);
+            }
+
             String newDocNo = documentNoGenerator.generateOrKeep(
                     salesOrder.getDocumentNo(),
                     request.getDocumentDate(),
@@ -105,6 +118,7 @@ public class SalesOrderServiceImpl implements SalesOrderService {
             );
             salesOrder.updateDocumentInfo(newDocNo);
         }
+
 
         salesOrder.updateAll(
                 request.getRemark(),
