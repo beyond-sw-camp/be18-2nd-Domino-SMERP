@@ -32,6 +32,7 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 import org.hibernate.annotations.SQLRestriction;
 import org.hibernate.envers.Audited;
+import org.hibernate.envers.RelationTargetAuditMode;
 
 @Entity
 @Getter
@@ -50,6 +51,7 @@ public class Item extends BaseEntity {
   @Column(name = "item_id")
   private Long itemId;
 
+  // @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "item_status_id", nullable = false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
   private ItemStatus itemStatus;
