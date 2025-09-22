@@ -3,6 +3,7 @@ package com.domino.smerp.order;
 import com.domino.smerp.client.Client;
 import com.domino.smerp.common.BaseEntity;
 import com.domino.smerp.itemorder.ItemOrder;
+import com.domino.smerp.log.audit.AuditLogEntityListener;
 import com.domino.smerp.order.constants.OrderStatus;
 import com.domino.smerp.salesorder.SalesOrder;
 import com.domino.smerp.user.User;
@@ -10,6 +11,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLRestriction;
+import org.hibernate.envers.Audited;
 
 import java.math.BigDecimal;
 import java.time.Instant;
@@ -17,7 +19,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@ToString
+//@ToString
+//@Audited
+//@EntityListeners(AuditLogEntityListener.class)
 @Table(name = "`order`")
 @Getter
 @SQLDelete(sql = "UPDATE `order` SET is_deleted = true WHERE order_id = ?")

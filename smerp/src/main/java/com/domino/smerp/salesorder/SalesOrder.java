@@ -1,14 +1,18 @@
 package com.domino.smerp.salesorder;
 
 import com.domino.smerp.common.BaseEntity;
+import com.domino.smerp.log.audit.AuditLogEntityListener;
 import com.domino.smerp.order.Order;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLRestriction;
+import org.hibernate.envers.Audited;
 
 @Entity
-@ToString
+//@ToString
+//@Audited
+//@EntityListeners(AuditLogEntityListener.class)
 @Table(name = "sales_order")
 @Getter
 @SQLDelete(sql = "UPDATE sales_order SET is_deleted = true WHERE sales_order_id = ?")
