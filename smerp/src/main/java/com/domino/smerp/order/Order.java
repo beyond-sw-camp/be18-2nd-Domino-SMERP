@@ -67,6 +67,7 @@ public class Order extends BaseEntity {
     private List<ItemOrder> orderItems = new ArrayList<>();
 
     // 일대일 매핑
+    @Builder.Default
     @OneToMany(mappedBy = "order", fetch = FetchType.LAZY)
     private List<SalesOrder> salesOrders = new ArrayList<>();
 

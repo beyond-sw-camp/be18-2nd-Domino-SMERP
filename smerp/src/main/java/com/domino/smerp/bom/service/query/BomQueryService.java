@@ -1,5 +1,6 @@
 package com.domino.smerp.bom.service.query;
 
+import com.domino.smerp.bom.dto.response.BomAllResponse;
 import com.domino.smerp.bom.dto.response.BomCostCacheResponse;
 import com.domino.smerp.bom.dto.response.BomDetailResponse;
 import com.domino.smerp.bom.dto.response.BomListResponse;
@@ -7,6 +8,9 @@ import java.math.BigDecimal;
 import java.util.List;
 
 public interface BomQueryService {
+
+  // 정전개, 역전개, 원재료 리스트 한번에
+  BomAllResponse getBomAll(final Long itemId);
 
   // BOM 목록 불러오기
   List<BomListResponse> getBoms();
@@ -16,6 +20,8 @@ public interface BomQueryService {
 
   // 선택한 품목의 모든 후손들 불러오기 (정전개)
   List<BomListResponse> getBomInbound(final Long itemId);
+  // 선택한 품목의 모든 조상들 불러오기 (역전개)
+  List<BomListResponse> getBomOutbound(final Long itemId);
 
   // BOM 상세 조회(정전개, 역전개)
   BomDetailResponse getBomDetail(final Long bomId, final String direction);

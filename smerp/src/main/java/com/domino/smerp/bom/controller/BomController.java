@@ -3,6 +3,7 @@ package com.domino.smerp.bom.controller;
 import com.domino.smerp.bom.dto.request.CreateBomRequest;
 import com.domino.smerp.bom.dto.request.UpdateBomRelationRequest;
 import com.domino.smerp.bom.dto.request.UpdateBomRequest;
+import com.domino.smerp.bom.dto.response.BomAllResponse;
 import com.domino.smerp.bom.dto.response.BomCostCacheResponse;
 import com.domino.smerp.bom.dto.response.BomDetailResponse;
 import com.domino.smerp.bom.dto.response.BomListResponse;
@@ -38,6 +39,13 @@ public class BomController {
       final @Valid @RequestBody CreateBomRequest request) {
     return ResponseEntity.ok(bomCommandService.createBom(request));
   }
+
+  // 정전개, 역전개, 원재료리스트
+  @GetMapping("/items/{item-id}/all")
+  public ResponseEntity<BomAllResponse> getBomAll(@PathVariable("item-id") final Long itemId) {
+    return ResponseEntity.ok(bomQueryService.getBomAll(itemId));
+  }
+
 
   // BOM 전체 목록 조회
   @GetMapping

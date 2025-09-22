@@ -17,13 +17,13 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class BomListResponse {
 
-  private Long bomId;           // bom id
+  private String itemStatus;    // 품목 구분
   private Long itemId;          // 품목 FK
   private String itemName;      // 품목 명
   private String specification;  // 품목 규격
-  private String itemStatus;    // 품목 구분
-  private BigDecimal qty;       // 원재료 수량
+  private BigDecimal rawMaterialQty;       // 원재료 수량
   private List<BomListResponse> children; //  계층 구조 표현
+  private Long bomId;           // bom id
 
   public static BomListResponse fromEntity(final Bom bom) {
     final Item item = bom.getChildItem();                  // 하위 품목 기준
@@ -33,7 +33,7 @@ public class BomListResponse {
         .itemName(item.getName())
         .specification(item.getSpecification())
         .itemStatus(item.getItemStatus().getStatus().getDescription())
-        .qty(bom.getQty())
+        .rawMaterialQty(bom.getQty())
         .children(new ArrayList<>()) // 기본 리스트는 비어있습니다.
         .build();
   }
@@ -46,7 +46,7 @@ public class BomListResponse {
         .itemName(item.getName())
         .specification(item.getSpecification())
         .itemStatus(item.getItemStatus().getStatus().getDescription())
-        .qty(BigDecimal.ONE)
+        .rawMaterialQty(BigDecimal.ONE)
         .children(new ArrayList<>())
         .build();
   }

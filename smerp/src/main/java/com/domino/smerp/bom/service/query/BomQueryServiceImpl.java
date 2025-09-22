@@ -1,5 +1,6 @@
 package com.domino.smerp.bom.service.query;
 
+import com.domino.smerp.bom.dto.response.BomAllResponse;
 import com.domino.smerp.bom.dto.response.BomCostCacheResponse;
 import com.domino.smerp.bom.dto.response.BomDetailResponse;
 import com.domino.smerp.bom.dto.response.BomListResponse;
@@ -34,7 +35,6 @@ public class BomQueryServiceImpl implements BomQueryService {
   private final BomRepository bomRepository;
   private final BomCostCacheRepository bomCostCacheRepository;
   private final BomClosureRepository bomClosureRepository;
-  private final BomCacheBuilder bomCacheBuilder;
 
   private final ApplicationEventPublisher eventPublisher;
 
@@ -45,6 +45,17 @@ public class BomQueryServiceImpl implements BomQueryService {
         .map(BomListResponse::fromEntity)
         .collect(Collectors.toList());
   }
+
+  @Override
+  @Transactional(readOnly = true)
+  public BomAllResponse getBomAll(final Long itemId) {
+    return BomAllResponse.builder()
+        .inbound(getBomInbound(itemId))                               // 정전개
+        .outbound(getBomOutbound(itemId))                             // 역전개
+        .requirements(calculateTotalQtyAndCost(itemId))   // 원재료 리스트
+        .build();
+  }
+
 
   @Override
   @Transactional(readOnly = true)
@@ -61,6 +72,20 @@ public class BomQueryServiceImpl implements BomQueryService {
     final BomListResponse root = BomListResponse.fromSelf(item);
     attachChildren(root);
     return List.of(root);
+  }
+
+  @Transactional(readOnly = true)
+  public List<BomListResponse> getBomOutbound(final Long itemId) {
+    // descendant = itemId인 모든 조상 조회
+    final List<BomClosure> closures = bomClosureRepository.findById_DescendantItemId(itemId);
+
+    // 조상 Item들을 DTO로 변환
+    return closures.stream()
+        .map(bc -> {
+          final Item ancestor = itemService.findItemById(bc.getAncestorItemId());
+          return BomListResponse.fromSelf(ancestor);
+        })
+        .toList();
   }
 
   @Override
@@ -141,7 +166,9 @@ public class BomQueryServiceImpl implements BomQueryService {
       final int depth
   ) {
     final BomCostCache cache = cacheMap.get(itemId);
-    if (cache == null) return null;
+    if (cache == null) {
+      return null;
+    }
 
     // 현재 노드 기준 직계 자식만 추출
     final List<Long> childrenIds = allEdges.stream()

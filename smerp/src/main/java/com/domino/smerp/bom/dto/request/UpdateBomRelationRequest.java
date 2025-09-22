@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class UpdateBomRelationRequest {
 
-  @NotNull(message = "새로운 부모 품목 ID는 필수입니다.")
+  @NotNull(message = "부모 품목 ID는 필수입니다.")
   private Long newParentItemId;
 
   @NotNull(message = "자식 품목 ID는 필수입니다.")
