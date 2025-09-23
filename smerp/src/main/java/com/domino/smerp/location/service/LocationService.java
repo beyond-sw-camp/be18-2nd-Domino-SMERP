@@ -20,6 +20,6 @@ public interface LocationService {
   //재고를 삭제한 경우 받은 위치 id들에 해당하는 위치의 칸을 비움
   LocationIdListResponse unFillLocations(final LocationIdListRequest locationIdListRequest);
 
-  LocationResponse toLocationResponse(final Location location);
+  //LocationResponse toLocationResponse(final Location location);
 
 }
