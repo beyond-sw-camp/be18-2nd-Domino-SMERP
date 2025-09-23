@@ -1,14 +1,20 @@
 package com.domino.smerp.bom.service.query;
 
+import com.domino.smerp.bom.dto.request.SearchBomRequest;
 import com.domino.smerp.bom.dto.response.BomAllResponse;
 import com.domino.smerp.bom.dto.response.BomCostCacheResponse;
 import com.domino.smerp.bom.dto.response.BomDetailResponse;
 import com.domino.smerp.bom.dto.response.BomListResponse;
 import com.domino.smerp.bom.entity.Bom;
-import java.math.BigDecimal;
+import com.domino.smerp.common.dto.PageResponse;
 import java.util.List;
+import org.springframework.data.domain.Pageable;
 
 public interface BomQueryService {
+
+
+  // Bom 목록 페이징
+  PageResponse<BomCostCacheResponse> searchBoms(final SearchBomRequest request,final Pageable pageable);
 
   // BOM 목록 불러오기
   List<BomListResponse> getBoms();

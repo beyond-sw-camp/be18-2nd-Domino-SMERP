@@ -29,30 +29,61 @@ public class BomQueryRepositoryImpl implements BomQueryRepository {
 
   @Override
   @Transactional(readOnly = true)
-  public Page<BomClosure> searchBoms(final Long itemId, final Pageable pageable) {
-    QBomClosure bc = QBomClosure.bomClosure;
+  public Page<BomCostCache> searchBoms(final SearchBomRequest request, final Pageable pageable) {
+    QBomCostCache bcc = QBomCostCache.bomCostCache;
+    QItem item = QItem.item;
+    QItemStatus itemStatus = QItemStatus.itemStatus;
 
-    // 해당 품목이 ancestor든 descendant든 포함
-    List<BomClosure> results = queryFactory
-        .selectFrom(bc)
+    // 데이터 조회
+    List<BomCostCache> results = queryFactory
+        .selectFrom(bcc)
+        .join(item).on(bcc.childItemId.eq(item.itemId))   // FK 대신 ON 조건
+        .join(item.itemStatus, itemStatus)
         .where(
-            bc.id.ancestorItemId.eq(itemId)
-              .or(bc.id.descendantItemId.eq(itemId))
+            statusEq(request.getItemStatus()),
+            nameContains(request.getItemName()),
+            specificationContains(request.getSpecification())
         )
         .offset(pageable.getOffset())
         .limit(pageable.getPageSize())
         .fetch();
 
+    // count 쿼리
     JPAQuery<Long> countQuery = queryFactory
-        .select(bc.count())
-        .from(bc)
+        .select(bcc.count())
+        .from(bcc)
+        .join(item).on(bcc.childItemId.eq(item.itemId))
+        .join(item.itemStatus, itemStatus)
         .where(
-            bc.id.ancestorItemId.eq(itemId)
-                .or(bc.id.descendantItemId.eq(itemId))
+            statusEq(request.getItemStatus()),
+            nameContains(request.getItemName()),
+            specificationContains(request.getSpecification())
         );
 
     return PageableExecutionUtils.getPage(results, pageable, countQuery::fetchOne);
   }
+
+
+  // 품목 구분 검색
+  private BooleanExpression statusEq(final String status) {
+    if (status == null || status.isEmpty()) {
+      return null;
+    }
+    final ItemStatusStatus statusEnum = ItemStatusStatus.fromLabel(status);
+    return QItem.item.itemStatus.status.eq(statusEnum);
+  }
+
+  // 품목명 검색
+  private BooleanExpression nameContains(final String name) {
+    return (name == null || name.isEmpty()) ? null : QItem.item.name.contains(name);
+  }
+
+  // 품목 규격 검색
+  private BooleanExpression specificationContains(final String specification) {
+    return (specification == null || specification.isEmpty()) ? null
+        : QItem.item.specification.contains(specification);
+  }
+
 
   @Override
   @Transactional(readOnly = true)

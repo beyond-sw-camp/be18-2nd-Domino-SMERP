@@ -38,4 +38,17 @@ public class BomCostCacheResponse {
         .children(children != null ? children : List.of())
         .build();
   }
+
+  public static BomCostCacheResponse fromCache(final BomCostCache cache) {
+    return BomCostCacheResponse.builder()
+        .itemId(cache.getChildItemId())
+        .itemName(cache.getItemName())
+        .itemStatus(cache.getItemStatus().getDescription())
+        .qty(cache.getTotalQty())
+        .unitCost(cache.getUnitCost())
+        .totalCost(cache.getTotalCost())
+        .depth(cache.getDepth())
+        .children(List.of())
+        .build();
+  }
 }

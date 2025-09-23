@@ -1,5 +1,6 @@
 package com.domino.smerp.bom.service.query;
 
+import com.domino.smerp.bom.dto.request.SearchBomRequest;
 import com.domino.smerp.bom.dto.response.BomAllResponse;
 import com.domino.smerp.bom.dto.response.BomCostCacheResponse;
 import com.domino.smerp.bom.dto.response.BomDetailResponse;
@@ -13,6 +14,7 @@ import com.domino.smerp.bom.repository.BomClosureRepository;
 import com.domino.smerp.bom.repository.BomRepository;
 import com.domino.smerp.bom.repository.BomCostCacheRepository;
 import com.domino.smerp.bom.service.cache.BomCacheBuilder;
+import com.domino.smerp.common.dto.PageResponse;
 import com.domino.smerp.common.exception.CustomException;
 import com.domino.smerp.common.exception.ErrorCode;
 import com.domino.smerp.item.Item;
@@ -25,6 +27,7 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -39,6 +42,17 @@ public class BomQueryServiceImpl implements BomQueryService {
   private final BomClosureRepository bomClosureRepository;
 
   private final ApplicationEventPublisher eventPublisher;
+
+
+
+  @Override
+  @Transactional(readOnly = true)
+  public PageResponse<BomCostCacheResponse> searchBoms(final SearchBomRequest request, final Pageable pageable) {
+    return PageResponse.from(
+        bomRepository.searchBoms(request, pageable)
+            .map(BomCostCacheResponse::fromCache)
+    );
+  }
 
   // BOM 전체 FlatList로 불러옴(계층 표현X)
   @Override
