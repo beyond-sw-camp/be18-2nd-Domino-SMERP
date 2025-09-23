@@ -7,6 +7,7 @@ import com.domino.smerp.purchase.requestpurchaseorder.dto.request.RequestPurchas
 import com.domino.smerp.purchase.requestpurchaseorder.dto.request.RequestPurchaseOrderUpdateRequest;
 import com.domino.smerp.purchase.requestpurchaseorder.dto.request.SearchRequestPurchaseOrderRequest;
 import com.domino.smerp.purchase.requestpurchaseorder.dto.response.*;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
@@ -24,7 +25,7 @@ public class RequestPurchaseOrderController {
     // ✅ 구매요청 생성
     @PostMapping
     public ResponseEntity<RequestPurchaseOrderCreateResponse> createRequestPurchaseOrder(
-            @RequestBody RequestPurchaseOrderCreateRequest request
+            @Valid @RequestBody RequestPurchaseOrderCreateRequest request
     ) {
         RequestPurchaseOrderCreateResponse response = requestPurchaseOrderService.createRequestPurchaseOrder(request);
         return ResponseEntity.ok(response);

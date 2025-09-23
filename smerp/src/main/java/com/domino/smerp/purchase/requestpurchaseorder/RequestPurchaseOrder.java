@@ -53,7 +53,7 @@ public class RequestPurchaseOrder extends BaseEntity {
     private String documentNo; // 전표 번호
 
     // RequestOrder와 1:N 관계 (하나의 구매요청에 여러 발주가 매핑될 수 있음)
-    @OneToMany(mappedBy = "requestPurchaseOrder", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "requestPurchaseOrder", orphanRemoval = true)
     private List<ItemRequestPurchaseOrder> items = new ArrayList<>();
 
     // ====== 도메인 메서드 ======

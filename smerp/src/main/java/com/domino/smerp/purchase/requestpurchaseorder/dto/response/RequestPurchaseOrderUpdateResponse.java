@@ -28,7 +28,7 @@ public class RequestPurchaseOrderUpdateResponse {
 
     private final List<ItemRequestPurchaseOrderDto> items;
 
-    private final BigDecimal specialPrice; // 요청 시 선택 입력
+//    private final BigDecimal specialPrice; // 요청 시 선택 입력
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "UTC")
     private final Instant updatedAt;

@@ -144,10 +144,10 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
     return PurchaseOrderGetDetailResponse.builder()
         .empNo(entity.getRequestOrder().getUser().getEmpNo())
         .companyName(entity.getRequestOrder().getClient().getCompanyName())
-        .qty(entity.getQty())
-        .inboundUnitPrice(entity.getInboundUnitPrice())
-        .surtax(entity.getSurtax())
-        .price(entity.getPrice())
+//        .qty(entity.getQty())
+//        .inboundUnitPrice(entity.getInboundUnitPrice())
+//        .surtax(entity.getSurtax())
+//        .price(entity.getPrice())
         .remark(entity.getRemark())
         .documentNo(entity.getDocumentNo())
         .warehouseName(entity.getWarehouseName())
@@ -165,28 +165,12 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
         PurchaseOrder entity = purchaseOrderRepository.findById(poId)
                 .orElseThrow(() -> new EntityNotFoundException("구매 전표를 조회할 수 없습니다."));
 
-        // 엔티티 도메인 메서드 활용
-
-        BigDecimal qty = entity.getRequestOrder().getItems().get(0).getQty();
-        BigDecimal inboundUnitPrice = entity.getRequestOrder().getItems().get(0).getInboundUnitPrice();
-
-        entity.updateQty(qty);
-//        entity.updateInboundUnitPrice(inboundUnitPrice);
-        entity.updateWarehouseName(request.getWarehouseName());
-
-        BigDecimal surtax = qty.multiply(inboundUnitPrice).multiply(BigDecimal.valueOf(0.1));
-        BigDecimal price = qty.multiply(inboundUnitPrice).add(surtax);
-
-        BigDecimal unitPrice = entity.getRequestOrder()
-                .getItems()
-                .get(0)
-                .getSpecialPrice();
-
-        entity.updateSurtax(surtax);
-        entity.updatePrice(price);
-        entity.updateRemark(request.getRemark());
-//        entity.updateInboundUnitPrice(unitPrice);
-
+        if (request.getWarehouseName() != null) {
+            entity.updateWarehouseName(request.getWarehouseName());
+        }
+        if (request.getRemark() != null) {
+            entity.updateRemark(request.getRemark());
+        }
         // documentNo 변경 요청이 있을 경우
         if (request.getNewDocDate() != null) {
             LocalDate newDate = request.getNewDocDate();
@@ -202,9 +186,10 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
         return PurchaseOrderUpdateResponse.builder()
                 .empNo(entity.getRequestOrder().getUser().getEmpNo())
                 .companyName(entity.getRequestOrder().getClient().getCompanyName())
+                .warehouseName(entity.getWarehouseName())
                 .qty(entity.getQty())
                 .inboundUnitPrice(entity.getInboundUnitPrice())
-                .specialPrice(entity.getSpecialPrice())
+//                .specialPrice(entity.getSpecialPrice())
                 .remark(entity.getRemark())
                 .documentNo(entity.getDocumentNo())
                 .updatedAt(entity.getUpdatedAt())

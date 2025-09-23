@@ -22,15 +22,15 @@ public class PurchaseOrderGetDetailResponse {
 
     private final String warehouseName;
 
-    private final BigDecimal qty;
+//    private final BigDecimal qty;
 
-    private final BigDecimal inboundUnitPrice;
+//    private final BigDecimal inboundUnitPrice;
 
-    private final BigDecimal specialPrice; // 요청 시 선택 입력
+//    private final BigDecimal specialPrice; // 요청 시 선택 입력
 
-    private final BigDecimal surtax;
+//    private final BigDecimal surtax;
 
-    private final BigDecimal price;
+//    private final BigDecimal price;
 
     private final String remark;
 

@@ -36,10 +36,14 @@ public class PurchaseOrderGetListResponse {
 
     public static PurchaseOrderGetListResponse fromEntity(PurchaseOrder purchaseOrder) {
         return PurchaseOrderGetListResponse.builder()
-                .documentNo(purchaseOrder.getDocumentNo())
-                .warehouseName(purchaseOrder.getWarehouseName())
-                .qty(purchaseOrder.getQty())
-                .remark(purchaseOrder.getRemark())
+                .documentNo(purchaseOrder.getDocumentNo())  // 전표번호
+                .empNo(purchaseOrder.getRequestOrder().getUser().getEmpNo()) // 담당자 사번
+                .companyName(purchaseOrder.getRequestOrder().getClient().getCompanyName()) // 거래처명
+                .warehouseName(purchaseOrder.getWarehouseName()) // 창고명
+                .qty(purchaseOrder.getQty())   // 수량
+                .remark(purchaseOrder.getRemark()) // 비고
+                .createdAt(purchaseOrder.getCreatedAt()) // 생성일자
+                .updatedAt(purchaseOrder.getUpdatedAt()) // 수정일자
                 .build();
     }
 

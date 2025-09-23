@@ -5,6 +5,7 @@ import com.domino.smerp.purchase.requestorder.dto.request.RequestOrderCreateRequ
 import com.domino.smerp.purchase.requestorder.dto.request.RequestOrderUpdateRequest;
 import com.domino.smerp.purchase.requestorder.dto.request.SearchRequestOrderRequest;
 import com.domino.smerp.purchase.requestorder.dto.response.*;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
@@ -22,7 +23,7 @@ public class RequestOrderController {
     // ✅ 발주 생성
     @PostMapping
     public ResponseEntity<RequestOrderCreateResponse> createRequestOrder(
-            @RequestBody RequestOrderCreateRequest request
+            @Valid @RequestBody RequestOrderCreateRequest request
     ) {
         RequestOrderCreateResponse response = requestOrderService.createRequestOrder(request);
         return ResponseEntity.ok(response);

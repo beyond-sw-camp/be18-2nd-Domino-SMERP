@@ -15,7 +15,6 @@ import java.util.List;
 @Builder
 @AllArgsConstructor(access = lombok.AccessLevel.PRIVATE)
 public class RequestOrderCreateRequest {
-    @NotNull(message = "발주 ID는 필수 입력입니다.")
     private final Long rpoId;
 
     @NotNull(message = "일자는 필수 입력입니다.")

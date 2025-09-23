@@ -69,7 +69,7 @@ public class RequestOrder extends BaseEntity {
     @Column(name = "document_no", nullable = false, length = 30)
     private String documentNo; // 전표 번호
 
-    @OneToMany(mappedBy = "requestOrder", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "requestOrder", orphanRemoval = true)
     private List<ItemRequestOrder> items = new ArrayList<>();
 
     // ====== 도메인 메서드 ======
