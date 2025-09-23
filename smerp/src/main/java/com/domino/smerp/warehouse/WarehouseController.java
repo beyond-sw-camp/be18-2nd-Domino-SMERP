@@ -31,7 +31,8 @@ public class WarehouseController {
     WarehouseResponse warehouseResponse = warehouseService.createWarehouse(warehouseRequest);
     return ResponseEntity.status(201).body(warehouseResponse);
   }
-/*
+
+  /*
   //빈 위치 있는 창고 조회
   @GetMapping("/warehouses/unfilled")
   public ResponseEntity<WarehouseIdListResponse> getUnFilledWarehouseIds(){
@@ -39,8 +40,7 @@ public class WarehouseController {
 
     return ResponseEntity.status(200).body(warehouseIdListResponse);
   }
-*/
-  /*
+
   //창고 위치 중 unfilled 조회
   @GetMapping("/{warehouse-id}/unfilled")
   public ResponseEntity<LocationListResponse> getUnFilledLocations(
@@ -49,7 +49,7 @@ public class WarehouseController {
 
     return ResponseEntity.status(200).body(locationListResponse);
   }
-   */
+*/
 
   //창고 목록 조회
   @GetMapping
