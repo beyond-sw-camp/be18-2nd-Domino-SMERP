@@ -3,7 +3,7 @@ package com.domino.smerp.warehouse;
 import com.domino.smerp.common.BaseEntity;
 import com.domino.smerp.location.Location;
 import com.domino.smerp.warehouse.constants.DivisionType;
-import com.domino.smerp.warehouse.dto.WarehouseRequest;
+import com.domino.smerp.warehouse.dto.request.WarehouseRequest;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
