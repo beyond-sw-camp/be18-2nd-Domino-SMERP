@@ -1,13 +1,17 @@
 package com.domino.smerp.purchase.purchaseorder;
 
+import com.domino.smerp.common.dto.PageResponse;
 import com.domino.smerp.purchase.purchaseorder.dto.request.PurchaseOrderCreateRequest;
 import com.domino.smerp.purchase.purchaseorder.dto.request.PurchaseOrderUpdateRequest;
+import com.domino.smerp.purchase.purchaseorder.dto.request.SearchPurchaseOrderRequest;
 import com.domino.smerp.purchase.purchaseorder.dto.response.*;
+import com.domino.smerp.purchase.purchaseorder.repository.PurchaseOrderRepository;
 import com.domino.smerp.purchase.requestorder.RequestOrder;
-import com.domino.smerp.purchase.requestorder.RequestOrderRepository;
+import com.domino.smerp.purchase.requestorder.repository.RequestOrderRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -93,8 +97,19 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
         .build();
   }
 
-  // ✅ 구매 목록 조회 (페이징)
+    @Override
+    @Transactional(readOnly = true)
+    public PageResponse<PurchaseOrderGetListResponse> searchPurchaseOrdes(final SearchPurchaseOrderRequest keyword,
+                                                                   final Pageable pageable){
+      return PageResponse.from(purchaseOrderRepository.searchPurchaseOrder(keyword, pageable).map(
+              PurchaseOrderGetListResponse::fromEntity
+      ));
+    };
 
+
+
+
+  // ✅ 구매 목록 조회 (페이징)
   @Override
   @Transactional(readOnly = true)
   public List<PurchaseOrderGetListResponse> getPurchaseOrders(final int page, final int size) {
@@ -113,6 +128,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
             .build())
         .toList();
   }
+
   // ✅ 구매 상세 조회
 
   @Override

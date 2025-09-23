@@ -1,5 +1,7 @@
-package com.domino.smerp.purchase.purchaseorder;
+package com.domino.smerp.purchase.purchaseorder.repository;
 
+import com.domino.smerp.purchase.purchaseorder.PurchaseOrder;
+import com.domino.smerp.purchase.purchaseorder.repository.query.PurchaseOrderQueryRepository;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -8,7 +10,7 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 @Repository
-public interface PurchaseOrderRepository extends JpaRepository<PurchaseOrder, Long> {
+public interface PurchaseOrderRepository extends JpaRepository<PurchaseOrder, Long>, PurchaseOrderQueryRepository {
 
     // ✅ 상세 조회: RequestOrder + ItemRequestOrder까지 fetch join
     @Query("select purchaseOrder from PurchaseOrder purchaseOrder " +

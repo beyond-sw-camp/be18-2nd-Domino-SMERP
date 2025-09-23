@@ -3,6 +3,8 @@ package com.domino.smerp.purchase.purchaseorder.dto.response;
 import java.math.BigDecimal;
 import java.time.Instant;
 
+import com.domino.smerp.client.Client;
+import com.domino.smerp.purchase.purchaseorder.PurchaseOrder;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -30,4 +32,15 @@ public class PurchaseOrderGetListResponse {
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "UTC")
     private final Instant updatedAt;
+
+
+    public static PurchaseOrderGetListResponse fromEntity(PurchaseOrder purchaseOrder) {
+        return PurchaseOrderGetListResponse.builder()
+                .documentNo(purchaseOrder.getDocumentNo())
+                .warehouseName(purchaseOrder.getWarehouseName())
+                .qty(purchaseOrder.getQty())
+                .remark(purchaseOrder.getRemark())
+                .build();
+    }
+
 }

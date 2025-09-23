@@ -1,9 +1,14 @@
 package com.domino.smerp.purchase.requestpurchaseorder;
 
+import com.domino.smerp.common.dto.PageResponse;
+import com.domino.smerp.purchase.requestorder.dto.request.SearchRequestOrderRequest;
+import com.domino.smerp.purchase.requestorder.dto.response.RequestOrderGetListResponse;
 import com.domino.smerp.purchase.requestpurchaseorder.dto.request.RequestPurchaseOrderCreateRequest;
 import com.domino.smerp.purchase.requestpurchaseorder.dto.request.RequestPurchaseOrderUpdateRequest;
+import com.domino.smerp.purchase.requestpurchaseorder.dto.request.SearchRequestPurchaseOrderRequest;
 import com.domino.smerp.purchase.requestpurchaseorder.dto.response.*;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -11,7 +16,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/request-purchase-orders")   // ✅ URL도 request-purchase-orders 로 변경
+@RequestMapping("/api/v1/request-purchase-orders")
 public class RequestPurchaseOrderController {
 
     private final RequestPurchaseOrderService requestPurchaseOrderService;
@@ -27,12 +32,11 @@ public class RequestPurchaseOrderController {
 
     // ✅ 구매요청 목록 조회 (페이징)
     @GetMapping
-    public ResponseEntity<List<RequestPurchaseOrderGetListResponse>> getRequestPurchaseOrders(
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size
+    public ResponseEntity<PageResponse<RequestPurchaseOrderGetListResponse>> getRequestPurchaseOrders(
+            @ModelAttribute SearchRequestPurchaseOrderRequest keyword,
+            Pageable pageable
     ) {
-        List<RequestPurchaseOrderGetListResponse> response = requestPurchaseOrderService.getRequestPurchaseOrders(page, size);
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(requestPurchaseOrderService.searchRequestPurchaseOrders(keyword, pageable));
     }
 
     // ✅ 구매요청 상세 조회

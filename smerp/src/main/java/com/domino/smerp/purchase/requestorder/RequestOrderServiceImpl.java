@@ -2,6 +2,7 @@ package com.domino.smerp.purchase.requestorder;
 
 import com.domino.smerp.client.Client;
 import com.domino.smerp.client.ClientRepository;
+import com.domino.smerp.common.dto.PageResponse;
 import com.domino.smerp.item.Item;
 import com.domino.smerp.item.repository.ItemRepository;
 import com.domino.smerp.purchase.itemrequestorder.ItemRequestOrder;
@@ -10,15 +11,18 @@ import com.domino.smerp.purchase.itemrequestorder.dto.request.ItemRequestOrderDt
 import com.domino.smerp.purchase.requestorder.constants.RequestOrderStatus;
 import com.domino.smerp.purchase.requestorder.dto.request.RequestOrderCreateRequest;
 import com.domino.smerp.purchase.requestorder.dto.request.RequestOrderUpdateRequest;
+import com.domino.smerp.purchase.requestorder.dto.request.SearchRequestOrderRequest;
 import com.domino.smerp.purchase.requestorder.dto.response.*;
+import com.domino.smerp.purchase.requestorder.repository.RequestOrderRepository;
 import com.domino.smerp.purchase.requestpurchaseorder.RequestPurchaseOrder;
-import com.domino.smerp.purchase.requestpurchaseorder.RequestPurchaseOrderRepository;
+import com.domino.smerp.purchase.requestpurchaseorder.repository.RequestPurchaseOrderRepository;
 import com.domino.smerp.purchase.requestpurchaseorder.constants.RequestPurchaseOrderStatus;
 import com.domino.smerp.user.User;
 import com.domino.smerp.user.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -139,6 +143,18 @@ public class RequestOrderServiceImpl implements RequestOrderService {
                 .createdAt(saved.getCreatedAt())
                 .items(itemDetails)
                 .build();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public PageResponse<RequestOrderGetListResponse> searchRequestOrders(
+            final SearchRequestOrderRequest keyword,
+            final Pageable pageable
+    ) {
+        return PageResponse.from(
+                requestOrderRepository.searchRequestOrder(keyword, pageable)
+                        .map(RequestOrderGetListResponse::fromEntity)  // DTO 변환 메서드 필요
+        );
     }
 
     // 발주 목록 조회

@@ -1,9 +1,12 @@
 package com.domino.smerp.purchase.requestorder;
 
+import com.domino.smerp.common.dto.PageResponse;
 import com.domino.smerp.purchase.requestorder.dto.request.RequestOrderCreateRequest;
 import com.domino.smerp.purchase.requestorder.dto.request.RequestOrderUpdateRequest;
+import com.domino.smerp.purchase.requestorder.dto.request.SearchRequestOrderRequest;
 import com.domino.smerp.purchase.requestorder.dto.response.*;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -27,12 +30,10 @@ public class RequestOrderController {
 
     // ✅ 발주 목록 조회 (페이징)
     @GetMapping
-    public ResponseEntity<List<RequestOrderGetListResponse>> getRequestOrders(
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size
-    ) {
-        List<RequestOrderGetListResponse> response = requestOrderService.getRequestOrders(page, size);
-        return ResponseEntity.ok(response);
+    public ResponseEntity<PageResponse<RequestOrderGetListResponse>> getRequestOrders(
+            @ModelAttribute SearchRequestOrderRequest keyword, Pageable pageable)
+    {
+        return ResponseEntity.ok(requestOrderService.searchRequestOrders(keyword, pageable));
     }
 
     // ✅ 발주 상세 조회

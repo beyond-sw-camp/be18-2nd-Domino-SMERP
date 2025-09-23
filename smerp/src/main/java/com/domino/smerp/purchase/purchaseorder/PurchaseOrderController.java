@@ -1,24 +1,16 @@
 package com.domino.smerp.purchase.purchaseorder;
 
+import com.domino.smerp.common.dto.PageResponse;
 import com.domino.smerp.purchase.purchaseorder.dto.request.PurchaseOrderCreateRequest;
 import com.domino.smerp.purchase.purchaseorder.dto.request.PurchaseOrderUpdateRequest;
-import com.domino.smerp.purchase.purchaseorder.dto.response.PurchaseOrderCreateResponse;
-import com.domino.smerp.purchase.purchaseorder.dto.response.PurchaseOrderDeleteResponse;
-import com.domino.smerp.purchase.purchaseorder.dto.response.PurchaseOrderGetDetailResponse;
-import com.domino.smerp.purchase.purchaseorder.dto.response.PurchaseOrderGetListResponse;
-import com.domino.smerp.purchase.purchaseorder.dto.response.PurchaseOrderUpdateResponse;
-import java.util.List;
+import com.domino.smerp.purchase.purchaseorder.dto.request.SearchPurchaseOrderRequest;
+import com.domino.smerp.purchase.purchaseorder.dto.response.*;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/purchase-orders")
@@ -36,10 +28,9 @@ public class PurchaseOrderController {
 
   // ✅ 구매 목록 조회 (페이징)
   @GetMapping
-  public ResponseEntity<List<PurchaseOrderGetListResponse>> getPurchaseOrders(
-      @RequestParam(defaultValue = "0") int page,
-      @RequestParam(defaultValue = "10") int size) {
-    return ResponseEntity.ok(purchaseOrderService.getPurchaseOrders(page, size));
+  public ResponseEntity<PageResponse<PurchaseOrderGetListResponse>> searchPurchaseOrdes(
+          @ModelAttribute SearchPurchaseOrderRequest keyword, Pageable pageable) {
+    return ResponseEntity.ok(purchaseOrderService.searchPurchaseOrdes(keyword, pageable));
   }
 
   // ✅ 구매 상세 조회

@@ -1,5 +1,6 @@
 package com.domino.smerp.purchase.requestpurchaseorder;
 
+import com.domino.smerp.common.dto.PageResponse;
 import com.domino.smerp.item.Item;
 import com.domino.smerp.item.repository.ItemRepository;
 import com.domino.smerp.purchase.itemrequestpurchaseorder.ItemRequestPurchaseOrder;
@@ -8,12 +9,15 @@ import com.domino.smerp.purchase.itemrequestpurchaseorder.dto.request.ItemReques
 import com.domino.smerp.purchase.requestpurchaseorder.constants.RequestPurchaseOrderStatus;
 import com.domino.smerp.purchase.requestpurchaseorder.dto.request.RequestPurchaseOrderCreateRequest;
 import com.domino.smerp.purchase.requestpurchaseorder.dto.request.RequestPurchaseOrderUpdateRequest;
+import com.domino.smerp.purchase.requestpurchaseorder.dto.request.SearchRequestPurchaseOrderRequest;
 import com.domino.smerp.purchase.requestpurchaseorder.dto.response.*;
+import com.domino.smerp.purchase.requestpurchaseorder.repository.RequestPurchaseOrderRepository;
 import com.domino.smerp.user.User;
 import com.domino.smerp.user.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -100,6 +104,19 @@ public class RequestPurchaseOrderServiceImpl implements RequestPurchaseOrderServ
                 .items(itemDetails)
                 .build();
     }
+
+    @Override
+    @Transactional(readOnly = true)
+    public PageResponse<RequestPurchaseOrderGetListResponse> searchRequestPurchaseOrders(
+            final SearchRequestPurchaseOrderRequest keyword,
+            final Pageable pageable
+    ) {
+        return PageResponse.from(
+                requestPurchaseOrderRepository.searchRequestPurchaseOrder(keyword, pageable)
+                        .map(RequestPurchaseOrderGetListResponse::fromEntity)
+        );
+    }
+
 
     // ✅ 구매요청 목록 조회
     @Override
