@@ -12,7 +12,7 @@ public interface BomCommandService {
   BomDetailResponse createBom(final CreateBomRequest request);
 
   // BOM 관계 수정시 계층 재계산
-  void updateBomClosure(final Long parentId, final Long childId);
+  //void updateBomClosure(final Long parentId, final Long childId);
 
   // BOM 수정(수량, 비고)
   BomDetailResponse updateBom(final Long bomId, final UpdateBomRequest request);

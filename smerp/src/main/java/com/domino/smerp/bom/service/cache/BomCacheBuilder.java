@@ -8,8 +8,10 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class BomCacheBuilder {
@@ -31,6 +33,9 @@ public class BomCacheBuilder {
       final List<BomCostCache> caches
 ) {
     final List<Bom> children = bomRepository.findByParentItem_ItemId(current.getItemId());
+
+    log.info("DFS build: root={}, current={}, depth={}, childrenCount={}",
+        root.getName(), current.getName(), depth, children.size());
 
     // 리프 노드
     if (children.isEmpty()) {

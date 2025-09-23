@@ -32,6 +32,7 @@ public class BomCommandServiceImpl implements BomCommandService {
 
   private final BomRepository bomRepository;
   private final BomClosureRepository bomClosureRepository;
+  private final BomCacheService bomCacheService;
 
   private final ApplicationEventPublisher eventPublisher;
 
@@ -72,7 +73,6 @@ public class BomCommandServiceImpl implements BomCommandService {
     }
 
     final Bom savedBom = bomRepository.save(Bom.create(request, parentItem, childItem));
-
     // 클로저 업데이트
     updateBomClosure(parentItem.getItemId(), childItem.getItemId());
 
@@ -196,11 +196,9 @@ public class BomCommandServiceImpl implements BomCommandService {
         .orElseThrow(() -> new CustomException(ErrorCode.BOM_NOT_FOUND));
   }
 
-
+  // 헬퍼 메소드
   // BOM 관계 수정시 클로저 업데이트
-  @Override
-  @Transactional
-  public void updateBomClosure(final Long parentId, final Long childId) {
+  private void updateBomClosure(final Long parentId, final Long childId) {
     // 부모 ID에 대한 잠금 객체를 사용
     final ReentrantLock lock = closureLocks.computeIfAbsent(parentId, k -> new ReentrantLock());
 
@@ -254,7 +252,7 @@ public class BomCommandServiceImpl implements BomCommandService {
   }
 
   // BOM 생성 시 조상찾아서 캐시에 넘기기 용
-  public Long findRootId(final Long itemId) {
+  private Long findRootId(final Long itemId) {
     Long rootId = bomClosureRepository.findRootAncestorId(itemId);
     return rootId != null ? rootId : itemId; // 혹시 null이면 자기 자신
   }

@@ -30,9 +30,6 @@ import org.hibernate.envers.Audited;
 @Entity
 @Getter
 @Builder
-@ToString
-@Audited
-@EntityListeners(AuditLogEntityListener.class)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Table(name = "bom", indexes = {
