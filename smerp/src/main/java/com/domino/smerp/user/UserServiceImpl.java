@@ -106,6 +106,7 @@ public class UserServiceImpl implements UserService {
                                                                            .address(user.getAddress())
                                                                            .deptTitle(user.getDeptTitle())
                                                                            .role(user.getRole())
+                                                                           .empNo(user.getEmpNo())
                                                                            .build());
         return PageResponse.from(pageUser);
     }
@@ -121,9 +122,9 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional(readOnly = true)
-    public UserResponse findUserById(final Long userId) {
+    public UserResponse findUserByEnpNo(final String enpNo) {
 
-        User user = userRepository.findById(userId)
+        User user = userRepository.findByEmpNo(enpNo)
                                   .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
         Client client = user.getClient();
@@ -143,19 +144,19 @@ public class UserServiceImpl implements UserService {
                            .deptTitle(user.getDeptTitle())
                            .role(user.getRole())
                            .empNo(user.getEmpNo())
-                           .clientName(client != null ? client.getCompanyName() : "거래처 아님")
+                           .companyName(client != null ? client.getCompanyName() : "거래처 아님")
                            .build();
     }
 
     @Override
     @Transactional
-    public void updateUser(final Long userId, final UpdateUserRequest request) {
+    public void updateUser(final String enpNo, final UpdateUserRequest request) {
 
         if (userRepository.existsByPhone(request.getPhone())) {
             throw new CustomException(ErrorCode.DUPLICATE_PHONE);
         }
 
-        User user = userRepository.findById(userId)
+        User user = userRepository.findByEmpNo(enpNo)
                                   .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
         user.updateUser(request);
 
