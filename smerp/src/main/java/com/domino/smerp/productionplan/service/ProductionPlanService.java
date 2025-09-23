@@ -6,7 +6,7 @@ import com.domino.smerp.productionplan.dto.request.SearchProductionPlanRequest;
 import com.domino.smerp.productionplan.dto.request.UpdateProductionPlanRequest;
 import com.domino.smerp.productionplan.dto.response.ProductionPlanListResponse;
 import com.domino.smerp.productionplan.dto.response.ProductionPlanResponse;
-import com.domino.smerp.warehouse.CurrentProductionPlanListResponse;
+import com.domino.smerp.warehouse.SearchProductionPlanListResponse;
 import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,7 +27,7 @@ public interface ProductionPlanService {
   //안전재고 이하 시 생성
   //List<ProductionPlan> createProductionPlansForSafetyStock(Long itemId);
 
-  PageResponse<CurrentProductionPlanListResponse> searchProductionPlans(
+  PageResponse<SearchProductionPlanListResponse> searchProductionPlans(
       final SearchProductionPlanRequest keyword,
       final Pageable pageable);
 

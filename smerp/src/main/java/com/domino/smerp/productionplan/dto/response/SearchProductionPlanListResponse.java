@@ -2,9 +2,7 @@ package com.domino.smerp.warehouse;
 
 import com.domino.smerp.productionplan.constants.Status;
 import com.domino.smerp.productionplan.ProductionPlan;
-import com.domino.smerp.productionplan.dto.response.ProductionPlanListResponse;
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -13,7 +11,7 @@ import lombok.Getter;
 @Getter
 @Builder
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-public class CurrentProductionPlanListResponse {
+public class SearchProductionPlanListResponse {
 
   private final Long id;
   private final String title;
@@ -24,8 +22,8 @@ public class CurrentProductionPlanListResponse {
   private final String documentNo;
   private final boolean isDeleted;
 
-  public static CurrentProductionPlanListResponse fromEntity(ProductionPlan plan) {
-    return CurrentProductionPlanListResponse.builder()
+  public static SearchProductionPlanListResponse fromEntity(ProductionPlan plan) {
+    return SearchProductionPlanListResponse.builder()
         .id(plan.getId())
         .title(plan.getTitle())
         .status(plan.getStatus())

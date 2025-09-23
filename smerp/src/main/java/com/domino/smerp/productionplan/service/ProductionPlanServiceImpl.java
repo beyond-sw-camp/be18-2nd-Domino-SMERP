@@ -13,7 +13,7 @@ import com.domino.smerp.productionplan.dto.response.ProductionPlanListResponse;
 import com.domino.smerp.productionplan.dto.response.ProductionPlanResponse;
 import com.domino.smerp.user.User;
 import com.domino.smerp.user.UserRepository;
-import com.domino.smerp.warehouse.CurrentProductionPlanListResponse;
+import com.domino.smerp.warehouse.SearchProductionPlanListResponse;
 import com.domino.smerp.warehouse.repository.WarehouseRepository;
 import jakarta.persistence.EntityNotFoundException;
 import java.time.LocalDate;
@@ -73,14 +73,14 @@ public class ProductionPlanServiceImpl implements ProductionPlanService {
 
   @Override
   @Transactional(readOnly = true)
-  public PageResponse<CurrentProductionPlanListResponse> searchProductionPlans(
+  public PageResponse<SearchProductionPlanListResponse> searchProductionPlans(
       final SearchProductionPlanRequest keyword,
       final Pageable pageable) {
 
     return PageResponse.from(
         productionPlanRepository
             .searchProductionPlans(keyword, pageable)
-            .map(CurrentProductionPlanListResponse::fromEntity)
+            .map(SearchProductionPlanListResponse::fromEntity)
     );
   }
 
