@@ -1,6 +1,7 @@
 package com.domino.smerp.bom.repository.query;
 
 import com.domino.smerp.bom.dto.request.SearchBomRequest;
+import com.domino.smerp.bom.dto.response.BomListResponse;
 import com.domino.smerp.bom.entity.BomClosure;
 import com.domino.smerp.bom.entity.BomCostCache;
 import com.domino.smerp.bom.entity.QBom;
@@ -10,7 +11,10 @@ import com.domino.smerp.item.Item;
 import com.domino.smerp.item.QItem;
 import com.domino.smerp.item.QItemStatus;
 import com.domino.smerp.item.constants.ItemStatusStatus;
+import com.querydsl.core.types.ExpressionUtils;
+import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.util.List;
@@ -27,17 +31,41 @@ public class BomQueryRepositoryImpl implements BomQueryRepository {
 
   private final JPAQueryFactory queryFactory;
 
+  // BOM 첫화면 페이징
   @Override
   @Transactional(readOnly = true)
-  public Page<BomCostCache> searchBoms(final SearchBomRequest request, final Pageable pageable) {
-    QBomCostCache bcc = QBomCostCache.bomCostCache;
+  public Page<BomListResponse> searchBoms(final SearchBomRequest request, final Pageable pageable) {
     QItem item = QItem.item;
+    QBom b = QBom.bom;
     QItemStatus itemStatus = QItemStatus.itemStatus;
 
-    // 데이터 조회
-    List<BomCostCache> results = queryFactory
-        .selectFrom(bcc)
-        .join(item).on(bcc.childItemId.eq(item.itemId))   // FK 대신 ON 조건
+    List<BomListResponse> results = queryFactory
+        .select(Projections.fields(BomListResponse.class,
+            item.itemId.as("itemId"),
+            item.name.as("itemName"),
+            item.specification.as("specification"),
+            item.itemStatus.status.stringValue().as("itemStatus"),
+            // hasBom → 자식 BOM 존재 여부
+            ExpressionUtils.as(
+                JPAExpressions.selectOne()
+                    .from(b)
+                    .where(b.parentItem.eq(item))
+                    .exists(),
+                "hasBom"
+            ),
+            // materialCount → 자식 BOM 중 원재료 개수
+            ExpressionUtils.as(
+                JPAExpressions.select(b.count())
+                    .from(b)
+                    .join(b.childItem, QItem.item)
+                    .where(
+                        b.parentItem.eq(item),
+                        QItem.item.itemStatus.status.eq(ItemStatusStatus.RAW_MATERIAL)
+                    ),
+                "materialCount"
+            )
+        ))
+        .from(item)
         .join(item.itemStatus, itemStatus)
         .where(
             statusEq(request.getItemStatus()),
@@ -48,11 +76,10 @@ public class BomQueryRepositoryImpl implements BomQueryRepository {
         .limit(pageable.getPageSize())
         .fetch();
 
-    // count 쿼리
+    // 전체 개수 카운트
     JPAQuery<Long> countQuery = queryFactory
-        .select(bcc.count())
-        .from(bcc)
-        .join(item).on(bcc.childItemId.eq(item.itemId))
+        .select(item.count())
+        .from(item)
         .join(item.itemStatus, itemStatus)
         .where(
             statusEq(request.getItemStatus()),
@@ -64,25 +91,24 @@ public class BomQueryRepositoryImpl implements BomQueryRepository {
   }
 
 
-  // 품목 구분 검색
+  // === 검색 조건 ===
   private BooleanExpression statusEq(final String status) {
     if (status == null || status.isEmpty()) {
       return null;
     }
-    final ItemStatusStatus statusEnum = ItemStatusStatus.fromLabel(status);
+    ItemStatusStatus statusEnum = ItemStatusStatus.fromLabel(status);
     return QItem.item.itemStatus.status.eq(statusEnum);
   }
 
-  // 품목명 검색
   private BooleanExpression nameContains(final String name) {
     return (name == null || name.isEmpty()) ? null : QItem.item.name.contains(name);
   }
 
-  // 품목 규격 검색
   private BooleanExpression specificationContains(final String specification) {
     return (specification == null || specification.isEmpty()) ? null
         : QItem.item.specification.contains(specification);
   }
+
 
 
   @Override
@@ -92,7 +118,7 @@ public class BomQueryRepositoryImpl implements BomQueryRepository {
     QItem i = QItem.item;
 
     // parent + child ID 모아서 distinct
-    List<Long> bomItemIds = queryFactory
+    final List<Long> bomItemIds = queryFactory
         .select(b.parentItem.itemId)
         .from(b)
         .fetch();

@@ -7,8 +7,6 @@ public interface BomCacheService {
 
   void invalidateAndRebuild(final Long rootItemId);
 
-  void invalidateOnly(final Long rootItemId);
-
   List<BomCostCache> getCacheByRootItemId(final Long rootItemId);
 
   // BOM 전체 캐시 재생성

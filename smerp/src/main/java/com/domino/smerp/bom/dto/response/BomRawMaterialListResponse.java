@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-public class BomRawMaterialListResponse {
+public class BomRawMaterialListResponse {   // BOM 원재료 리스트
   private Long itemId;        // 품목 ID
   private String itemName;    // 품목명
   private BigDecimal qty;     // 소요량

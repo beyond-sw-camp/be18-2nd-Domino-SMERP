@@ -11,9 +11,8 @@ import com.domino.smerp.bom.entity.BomClosure;
 import com.domino.smerp.bom.entity.BomCostCache;
 import com.domino.smerp.bom.event.BomChangedEvent;
 import com.domino.smerp.bom.repository.BomClosureRepository;
-import com.domino.smerp.bom.repository.BomRepository;
 import com.domino.smerp.bom.repository.BomCostCacheRepository;
-import com.domino.smerp.bom.service.cache.BomCacheBuilder;
+import com.domino.smerp.bom.repository.BomRepository;
 import com.domino.smerp.common.dto.PageResponse;
 import com.domino.smerp.common.exception.CustomException;
 import com.domino.smerp.common.exception.ErrorCode;
@@ -23,7 +22,6 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
@@ -43,35 +41,14 @@ public class BomQueryServiceImpl implements BomQueryService {
 
   private final ApplicationEventPublisher eventPublisher;
 
-
-
   @Override
   @Transactional(readOnly = true)
-  public PageResponse<BomCostCacheResponse> searchBoms(final SearchBomRequest request, final Pageable pageable) {
+  public PageResponse<BomListResponse> searchBoms(final SearchBomRequest request,
+      final Pageable pageable) {
     return PageResponse.from(
         bomRepository.searchBoms(request, pageable)
-            .map(BomCostCacheResponse::fromCache)
     );
   }
-
-  // BOM 전체 FlatList로 불러옴(계층 표현X)
-  @Override
-  @Transactional(readOnly = true)
-  public List<BomListResponse> getBoms() {
-    return bomRepository.findAll().stream()
-        .map(BomListResponse::fromEntity)
-        .collect(Collectors.toList());
-  }
-
-  // 품목구분 BOM 목록 조회 (캐시X)
-  @Override
-  @Transactional(readOnly = true)
-  public List<BomListResponse> getBomsByItemStatusId(final Long itemStatusId) {
-    return bomRepository.findByChildItem_ItemStatus_ItemStatusId(itemStatusId).stream()
-        .map(BomListResponse::fromEntity)
-        .collect(Collectors.toList());
-  }
-
   // 정전개, 역전개, 원재료리스트 조회 (캐시O)
   @Override
   @Transactional(readOnly = true)
@@ -113,15 +90,6 @@ public class BomQueryServiceImpl implements BomQueryService {
         .outbound(outbound)
         .rawMaterials(rawMaterials)
         .build();
-  }
-
-  // BOM 직계자식만 조회(캐시X)
-  @Override
-  @Transactional(readOnly = true)
-  public List<BomListResponse> getBomByParentItemId(final Long parentItemId) {
-    return bomRepository.findByParentItem_ItemId(parentItemId).stream()
-        .map(BomListResponse::fromEntity)
-        .collect(Collectors.toList());
   }
 
   // BOM 상세조회 (캐시X)

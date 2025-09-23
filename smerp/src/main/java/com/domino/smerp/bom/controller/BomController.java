@@ -46,12 +46,12 @@ public class BomController {
 
   // BOM 목록 조회(페이징, 첫화면)
   @GetMapping
-  public ResponseEntity<PageResponse<BomCostCacheResponse>> searchBoms(
+  public ResponseEntity<PageResponse<BomListResponse>> searchBoms(
       @ModelAttribute final SearchBomRequest request,
-      final Pageable pageable
-  ) {
+      final Pageable pageable) {
     return ResponseEntity.ok(bomQueryService.searchBoms(request, pageable));
   }
+
 
   // 정전개, 역전개, 원재료리스트 (선택한 품목 ID 기준)
   @GetMapping("/items/{item-id}/all")
@@ -64,13 +64,6 @@ public class BomController {
   public ResponseEntity<BomDetailResponse> getBomDetail(final @PathVariable("bom-id") Long bomId,
       final @RequestParam(defaultValue = "inbound") String direction) {
     return ResponseEntity.ok(bomQueryService.getBomDetail(bomId, direction));
-  }
-
-  // 특정 품목의 BOM 조회 (직계 자식만)
-  @GetMapping("/items/{parent-item-id}")
-  public ResponseEntity<List<BomListResponse>> getBomByParentItemId(
-      final @PathVariable("parent-item-id") Long parentItemId) {
-    return ResponseEntity.ok(bomQueryService.getBomByParentItemId(parentItemId));
   }
 
   // BOM 소요량 산출

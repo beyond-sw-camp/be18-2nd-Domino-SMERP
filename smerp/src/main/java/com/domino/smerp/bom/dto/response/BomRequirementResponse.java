@@ -12,25 +12,18 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @Builder
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class BomRequirementResponse {
 
-  private Long childItemId;   // 자식 품목 ID
-  private String childItemName; // 자식 품목 이름
-  private BigDecimal totalQty; // 누적 소요량
-  private BigDecimal unitCost; // 단가
-  private BigDecimal totalCost; // 총 원가
-  private Integer depth;        // 계층 깊이
-
-  public static BomRequirementResponse fromEntity(final BomCostCache cache, final String childItemName) {
-    return BomRequirementResponse.builder()
-        .childItemId(cache.getChildItemId())
-        .childItemName(childItemName)
-        .totalQty(cache.getTotalQty())
-        .unitCost(cache.getUnitCost())
-        .totalCost(cache.getTotalCost())
-        .depth(cache.getDepth())
-        .build();
-  }
+  private Long itemId;
+  private String itemName;
+  private String specification;
+  private String unit;
+  private String itemStatus;
+  private BigDecimal requiredQty;  // targetQty 반영된 총 소요량
+  private BigDecimal unitCost;
+  private BigDecimal totalCost;
+  private Integer depth;
 }
+

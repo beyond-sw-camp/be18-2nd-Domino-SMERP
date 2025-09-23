@@ -14,19 +14,10 @@ public interface BomQueryService {
 
 
   // Bom 목록 페이징
-  PageResponse<BomCostCacheResponse> searchBoms(final SearchBomRequest request,final Pageable pageable);
-
-  // BOM 목록 불러오기
-  List<BomListResponse> getBoms();
-
-  // BOM 품목구분 목록 조회
-  List<BomListResponse> getBomsByItemStatusId(final Long itemStatusId);
+  PageResponse<BomListResponse> searchBoms(final SearchBomRequest request,final Pageable pageable);
 
   // 정전개, 역전개, 원재료 리스트 한번에
   BomAllResponse getBomAll(final Long itemId);
-
-  // 선택한 품목의 직계 자손만 불러오기
-  List<BomListResponse> getBomByParentItemId(final Long parentItemId);
 
   // BOM 상세 조회(정전개, 역전개)
   BomDetailResponse getBomDetail(final Long bomId, final String direction);

@@ -12,7 +12,7 @@ import lombok.Getter;
 @Getter
 @Builder
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-public class BomCostCacheResponse {
+public class BomCostCacheResponse { // 정전개, 역전개용
 
   private final Long itemId;
   private final String itemName;
@@ -36,19 +36,6 @@ public class BomCostCacheResponse {
         .totalCost(totalCost != null ? totalCost : cache.getTotalCost())
         .depth(depth)
         .children(children != null ? children : List.of())
-        .build();
-  }
-
-  public static BomCostCacheResponse fromCache(final BomCostCache cache) {
-    return BomCostCacheResponse.builder()
-        .itemId(cache.getChildItemId())
-        .itemName(cache.getItemName())
-        .itemStatus(cache.getItemStatus().getDescription())
-        .qty(cache.getTotalQty())
-        .unitCost(cache.getUnitCost())
-        .totalCost(cache.getTotalCost())
-        .depth(cache.getDepth())
-        .children(List.of())
         .build();
   }
 }
