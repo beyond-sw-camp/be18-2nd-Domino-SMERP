@@ -22,10 +22,14 @@ public interface WarehouseRepository extends JpaRepository<Warehouse, Long> {
   List<Warehouse> findWarehousesWithFilledFalseLocations();
 
   @Query("""
-    SELECT DISTINCT w
+    SELECT w
     FROM Warehouse w
-    JOIN w.locations l
-    WHERE COALESCE(l.curQty, 0) < l.maxQty
+    WHERE EXISTS (
+        SELECT 1
+        FROM Location l
+        WHERE l.warehouse = w
+          AND COALESCE(l.curQty, 0) < l.maxQty
+    )
   """)
   List<Warehouse> findAvailableWarehousesWithCurQty();
 

@@ -56,7 +56,7 @@ public class Warehouse extends BaseEntity {
   @Builder.Default
   private BigDecimal dailyCapacity = new BigDecimal("1600.00");
 
-  @OneToMany(cascade = CascadeType.ALL, mappedBy = "warehouse", orphanRemoval = true)
+  @OneToMany(mappedBy = "warehouse")
   @Builder.Default
   private List<Location> locations = new ArrayList<>();
 
