@@ -1,6 +1,7 @@
 package com.domino.smerp.workorder.service;
 
 import com.domino.smerp.client.Client;
+import com.domino.smerp.common.util.DocumentNoGenerator;
 import com.domino.smerp.item.Item;
 import com.domino.smerp.item.repository.ItemRepository;
 import com.domino.smerp.location.service.LocationService;
@@ -11,7 +12,7 @@ import com.domino.smerp.user.UserRepository;
 import com.domino.smerp.warehouse.Warehouse;
 import com.domino.smerp.warehouse.repository.WarehouseRepository;
 import com.domino.smerp.workorder.WorkOrder;
-import com.domino.smerp.workorder.WorkOrderRepository;
+import com.domino.smerp.workorder.repository.WorkOrderRepository;
 import com.domino.smerp.workorder.constants.Status;
 import com.domino.smerp.workorder.dto.request.CreateWorkOrderRequest;
 import com.domino.smerp.workorder.dto.request.UpdateWorkOrderRequest;
@@ -21,6 +22,7 @@ import com.domino.smerp.workorder.dto.response.WorkOrderListResponse;
 import com.domino.smerp.workorder.dto.response.WorkOrderResponse;
 import jakarta.persistence.EntityNotFoundException;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -42,7 +44,7 @@ public class WorkOrderServiceImpl implements WorkOrderService {
   //private final StockMovementService stockMovementService;
   private final UserRepository userRepository;
   //private final ProductionResultService productionResultService;
-
+  private final DocumentNoGenerator documentNoGenerator;
 
 
   //목록 조회
@@ -63,6 +65,12 @@ public class WorkOrderServiceImpl implements WorkOrderService {
         .workOrderResponses(workOrderResponses)
         .build();
 
+  }
+
+  // 전표 생성
+  @Transactional
+  public String generateDocumentNoWithRetry(LocalDate documentDate) {
+    return documentNoGenerator.generate(documentDate, productionPlanRepository::findMaxSequenceByPrefix);
   }
 
   //상세 조회
@@ -118,6 +126,9 @@ public class WorkOrderServiceImpl implements WorkOrderService {
     User user = userRepository.findByName(createWorkOrderRequest.getUserName())
         .orElseThrow(() -> new EntityNotFoundException("user not found by name"));
 
+    String documentNo = generateDocumentNoWithRetry(LocalDate.now());
+
+
     //유일함 x
     WorkOrder workOrder = WorkOrder.builder()
         .item(item)
@@ -127,7 +138,7 @@ public class WorkOrderServiceImpl implements WorkOrderService {
         .status(Status.PENDING)
         .planAt(createWorkOrderRequest.getPlanAt())
         .producedAt(createWorkOrderRequest.getProducedAt())
-        //.documentNo(documentNo)
+        .documentNo(documentNo)
         .isDeleted(false)
         .build();
 
