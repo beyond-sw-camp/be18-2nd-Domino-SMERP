@@ -22,9 +22,10 @@ public class BomCacheBuilder {
     return caches;
   }
 
+
   private BigDecimal dfsBuild(
-      final Item root,
-      final Item current,
+      final Item root,          // 루트 품목
+      final Item current,       // 순회할 때 만나는 아이템
       final BigDecimal accQty,
       final int depth,
       final List<BomCostCache> caches

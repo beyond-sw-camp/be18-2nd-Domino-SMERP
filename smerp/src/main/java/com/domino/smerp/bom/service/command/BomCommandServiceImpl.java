@@ -32,8 +32,6 @@ public class BomCommandServiceImpl implements BomCommandService {
 
   private final BomRepository bomRepository;
   private final BomClosureRepository bomClosureRepository;
-  private final BomCacheService bomCacheService;
-  private final BomCacheBuilder bomCacheBuilder;
 
   private final ApplicationEventPublisher eventPublisher;
 
@@ -47,7 +45,7 @@ public class BomCommandServiceImpl implements BomCommandService {
     final Item parentItem;
     final Item childItem;
 
-    // 품목 ID가 더 작은 쪽을 먼저 잠금 획득
+    // 품목 ID가 더 작은 쪽이 먼저 잠금 획득
     if (request.getParentItemId() < request.getChildItemId()) {
       parentItem = itemService.findItemByIdWithLock(request.getParentItemId());
       childItem = itemService.findItemByIdWithLock(request.getChildItemId());
@@ -68,7 +66,8 @@ public class BomCommandServiceImpl implements BomCommandService {
     updateBomClosure(parentItem.getItemId(), childItem.getItemId());
 
     // 이벤트 발행 → Listener에서 캐시 갱신
-    eventPublisher.publishEvent(new BomChangedEvent(parentItem.getItemId()));
+    //eventPublisher.publishEvent(new BomChangedEvent(parentItem.getItemId()));
+    eventPublisher.publishEvent(new BomChangedEvent(findRootId(parentItem.getItemId())));
 
     return BomDetailResponse.fromEntity(savedBom);
   }
@@ -198,7 +197,6 @@ public class BomCommandServiceImpl implements BomCommandService {
       // 직계 관계 보장
       bomClosureRepository.upsertBomClosure(parentId, childId, 1);
 
-
       List<BomClosure> ancestors = bomClosureRepository.findById_DescendantItemId(parentId);
       if (ancestors.isEmpty()) {
         // parent 스스로 루트일 수도 있음
@@ -238,4 +236,11 @@ public class BomCommandServiceImpl implements BomCommandService {
       closureLocks.remove(parentId, lock);
     }
   }
+
+  // BOM 생성 시 조상찾아서 캐시에 넘기기 용
+  public Long findRootId(final Long itemId) {
+    Long rootId = bomClosureRepository.findRootAncestorId(itemId);
+    return rootId != null ? rootId : itemId; // 혹시 null이면 자기 자신
+  }
+
 }

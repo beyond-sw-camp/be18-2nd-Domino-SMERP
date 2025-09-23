@@ -3,6 +3,7 @@ package com.domino.smerp.bom.repository;
 import com.domino.smerp.bom.entity.BomClosure;
 import com.domino.smerp.bom.entity.BomClosureId;
 import java.util.List;
+import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -49,6 +50,15 @@ public interface BomClosureRepository extends JpaRepository<BomClosure, BomClosu
   List<BomClosure> findById_AncestorItemIdAndDepth(final Long ancestorItemId, int depth);
 
 
+  // 특정 아이템의 조상만 조회 nativeQuery로
+  @Query(value = """
+    SELECT ancestor_item_id
+    FROM bom_closure
+    WHERE descendant_item_id = :itemId
+      AND depth = 0
+    LIMIT 1
+    """, nativeQuery = true)
+  Long findRootAncestorId(@Param("itemId") Long itemId);
 
 
 

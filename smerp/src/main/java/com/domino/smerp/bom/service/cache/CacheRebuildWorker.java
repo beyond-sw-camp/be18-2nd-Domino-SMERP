@@ -38,7 +38,7 @@ public class CacheRebuildWorker {
     }
   }
 
-  public void enqueue(Long rootId) {
+  public void enqueue(final Long rootId) {
     queue.offer(rootId);
     log.info("캐시 리빌드 요청 큐에 적재: rootId={}", rootId);
   }

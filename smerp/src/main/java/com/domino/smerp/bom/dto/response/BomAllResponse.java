@@ -9,8 +9,9 @@ import lombok.Getter;
 @Builder
 @AllArgsConstructor
 public class BomAllResponse {
-  private final List<BomListResponse> inbound;       // 정전개
-  private final List<BomListResponse> outbound;      // 역전개
-  private final BomCostCacheResponse requirements;   // 원재료 리스트
+
+  private final BomCostCacheResponse inbound;                // 정전개 (트리)
+  private final List<BomCostCacheResponse> outbound;         // 역전개 (여러 조상 가능)
+  private final List<BomRawMaterialListResponse> rawMaterials; // 원재료 flat list
 
 }

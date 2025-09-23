@@ -40,12 +40,11 @@ public class BomController {
     return ResponseEntity.ok(bomCommandService.createBom(request));
   }
 
-  // 정전개, 역전개, 원재료리스트
+  // 정전개, 역전개, 원재료리스트 (선택한 품목 ID 기준)
   @GetMapping("/items/{item-id}/all")
   public ResponseEntity<BomAllResponse> getBomAll(@PathVariable("item-id") final Long itemId) {
     return ResponseEntity.ok(bomQueryService.getBomAll(itemId));
   }
-
 
   // BOM 전체 목록 조회
   @GetMapping
@@ -74,13 +73,6 @@ public class BomController {
     return ResponseEntity.ok(bomQueryService.getBomByParentItemId(parentItemId));
   }
 
-  // 특정 품목의 BOM 조회 (모든 자식들)
-  @GetMapping("/items/{item-id}/inbound")
-  public ResponseEntity<List<BomListResponse>> getBomInbound(
-      final @PathVariable("item-id") Long itemId) {
-    return ResponseEntity.ok(bomQueryService.getBomInbound(itemId));
-  }
-
   // BOM 소요량 산출
   @GetMapping("/items/{item-id}/requirements")
   public ResponseEntity<BomCostCacheResponse> calculateTotalQtyAndCost(
@@ -102,7 +94,6 @@ public class BomController {
       final @RequestBody UpdateBomRelationRequest request) {
     return ResponseEntity.ok(bomCommandService.updateBomRelation(bomId, request));
   }
-
 
   // BOM 삭제
   @DeleteMapping("/{bom-id}")
@@ -131,4 +122,5 @@ public class BomController {
     bomCacheService.rebuildBomCostCache(itemId);
     return ResponseEntity.ok().build();
   }
+
 }
