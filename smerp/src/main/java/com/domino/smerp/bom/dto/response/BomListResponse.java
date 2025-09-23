@@ -12,6 +12,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class BomListResponse {  // BOM 첫 화면 item띄워주기
 
+  private Long bomId;
   private Long itemId;          // 품목 PK
   private String itemName;      // 품목명
   private String specification;  // 규격

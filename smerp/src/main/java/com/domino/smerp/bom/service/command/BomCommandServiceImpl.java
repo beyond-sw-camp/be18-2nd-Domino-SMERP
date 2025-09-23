@@ -105,9 +105,9 @@ public class BomCommandServiceImpl implements BomCommandService {
   @Transactional
   public BomDetailResponse updateBomRelation(final Long bomId,
       final UpdateBomRelationRequest request) {
+
     final Bom bom = findBomById(bomId);
 
-    final Long oldParentItemId = bom.getParentItem().getItemId();
     final Long newParentItemId = request.getNewParentItemId();
     final Long childItemId = bom.getChildItem().getItemId();
 
@@ -124,11 +124,7 @@ public class BomCommandServiceImpl implements BomCommandService {
     bomClosureRepository.deleteByDescendantItemId(childItemId);
     updateBomClosure(newParentItemId, childItemId);
 
-    // 기존 루트와 새로운 루트의 캐시를 모두 갱신
-    final Long oldRootId = findRootId(oldParentItemId);
-    final Long newRootId = findRootId(newParentItemId);
-    eventPublisher.publishEvent(new BomChangedEvent(oldRootId));
-    eventPublisher.publishEvent(new BomChangedEvent(newRootId));
+    bomCacheService.rebuildAllBomCache();
 
     return BomDetailResponse.fromEntity(bom);
   }

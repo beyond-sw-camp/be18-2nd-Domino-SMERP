@@ -36,11 +36,13 @@ public class BomQueryRepositoryImpl implements BomQueryRepository {
   @Transactional(readOnly = true)
   public Page<BomListResponse> searchBoms(final SearchBomRequest request, final Pageable pageable) {
     QItem item = QItem.item;
-    QBom b = QBom.bom;
+    QBom bom = QBom.bom;
     QItemStatus itemStatus = QItemStatus.itemStatus;
+    QItem child = new QItem("child");
 
     List<BomListResponse> results = queryFactory
         .select(Projections.fields(BomListResponse.class,
+            bom.bomId.as("bomId"),
             item.itemId.as("itemId"),
             item.name.as("itemName"),
             item.specification.as("specification"),
@@ -48,30 +50,32 @@ public class BomQueryRepositoryImpl implements BomQueryRepository {
             // hasBom → 자식 BOM 존재 여부
             ExpressionUtils.as(
                 JPAExpressions.selectOne()
-                    .from(b)
-                    .where(b.parentItem.eq(item))
+                    .from(bom)
+                    .where(bom.parentItem.eq(item))
                     .exists(),
                 "hasBom"
             ),
             // materialCount → 자식 BOM 중 원재료 개수
             ExpressionUtils.as(
-                JPAExpressions.select(b.count())
-                    .from(b)
-                    .join(b.childItem, QItem.item)
+                JPAExpressions.select(bom.count())
+                    .from(bom)
+                    .join(bom.childItem, child)
                     .where(
-                        b.parentItem.eq(item),
-                        QItem.item.itemStatus.status.eq(ItemStatusStatus.RAW_MATERIAL)
+                        bom.parentItem.eq(item),
+                        child.itemStatus.status.eq(ItemStatusStatus.RAW_MATERIAL)
                     ),
                 "materialCount"
             )
         ))
         .from(item)
+        .leftJoin(bom).on(bom.parentItem.eq(item))
         .join(item.itemStatus, itemStatus)
         .where(
             statusEq(request.getItemStatus()),
             nameContains(request.getItemName()),
             specificationContains(request.getSpecification())
         )
+        .groupBy(item.itemId)
         .offset(pageable.getOffset())
         .limit(pageable.getPageSize())
         .fetch();

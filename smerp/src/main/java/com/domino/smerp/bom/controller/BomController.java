@@ -76,7 +76,7 @@ public class BomController {
   // BOM 수량/비고 수정
   @PatchMapping("/{bom-id}")
   public ResponseEntity<BomDetailResponse> updateBom(final @PathVariable("bom-id") Long bomId,
-      final @RequestBody UpdateBomRequest request) {
+      @Valid final @RequestBody UpdateBomRequest request) {
     return ResponseEntity.ok(bomCommandService.updateBom(bomId, request));
   }
 
@@ -84,7 +84,7 @@ public class BomController {
   @PatchMapping("/{bom-id}/relations")
   public ResponseEntity<BomDetailResponse> updateBomRelation(
       final @PathVariable("bom-id") Long bomId,
-      final @RequestBody UpdateBomRelationRequest request) {
+      @Valid final @RequestBody UpdateBomRelationRequest request) {
     return ResponseEntity.ok(bomCommandService.updateBomRelation(bomId, request));
   }
 
