@@ -20,12 +20,6 @@ public class PurchaseOrderUpdateRequest {
     @NotNull(message = "창고명은 필수 입력입니다.")
     private String warehouseName;
 
-    @NotNull(message = "수량은 필수 입력입니다.")
-    private final BigDecimal qty;
-
-    @NotNull(message = "입고단가는 필수 입력입니다.")
-    private final BigDecimal inboundUnitPrice;
-
     @Size(max = 100, message = "비고는 최대 100자까지 입력 가능합니다.")
     private final String remark;
 

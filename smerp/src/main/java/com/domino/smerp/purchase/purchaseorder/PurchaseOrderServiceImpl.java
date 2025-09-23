@@ -4,6 +4,7 @@ import com.domino.smerp.common.dto.PageResponse;
 import com.domino.smerp.purchase.purchaseorder.dto.request.PurchaseOrderCreateRequest;
 import com.domino.smerp.purchase.purchaseorder.dto.request.PurchaseOrderUpdateRequest;
 import com.domino.smerp.purchase.purchaseorder.dto.request.SearchPurchaseOrderRequest;
+import com.domino.smerp.purchase.purchaseorder.dto.request.SearchSummaryPurchaseOrderRequest;
 import com.domino.smerp.purchase.purchaseorder.dto.response.*;
 import com.domino.smerp.purchase.purchaseorder.repository.PurchaseOrderRepository;
 import com.domino.smerp.purchase.requestorder.RequestOrder;
@@ -32,24 +33,17 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
   @Override
   @Transactional
   public PurchaseOrderCreateResponse createPurchaseOrder(final PurchaseOrderCreateRequest request) {
-      // 단가 유효성 검사
-      if (request.getInboundUnitPrice() == null || request.getInboundUnitPrice().compareTo(BigDecimal.ZERO) <= 0) {
-          throw new IllegalArgumentException("단가가 올바르지 않습니다.");
-      }
+
     // TODO: 실제로는 RequestOrderRepository 에서 roId를 조회해야 함
     RequestOrder requestOrder = requestOrderRepository.findById(request.getRoId())
         .orElseThrow(() -> new EntityNotFoundException("발주 전표를 조회할 수 없습니다."));
 
     // 자동 계산 로직
-      BigDecimal surtax = request.getQty()
-              .multiply(request.getInboundUnitPrice())
-              .multiply(BigDecimal.valueOf(0.1));
+      BigDecimal qty = requestOrder.getItems().get(0).getQty();
+      BigDecimal inboundUnitPrice = requestOrder.getItems().get(0).getInboundUnitPrice();
 
-      BigDecimal price = request.getQty()
-              .multiply(request.getInboundUnitPrice())
-              .add(surtax);
-
-      BigDecimal unitPrice = requestOrder.getItems().get(0).getSpecialPrice();
+      BigDecimal surtax = qty.multiply(inboundUnitPrice).multiply(BigDecimal.valueOf(0.1));
+      BigDecimal price = qty.multiply(inboundUnitPrice).add(surtax);
 
       // 1. 전표번호(documentNo) 결정
       String documentNo = null;   // 블록 밖에서 선언 & 초기화
@@ -73,8 +67,8 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
     // 엔티티 변환 (빌더 패턴)
     PurchaseOrder entity = PurchaseOrder.builder()
         .requestOrder(requestOrder)
-        .qty(request.getQty())
-        .inboundUnitPrice(request.getInboundUnitPrice())
+        .qty(qty)
+        .inboundUnitPrice(inboundUnitPrice)
         .surtax(surtax)
         .price(price)
         .remark(request.getRemark())
@@ -137,6 +131,16 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
     PurchaseOrder entity = purchaseOrderRepository.findByIdWithRequestOrderAndItems(poId)
         .orElseThrow(() -> new EntityNotFoundException("구매 전표를 조회할 수 없습니다." + poId));
 
+      // ✅ 품목 리스트 변환
+      List<PurchaseOrderDetailItemResponse> items = entity.getRequestOrder().getItems().stream()
+              .map(itemRequestOrder -> PurchaseOrderDetailItemResponse.builder()
+                      .itemName(itemRequestOrder.getItem().getName())
+                      .qty(itemRequestOrder.getQty())
+                      .inboundUnitPrice(itemRequestOrder.getInboundUnitPrice())
+                      .supplyAmount(itemRequestOrder.getQty().multiply(itemRequestOrder.getInboundUnitPrice()))
+                      .build())
+              .toList();
+
     return PurchaseOrderGetDetailResponse.builder()
         .empNo(entity.getRequestOrder().getUser().getEmpNo())
         .companyName(entity.getRequestOrder().getClient().getCompanyName())
@@ -149,6 +153,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
         .warehouseName(entity.getWarehouseName())
         .createdAt(entity.getCreatedAt())
         .updatedAt(entity.getUpdatedAt())
+        .items(items)
         .build();
   }
 
@@ -160,23 +165,17 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
         PurchaseOrder entity = purchaseOrderRepository.findById(poId)
                 .orElseThrow(() -> new EntityNotFoundException("구매 전표를 조회할 수 없습니다."));
 
-        // 단가 유효성 검사 추가
-        if (request.getInboundUnitPrice() == null || request.getInboundUnitPrice().compareTo(BigDecimal.ZERO) <= 0) {
-            throw new IllegalArgumentException("단가가 올바르지 않습니다.");
-        }
-
         // 엔티티 도메인 메서드 활용
-        entity.updateQty(request.getQty());
-        entity.updateInboundUnitPrice(request.getInboundUnitPrice());
+
+        BigDecimal qty = entity.getRequestOrder().getItems().get(0).getQty();
+        BigDecimal inboundUnitPrice = entity.getRequestOrder().getItems().get(0).getInboundUnitPrice();
+
+        entity.updateQty(qty);
+//        entity.updateInboundUnitPrice(inboundUnitPrice);
         entity.updateWarehouseName(request.getWarehouseName());
 
-        BigDecimal surtax = request.getQty()
-                .multiply(request.getInboundUnitPrice())
-                .multiply(BigDecimal.valueOf(0.1));
-
-        BigDecimal price = request.getQty()
-                .multiply(request.getInboundUnitPrice())
-                .add(surtax);
+        BigDecimal surtax = qty.multiply(inboundUnitPrice).multiply(BigDecimal.valueOf(0.1));
+        BigDecimal price = qty.multiply(inboundUnitPrice).add(surtax);
 
         BigDecimal unitPrice = entity.getRequestOrder()
                 .getItems()
@@ -186,7 +185,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
         entity.updateSurtax(surtax);
         entity.updatePrice(price);
         entity.updateRemark(request.getRemark());
-        entity.updateInboundUnitPrice(unitPrice);
+//        entity.updateInboundUnitPrice(unitPrice);
 
         // documentNo 변경 요청이 있을 경우
         if (request.getNewDocDate() != null) {
@@ -226,4 +225,12 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
         .message("구매 전표가 삭제되었습니다.")
         .build();
   }
+
+  // ✅ 구매 현황
+  @Override
+  @Transactional(readOnly = true)
+  public List<SummaryPurchaseOrderResponse> getSummaryPurchaseOrders(SearchSummaryPurchaseOrderRequest condition, Pageable pageable) {
+      return purchaseOrderRepository.searchSummaryPurchaseOrders(condition, pageable);
+  }
+
 }

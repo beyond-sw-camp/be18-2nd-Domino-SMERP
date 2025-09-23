@@ -6,11 +6,8 @@ import com.domino.smerp.item.dto.response.ItemListResponse;
 import com.domino.smerp.purchase.purchaseorder.dto.request.PurchaseOrderCreateRequest;
 import com.domino.smerp.purchase.purchaseorder.dto.request.PurchaseOrderUpdateRequest;
 import com.domino.smerp.purchase.purchaseorder.dto.request.SearchPurchaseOrderRequest;
-import com.domino.smerp.purchase.purchaseorder.dto.response.PurchaseOrderCreateResponse;
-import com.domino.smerp.purchase.purchaseorder.dto.response.PurchaseOrderUpdateResponse;
-import com.domino.smerp.purchase.purchaseorder.dto.response.PurchaseOrderGetListResponse;
-import com.domino.smerp.purchase.purchaseorder.dto.response.PurchaseOrderGetDetailResponse;
-import com.domino.smerp.purchase.purchaseorder.dto.response.PurchaseOrderDeleteResponse;
+import com.domino.smerp.purchase.purchaseorder.dto.request.SearchSummaryPurchaseOrderRequest;
+import com.domino.smerp.purchase.purchaseorder.dto.response.*;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;
@@ -34,4 +31,9 @@ public interface PurchaseOrderService {
 
   // ✅ 구매 삭제 (소프트 삭제)
   PurchaseOrderDeleteResponse deletePurchaseOrder(final Long poId);
+
+  List<SummaryPurchaseOrderResponse> getSummaryPurchaseOrders(SearchSummaryPurchaseOrderRequest condition, Pageable pageable);
+
 }
+
+

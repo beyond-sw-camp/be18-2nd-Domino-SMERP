@@ -2,6 +2,7 @@ package com.domino.smerp.purchase.purchaseorder.dto.response;
 
 import java.math.BigDecimal;
 import java.time.Instant;
+import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.validation.constraints.NotNull;
@@ -38,4 +39,6 @@ public class PurchaseOrderGetDetailResponse {
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "UTC")
     private final Instant updatedAt;
+
+    private final List<PurchaseOrderDetailItemResponse> items;
 }

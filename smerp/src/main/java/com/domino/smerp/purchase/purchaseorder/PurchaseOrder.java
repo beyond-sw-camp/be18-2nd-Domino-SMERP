@@ -78,9 +78,9 @@ public class PurchaseOrder extends BaseEntity {
     this.remark = remark;
   }
 
-  public void updateInboundUnitPrice(final BigDecimal inboundUnitPrice) {
-    this.inboundUnitPrice = inboundUnitPrice;
-  }
+//  public void updateInboundUnitPrice(final BigDecimal inboundUnitPrice) {
+//    this.inboundUnitPrice = inboundUnitPrice;
+//  }
 
   public void updateWarehouseName(String warehouseName) {
         this.warehouseName = warehouseName;
@@ -94,7 +94,7 @@ public class PurchaseOrder extends BaseEntity {
         newDate.format(DateTimeFormatter.ofPattern("yyyy/MM/dd")),
         newSequence);
   }
-    public void updateSpecialPrice(BigDecimal specialPrice, BigDecimal inboundUnitPrice) {
-        this.specialPrice = (specialPrice != null) ? specialPrice : inboundUnitPrice;
-    }
+//    public void updateSpecialPrice(BigDecimal specialPrice, BigDecimal inboundUnitPrice) {
+//        this.specialPrice = (specialPrice != null) ? specialPrice : inboundUnitPrice;
+//    }
 }

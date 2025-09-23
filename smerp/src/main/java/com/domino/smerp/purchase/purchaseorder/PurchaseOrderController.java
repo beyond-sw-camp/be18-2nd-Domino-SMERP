@@ -4,6 +4,7 @@ import com.domino.smerp.common.dto.PageResponse;
 import com.domino.smerp.purchase.purchaseorder.dto.request.PurchaseOrderCreateRequest;
 import com.domino.smerp.purchase.purchaseorder.dto.request.PurchaseOrderUpdateRequest;
 import com.domino.smerp.purchase.purchaseorder.dto.request.SearchPurchaseOrderRequest;
+import com.domino.smerp.purchase.purchaseorder.dto.request.SearchSummaryPurchaseOrderRequest;
 import com.domino.smerp.purchase.purchaseorder.dto.response.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -54,4 +55,11 @@ public class PurchaseOrderController {
       @PathVariable final Long poId) {
     return ResponseEntity.ok(purchaseOrderService.deletePurchaseOrder(poId));
   }
+
+  // ✅ 구매 현황 조회
+    @GetMapping("/summary")
+    public ResponseEntity<List<SummaryPurchaseOrderResponse>> getSummaryPurchaseOrders(
+            SearchSummaryPurchaseOrderRequest condition, Pageable pageable) {
+        return ResponseEntity.ok(purchaseOrderService.getSummaryPurchaseOrders(condition, pageable));
+    }
 }
