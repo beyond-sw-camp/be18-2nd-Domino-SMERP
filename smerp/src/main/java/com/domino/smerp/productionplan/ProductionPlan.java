@@ -1,6 +1,7 @@
 package com.domino.smerp.productionplan;
 
 import com.domino.smerp.common.BaseEntity;
+import com.domino.smerp.itemorder.ItemOrder;
 import com.domino.smerp.productionplan.constants.Status;
 import com.domino.smerp.user.User;
 import jakarta.persistence.Column;
@@ -65,14 +66,14 @@ public class ProductionPlan extends BaseEntity {
       foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT)
   )
   private User user;
-/*
+
   //주문 품목(교차테이블)
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "item_order_id",
     foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT)
   )
   private ItemOrder itemOrder;
-*/
+
 
   public void setIsDeleted(boolean isDeleted) {
     this.isDeleted = isDeleted;
