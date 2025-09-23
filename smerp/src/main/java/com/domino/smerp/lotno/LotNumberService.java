@@ -8,6 +8,7 @@ import com.domino.smerp.lotno.dto.request.UpdateLotNumberRequest;
 import com.domino.smerp.lotno.dto.response.LotNumberDetailResponse;
 import com.domino.smerp.lotno.dto.response.LotNumberListResponse;
 import com.domino.smerp.lotno.dto.response.LotNumberSimpleResponse;
+import java.math.BigDecimal;
 import java.time.Instant;
 import org.springframework.data.domain.Pageable;
 
@@ -39,5 +40,7 @@ public interface LotNumberService {
   LotNumber findLotNumberById(final Long lotNumberId);
 
   String generateLotNumberName(final Instant lotInstant, final Item item);
+
+  LotNumber createLotNumberForStock(final Item item, final BigDecimal qty);
 
 }

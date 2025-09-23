@@ -12,6 +12,7 @@ import com.domino.smerp.lotno.dto.response.LotNumberDetailResponse;
 import com.domino.smerp.lotno.dto.response.LotNumberListResponse;
 import com.domino.smerp.lotno.dto.response.LotNumberSimpleResponse;
 import com.domino.smerp.lotno.repository.LotNumberRepository;
+import java.math.BigDecimal;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
@@ -159,6 +160,26 @@ public class LotNumberServiceImpl implements LotNumberService {
     }
 
     return newLotNumberName;
+  }
+
+  @Override
+  @Transactional
+  public LotNumber createLotNumberForStock(final Item item, final BigDecimal qty) {
+    //로트 넘버
+    CreateLotNumberRequest createLotNumberRequest = CreateLotNumberRequest.builder()
+        .itemId(item.getItemId())
+        .lotInstant(Instant.now())
+        .qty(qty) //총 생산량
+        .status("ACTIVE")
+        .build();
+
+    String name = generateLotNumberName(createLotNumberRequest.getLotInstant(), item);
+
+    LotNumber lotNumber = LotNumber.create(createLotNumberRequest, item, name);
+
+    lotNumberRepository.save(lotNumber);
+
+    return lotNumber;
   }
 
 }

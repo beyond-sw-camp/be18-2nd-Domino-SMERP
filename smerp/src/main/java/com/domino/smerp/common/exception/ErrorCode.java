@@ -41,6 +41,7 @@ public enum ErrorCode {
     ITEM_DELETE_CONFLICT(HttpStatus.CONFLICT, "ITEM_DELETE_CONFLICT", "다른 데이터에서 참조 중이라 품목을 삭제할 수 없습니다.(수불이력)"),
 
     // bom
+    BOM_REQUIRED(HttpStatus.BAD_REQUEST, "BOM_REQUIRED", "BOM은 필수입니다."),
     // bom - 404
     BOM_NOT_FOUND(HttpStatus.NOT_FOUND, "BOM_NOT_FOUND", "존재하지 않는 BOM입니다."),
     // bom - 409

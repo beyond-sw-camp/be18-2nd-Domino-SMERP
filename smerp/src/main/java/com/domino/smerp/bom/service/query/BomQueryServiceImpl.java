@@ -13,6 +13,7 @@ import com.domino.smerp.bom.event.BomChangedEvent;
 import com.domino.smerp.bom.repository.BomClosureRepository;
 import com.domino.smerp.bom.repository.BomCostCacheRepository;
 import com.domino.smerp.bom.repository.BomRepository;
+import com.domino.smerp.bom.service.cache.BomCacheBuilder;
 import com.domino.smerp.common.dto.PageResponse;
 import com.domino.smerp.common.exception.CustomException;
 import com.domino.smerp.common.exception.ErrorCode;
@@ -22,6 +23,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
@@ -38,6 +40,7 @@ public class BomQueryServiceImpl implements BomQueryService {
   private final BomRepository bomRepository;
   private final BomCostCacheRepository bomCostCacheRepository;
   private final BomClosureRepository bomClosureRepository;
+  private final BomCacheBuilder bomCacheBuilder;
 
   private final ApplicationEventPublisher eventPublisher;
 
@@ -109,8 +112,7 @@ public class BomQueryServiceImpl implements BomQueryService {
     List<BomCostCache> caches = bomCostCacheRepository.findByRootItemId(rootItemId);
     if (caches.isEmpty()) {
       final Item root = itemService.findItemById(rootItemId);
-      eventPublisher.publishEvent(new BomChangedEvent(rootItemId));
-      //caches = bomCacheBuilder.build(root);
+      caches = bomCacheBuilder.build(root);
       bomCostCacheRepository.saveAll(caches);
     }
 
