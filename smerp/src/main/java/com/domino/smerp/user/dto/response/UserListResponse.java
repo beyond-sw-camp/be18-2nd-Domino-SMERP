@@ -15,4 +15,5 @@ public class UserListResponse {
     private final String address;
     private final String deptTitle;
     private final UserRole role;
+    private final String empNo;
 }

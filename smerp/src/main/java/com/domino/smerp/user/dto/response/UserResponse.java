@@ -21,7 +21,7 @@ public class UserResponse {
     private final String loginId;
     private final String deptTitle;
     private final UserRole role;
-    private final String clientName;
+    private final String companyName;
     private final String empNo;
 
 }

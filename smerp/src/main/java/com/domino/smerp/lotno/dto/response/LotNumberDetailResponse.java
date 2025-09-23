@@ -10,7 +10,9 @@ import lombok.Getter;
 public class LotNumberDetailResponse {
 
   // Lot.no
+  private Long lotId;
   private String lotName;     // Lot.No 번호
+  private Long itemId;
   private String itemName;    // 품목명
   private String status;      // Lot.No 사용상태
   private BigDecimal lotQty;  // Lot.No 초기수량
@@ -33,7 +35,9 @@ public class LotNumberDetailResponse {
 
   public static LotNumberDetailResponse fromEntity(final LotNumber lotNumber) {
     return LotNumberDetailResponse.builder()
+        .lotId(lotNumber.getLotId())
         .lotName(lotNumber.getName())
+        .itemId(lotNumber.getItem().getItemId())
         .itemName(lotNumber.getItem().getName())
         .lotQty(lotNumber.getQty())
         .status(lotNumber.getStatus().getDescription())
