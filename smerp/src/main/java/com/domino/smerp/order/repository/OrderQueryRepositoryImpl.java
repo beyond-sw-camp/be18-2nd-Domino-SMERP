@@ -110,7 +110,8 @@ public class OrderQueryRepositoryImpl implements OrderQueryRepository {
                         qtyEq(condition.getQty()),
                         specialPriceEq(condition.getSpecialPrice()),
                         supplyAmountEq(condition.getSupplyAmount()),
-                        documentNoBetween(condition.getStartDocDate(), condition.getEndDocDate())
+                        documentNoBetween(condition.getStartDocDate(), condition.getEndDocDate()),
+                        itemOrder.qty.gt(BigDecimal.ZERO)
                 )
                 .orderBy(getOrderSpecifiers(pageable, order, client, itemOrder, item))
                 .fetch();
