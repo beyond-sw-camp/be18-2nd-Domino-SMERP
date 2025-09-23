@@ -1,16 +1,19 @@
 package com.domino.smerp.productionplan.service;
 
+import com.domino.smerp.common.dto.PageResponse;
 import com.domino.smerp.common.util.DocumentNoGenerator;
 import com.domino.smerp.item.repository.ItemRepository;
 import com.domino.smerp.productionplan.ProductionPlan;
-import com.domino.smerp.productionplan.ProductionPlanRepository;
+import com.domino.smerp.productionplan.dto.request.SearchProductionPlanRequest;
+import com.domino.smerp.productionplan.repository.ProductionPlanRepository;
 import com.domino.smerp.productionplan.constants.Status;
-import com.domino.smerp.productionplan.dto.CreateProductionPlanRequest;
-import com.domino.smerp.productionplan.dto.UpdateProductionPlanRequest;
+import com.domino.smerp.productionplan.dto.request.CreateProductionPlanRequest;
+import com.domino.smerp.productionplan.dto.request.UpdateProductionPlanRequest;
 import com.domino.smerp.productionplan.dto.response.ProductionPlanListResponse;
 import com.domino.smerp.productionplan.dto.response.ProductionPlanResponse;
 import com.domino.smerp.user.User;
 import com.domino.smerp.user.UserRepository;
+import com.domino.smerp.warehouse.CurrentProductionPlanListResponse;
 import com.domino.smerp.warehouse.repository.WarehouseRepository;
 import jakarta.persistence.EntityNotFoundException;
 import java.time.LocalDate;
@@ -19,6 +22,7 @@ import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -64,6 +68,22 @@ public class ProductionPlanServiceImpl implements ProductionPlanService {
 
     return toProductionPlanResponse(productionPlan);
   }
+
+  // ProductionPlanServiceImpl.java
+
+  @Override
+  @Transactional(readOnly = true)
+  public PageResponse<CurrentProductionPlanListResponse> searchProductionPlans(
+      final SearchProductionPlanRequest keyword,
+      final Pageable pageable) {
+
+    return PageResponse.from(
+        productionPlanRepository
+            .searchProductionPlans(keyword, pageable)
+            .map(CurrentProductionPlanListResponse::fromEntity)
+    );
+  }
+
 
   // 전표 생성
   @Transactional

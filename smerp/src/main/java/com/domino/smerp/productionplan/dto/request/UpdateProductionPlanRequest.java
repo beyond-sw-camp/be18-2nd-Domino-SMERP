@@ -1,7 +1,6 @@
-package com.domino.smerp.productionplan.dto;
+package com.domino.smerp.productionplan.dto.request;
 
 import com.domino.smerp.productionplan.constants.Status;
-import jakarta.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;

@@ -1,16 +1,22 @@
 package com.domino.smerp.productionplan;
 
-import com.domino.smerp.productionplan.dto.CreateProductionPlanRequest;
-import com.domino.smerp.productionplan.dto.UpdateProductionPlanRequest;
+import com.domino.smerp.common.dto.PageResponse;
+import com.domino.smerp.lotno.dto.request.SearchLotNumberRequest;
+import com.domino.smerp.lotno.dto.response.LotNumberListResponse;
+import com.domino.smerp.productionplan.dto.request.CreateProductionPlanRequest;
+import com.domino.smerp.productionplan.dto.request.SearchProductionPlanRequest;
+import com.domino.smerp.productionplan.dto.request.UpdateProductionPlanRequest;
 import com.domino.smerp.productionplan.dto.response.ProductionPlanListResponse;
 import com.domino.smerp.productionplan.dto.response.ProductionPlanResponse;
 import com.domino.smerp.productionplan.service.ProductionPlanService;
+import com.domino.smerp.warehouse.CurrentProductionPlanListResponse;
 import jakarta.validation.Valid;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -31,6 +37,15 @@ public class ProductionPlanController {
     ProductionPlanListResponse productionPlanListResponse = productionPlanService.getAllProductionPlans();
     return ResponseEntity.status(200).body(productionPlanListResponse);
   }
+
+  //검색
+  @GetMapping("/search")
+  public ResponseEntity<PageResponse<CurrentProductionPlanListResponse>> getLotNumbers(
+      final @ModelAttribute SearchProductionPlanRequest keyword,
+      final Pageable pageable) {
+    return ResponseEntity.ok(productionPlanService.searchProductionPlans(keyword, pageable));
+  }
+
 
   //상세 조회
   @GetMapping("/{plan-id}")

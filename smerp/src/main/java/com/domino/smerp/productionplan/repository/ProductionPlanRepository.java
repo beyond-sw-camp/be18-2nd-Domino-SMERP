@@ -1,6 +1,6 @@
-package com.domino.smerp.productionplan;
+package com.domino.smerp.productionplan.repository;
 
-import com.domino.smerp.productionplan.constants.Status;
+import com.domino.smerp.productionplan.ProductionPlan;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -9,7 +9,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface ProductionPlanRepository extends JpaRepository<ProductionPlan, Long>{
+public interface ProductionPlanRepository extends JpaRepository<ProductionPlan, Long>, ProductionPlanQueryRepository{
 
   List<ProductionPlan> findByIsDeletedFalse();
 

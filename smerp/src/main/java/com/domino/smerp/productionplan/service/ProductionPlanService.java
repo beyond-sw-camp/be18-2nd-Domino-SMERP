@@ -1,11 +1,13 @@
 package com.domino.smerp.productionplan.service;
 
-import com.domino.smerp.productionplan.ProductionPlan;
-import com.domino.smerp.productionplan.dto.CreateProductionPlanRequest;
-import com.domino.smerp.productionplan.dto.UpdateProductionPlanRequest;
+import com.domino.smerp.common.dto.PageResponse;
+import com.domino.smerp.productionplan.dto.request.CreateProductionPlanRequest;
+import com.domino.smerp.productionplan.dto.request.SearchProductionPlanRequest;
+import com.domino.smerp.productionplan.dto.request.UpdateProductionPlanRequest;
 import com.domino.smerp.productionplan.dto.response.ProductionPlanListResponse;
 import com.domino.smerp.productionplan.dto.response.ProductionPlanResponse;
-import java.util.List;
+import com.domino.smerp.warehouse.CurrentProductionPlanListResponse;
+import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
 
 public interface ProductionPlanService {
@@ -24,6 +26,10 @@ public interface ProductionPlanService {
 
   //안전재고 이하 시 생성
   //List<ProductionPlan> createProductionPlansForSafetyStock(Long itemId);
+
+  PageResponse<CurrentProductionPlanListResponse> searchProductionPlans(
+      final SearchProductionPlanRequest keyword,
+      final Pageable pageable);
 
   //사용자의 수정
   @Transactional
