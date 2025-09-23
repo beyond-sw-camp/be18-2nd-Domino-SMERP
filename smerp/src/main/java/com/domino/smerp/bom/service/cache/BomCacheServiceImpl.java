@@ -43,7 +43,7 @@ public class BomCacheServiceImpl implements BomCacheService {
   @Transactional
   public void rebuildAllBomCache() {
     bomCostCacheRepository.deleteAll();
-    final List<Long> allItemIds = bomRepository.findAllBomAndOrphanItemIds(); // 루트 + 고아까지 포함되게 변경
+    final List<Long> allItemIds = bomRepository.findAllBomAndOrphanItemIds(); // 루트 + 고아까지 포함
     log.info("전체 ItemIds (루트+고아) = {}", allItemIds);
     for (final Long rootItemId : allItemIds) {
       rebuildBomCostCache(rootItemId);

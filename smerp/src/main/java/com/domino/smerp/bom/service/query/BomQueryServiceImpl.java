@@ -9,7 +9,6 @@ import com.domino.smerp.bom.dto.response.BomRawMaterialListResponse;
 import com.domino.smerp.bom.entity.Bom;
 import com.domino.smerp.bom.entity.BomClosure;
 import com.domino.smerp.bom.entity.BomCostCache;
-import com.domino.smerp.bom.event.BomChangedEvent;
 import com.domino.smerp.bom.repository.BomClosureRepository;
 import com.domino.smerp.bom.repository.BomCostCacheRepository;
 import com.domino.smerp.bom.repository.BomRepository;
@@ -23,10 +22,8 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -42,8 +39,6 @@ public class BomQueryServiceImpl implements BomQueryService {
   private final BomClosureRepository bomClosureRepository;
   private final BomCacheBuilder bomCacheBuilder;
 
-  private final ApplicationEventPublisher eventPublisher;
-
   @Override
   @Transactional(readOnly = true)
   public PageResponse<BomListResponse> searchBoms(final SearchBomRequest request,
@@ -52,19 +47,26 @@ public class BomQueryServiceImpl implements BomQueryService {
         bomRepository.searchBoms(request, pageable)
     );
   }
+
   // 정전개, 역전개, 원재료리스트 조회 (캐시O)
   @Override
   @Transactional(readOnly = true)
   public BomAllResponse getBomAll(final Long itemId) {
     // 캐시 조회
     List<BomCostCache> caches = bomCostCacheRepository.findByRootItemId(itemId);
+
+    // 비어있으면 캐시 즉시 빌드 + 저장
     if (caches.isEmpty()) {
       final Item root = itemService.findItemById(itemId);
-      eventPublisher.publishEvent(new BomChangedEvent(itemId));
-      caches = bomCostCacheRepository.findByRootItemId(itemId);
-      if (caches.isEmpty()) {
-        throw new CustomException(ErrorCode.BOM_NOT_FOUND);
+      caches = bomCacheBuilder.build(root);
+      if (!caches.isEmpty()) {
+        bomCostCacheRepository.saveAll(caches);
       }
+    }
+
+    // 진짜 비어있는지 확인
+    if (caches.isEmpty()) {
+      throw new CustomException(ErrorCode.BOM_NOT_FOUND);
     }
 
     // 캐시 맵핑
@@ -78,8 +80,37 @@ public class BomQueryServiceImpl implements BomQueryService {
     final BomCostCacheResponse inbound = buildTree(itemId, allEdges, cacheMap, 0);
 
     // outbound (역전개)
-    List<BomCostCacheResponse> outbound =
-        List.of(buildOutboundTree(itemId, allEdges, cacheMap, 0));
+    final List<Long> ancestorIds = allEdges.stream()
+        .filter(e -> e.getDescendantItemId().equals(itemId))
+        .filter(e -> !e.getAncestorItemId().equals(itemId))
+        .filter(e -> e.getDepth() == 1) // 직계 부모들부터 시작 (상위로 재귀)
+        .map(BomClosure::getAncestorItemId)
+        .distinct()
+        .toList();
+
+    // outbound
+    final List<Long> allAncestors = allEdges.stream()
+        .filter(e -> e.getDescendantItemId().equals(itemId))
+        .filter(e -> !e.getAncestorItemId().equals(itemId))
+        .map(BomClosure::getAncestorItemId)
+        .distinct()
+        .toList();
+
+    // self 캐시 맵: key = 아이템ID(=root), value = 그 아이템의 self 캐시 (root=자기자신, child=자기자신, depth=0)
+    final Map<Long, BomCostCache> selfCacheMap = new java.util.HashMap<>();
+
+    // 현재 아이템의 self 캐시도 포함
+    ensureSelfCache(itemId, selfCacheMap);
+
+    // 모든 조상에 대해 self 캐시 보장
+    for (Long aid : allAncestors) {
+      ensureSelfCache(aid, selfCacheMap);
+    }
+
+    // 본인포함
+    final BomCostCacheResponse outboundRoot = buildOutboundTree(itemId, allEdges, selfCacheMap, 0);
+    final List<BomCostCacheResponse> outbound =
+        outboundRoot != null ? List.of(outboundRoot) : List.of();
 
     // RawMaterials (원재료 리스트)
     final List<BomRawMaterialListResponse> rawMaterials = caches.stream()
@@ -184,32 +215,65 @@ public class BomQueryServiceImpl implements BomQueryService {
   private BomCostCacheResponse buildOutboundTree(
       final Long itemId,
       final List<BomClosure> allEdges,
-      final Map<Long, BomCostCache> cacheMap,
+      final Map<Long, BomCostCache> selfCacheMap,
       final int depth
   ) {
-    final BomCostCache cache = cacheMap.get(itemId);
-    if (cache == null) {
-      return null;
+    final BomCostCache self = selfCacheMap.get(itemId);
+    if (self == null) {
+      return null; // self 캐시조차 없으면 중단
     }
 
-    // 직계 부모(ancestor) 찾기
-    List<Long> parentIds = allEdges.stream()
-        .filter(edge -> edge.getDescendantItemId().equals(itemId))
-        .filter(edge -> !edge.getAncestorItemId().equals(itemId))
-        .filter(edge -> edge.getDepth() == 1)
+    // 직계 부모들
+    final List<Long> parentIds = allEdges.stream()
+        .filter(e -> e.getDescendantItemId().equals(itemId))
+        .filter(e -> !e.getAncestorItemId().equals(itemId))
+        .filter(e -> e.getDepth() == 1)
         .map(BomClosure::getAncestorItemId)
         .toList();
 
-    List<BomCostCacheResponse> parents = new ArrayList<>();
-    for (Long parentId : parentIds) {
-      BomCostCacheResponse parentNode = buildOutboundTree(parentId, allEdges, cacheMap, depth + 1);
+    final List<BomCostCacheResponse> parents = new java.util.ArrayList<>();
+    for (Long pid : parentIds) {
+      // 부모의 self 캐시 보장은 호출부 ensureSelfCache에서 이미 처리됨
+      BomCostCacheResponse parentNode = buildOutboundTree(pid, allEdges, selfCacheMap, depth + 1);
       if (parentNode != null) {
         parents.add(parentNode);
       }
     }
 
-    return BomCostCacheResponse.of(cache, depth, cache.getTotalCost(), parents);
+    // self 캐시 값으로 노드 작성 (각 노드는 "자기 루트" 기준의 qty/원가)
+    return BomCostCacheResponse.of(self, depth, self.getTotalCost(), parents);
   }
 
+  // self 캐시를 보장: 없으면 빌드 후 저장
+  private void ensureSelfCache(final Long id, final Map<Long, BomCostCache> selfCacheMap) {
+    if (selfCacheMap.containsKey(id)) {
+      return;
+    }
 
+    // self 캐시 조회 (root=id, child=id)
+    BomCostCache self = bomCostCacheRepository
+        .findByRootItemIdAndChildItemId(id, id)
+        .orElse(null);
+
+    if (self == null) {
+      // 해당 루트의 캐시가 없다면 즉시 빌드 & 저장
+      final Item item = itemService.findItemById(id);
+      List<BomCostCache> built = bomCacheBuilder.build(item);
+      if (!built.isEmpty()) {
+        bomCostCacheRepository.saveAll(built);
+      }
+
+      // 다시 self 캐시만 찾아서 맵핑
+      self = built.stream()
+          .filter(c -> c.getRootItemId().equals(id) && c.getChildItemId().equals(id))
+          .findFirst()
+          .orElse(null);
+    }
+
+    if (self != null) {
+      selfCacheMap.put(id, self);
+    }
+
+
+  }
 }

@@ -92,7 +92,8 @@ public class BomCommandServiceImpl implements BomCommandService {
     bom.update(request);
 
     if (request.getQty() != null) {
-      eventPublisher.publishEvent(new BomChangedEvent(bom.getParentItem().getItemId()));
+      final Long rootId = findRootId(bom.getParentItem().getItemId());
+      eventPublisher.publishEvent(new BomChangedEvent(rootId));
     }
 
     return BomDetailResponse.fromEntity(bom);
@@ -124,8 +125,10 @@ public class BomCommandServiceImpl implements BomCommandService {
     updateBomClosure(newParentItemId, childItemId);
 
     // 기존 루트와 새로운 루트의 캐시를 모두 갱신
-    eventPublisher.publishEvent(new BomChangedEvent(oldParentItemId));
-    eventPublisher.publishEvent(new BomChangedEvent(newParentItemId));
+    final Long oldRootId = findRootId(oldParentItemId);
+    final Long newRootId = findRootId(newParentItemId);
+    eventPublisher.publishEvent(new BomChangedEvent(oldRootId));
+    eventPublisher.publishEvent(new BomChangedEvent(newRootId));
 
     return BomDetailResponse.fromEntity(bom);
   }
@@ -153,7 +156,8 @@ public class BomCommandServiceImpl implements BomCommandService {
     updateBomClosure(parentId, childItemId);
 
     // 캐시 갱신 이벤트 발행
-    eventPublisher.publishEvent(new BomChangedEvent(parentId));
+    final Long rootId = findRootId(parentId);
+    eventPublisher.publishEvent(new BomChangedEvent(rootId));
   }
 
   // BOM 강제 삭제
@@ -174,8 +178,10 @@ public class BomCommandServiceImpl implements BomCommandService {
 
     // 상위 root 들 invalidate
     final List<BomClosure> ancestors = bomClosureRepository.findById_DescendantItemId(targetItemId);
+
     ancestors.stream()
         .map(BomClosure::getAncestorItemId)
+        .map(this::findRootId)
         .distinct()
         .forEach(rootId -> eventPublisher.publishEvent(new BomChangedEvent(rootId)));
   }

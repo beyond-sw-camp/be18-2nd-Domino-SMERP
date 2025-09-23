@@ -52,13 +52,14 @@ public interface BomClosureRepository extends JpaRepository<BomClosure, BomClosu
 
   // 특정 아이템의 조상만 조회 nativeQuery로
   @Query(value = """
-    SELECT ancestor_item_id
-    FROM bom_closure
-    WHERE descendant_item_id = :itemId
-      AND depth = 0
-    LIMIT 1
-    """, nativeQuery = true)
+      SELECT ancestor_item_id
+      FROM bom_closure
+      WHERE descendant_item_id = :itemId
+      ORDER BY depth ASC
+      LIMIT 1
+      """, nativeQuery = true)
   Long findRootAncestorId(@Param("itemId") Long itemId);
+
 
 
 
