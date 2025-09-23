@@ -5,6 +5,7 @@ import com.domino.smerp.productionplan.dto.UpdateProductionPlanRequest;
 import com.domino.smerp.productionplan.dto.response.ProductionPlanListResponse;
 import com.domino.smerp.productionplan.dto.response.ProductionPlanResponse;
 import com.domino.smerp.productionplan.service.ProductionPlanService;
+import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -42,7 +43,7 @@ public class ProductionPlanController {
   //생성
   @PostMapping
   public ResponseEntity<ProductionPlanResponse> createProductionPlan(
-      @RequestBody CreateProductionPlanRequest createProductionPlanRequest) {
+      @Valid @RequestBody CreateProductionPlanRequest createProductionPlanRequest) {
     ProductionPlanResponse productionPlanResponse = productionPlanService.createProductionPlan(
         createProductionPlanRequest);
     return ResponseEntity.status(201).body(productionPlanResponse);
@@ -52,7 +53,7 @@ public class ProductionPlanController {
   @PatchMapping("/{plan-id}")
   public ResponseEntity<ProductionPlanResponse> updateProductionPlan(
       @PathVariable("plan-id") Long planId,
-      @RequestBody UpdateProductionPlanRequest updateProductionPlanRequest) {
+      @Valid @RequestBody UpdateProductionPlanRequest updateProductionPlanRequest) {
     ProductionPlanResponse productionPlanResponse = productionPlanService.updateProductionPlan(
         planId, updateProductionPlanRequest);
     return ResponseEntity.status(200).body(productionPlanResponse);

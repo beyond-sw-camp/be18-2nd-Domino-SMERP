@@ -55,7 +55,7 @@ public class ProductionPlan extends BaseEntity {
   @Column(name = "document_no")
   private String documentNo;
 
-  @Column(precision = 12, scale = 2)
+  @Column(precision = 12, scale = 3)
   @Builder.Default
   private BigDecimal qty = BigDecimal.ZERO;
 

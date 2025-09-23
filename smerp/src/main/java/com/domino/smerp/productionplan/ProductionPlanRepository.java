@@ -28,4 +28,11 @@ public interface ProductionPlanRepository extends JpaRepository<ProductionPlan, 
       @Param("itemId") Long itemId
   );
 */
+
+  @Query(value = "SELECT MAX(CAST(SUBSTRING_INDEX(o.document_no, '-', -1) AS UNSIGNED)) " +
+      "FROM `order` o " +
+      "WHERE o.document_no LIKE CONCAT(:prefix, '%')",
+      nativeQuery = true)
+  Optional<Integer> findMaxSequenceByPrefix(@Param("prefix") String prefix);
+
 }

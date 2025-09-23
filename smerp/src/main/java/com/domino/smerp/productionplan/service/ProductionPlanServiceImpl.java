@@ -1,6 +1,6 @@
 package com.domino.smerp.productionplan.service;
 
-import com.domino.smerp.item.Item;
+import com.domino.smerp.common.util.DocumentNoGenerator;
 import com.domino.smerp.item.repository.ItemRepository;
 import com.domino.smerp.productionplan.ProductionPlan;
 import com.domino.smerp.productionplan.ProductionPlanRepository;
@@ -11,9 +11,9 @@ import com.domino.smerp.productionplan.dto.response.ProductionPlanListResponse;
 import com.domino.smerp.productionplan.dto.response.ProductionPlanResponse;
 import com.domino.smerp.user.User;
 import com.domino.smerp.user.UserRepository;
-import com.domino.smerp.warehouse.WarehouseRepository;
+import com.domino.smerp.warehouse.repository.WarehouseRepository;
 import jakarta.persistence.EntityNotFoundException;
-import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -36,6 +36,7 @@ public class ProductionPlanServiceImpl implements ProductionPlanService {
   //private final WorkOrderService workOrderService;
   //private final StockService stockService;
   private final ApplicationEventPublisher eventPublisher;
+  private final DocumentNoGenerator documentNoGenerator;
 
   @Override
   @Transactional(readOnly = true)
@@ -64,6 +65,12 @@ public class ProductionPlanServiceImpl implements ProductionPlanService {
     return toProductionPlanResponse(productionPlan);
   }
 
+  // 전표 생성
+  @Transactional
+  public String generateDocumentNoWithRetry(LocalDate documentDate) {
+    return documentNoGenerator.generate(documentDate, productionPlanRepository::findMaxSequenceByPrefix);
+  }
+
   //사용자에 의한 생성
   @Override
   @Transactional
@@ -80,13 +87,14 @@ public class ProductionPlanServiceImpl implements ProductionPlanService {
     User user = userRepository.findByName(createProductionPlanRequest.getName())
         .orElse(null);
 
+    String documentNo = generateDocumentNoWithRetry(LocalDate.now());
 
     ProductionPlan productionPlan = ProductionPlan.builder()
         .status(Status.PENDING)
         .remark(createProductionPlanRequest.getRemark())
         .title(createProductionPlanRequest.getTitle())
         .isDeleted(false)
-        //.documentNo(documentNo)
+        .documentNo(documentNo)
         //.itemOrder(null)
         .qty(createProductionPlanRequest.getQty())
         .user(user)
@@ -238,6 +246,7 @@ public class ProductionPlanServiceImpl implements ProductionPlanService {
 
     ProductionPlan updatedProductionPlan = ProductionPlan.builder()
         .id(productionPlan.getId()) // 기존 ID 유지
+        .documentNo(productionPlan.getDocumentNo())
         .title(updateProductionPlanRequest.getTitle() != null ? updateProductionPlanRequest.getTitle() : productionPlan.getTitle())
         .qty(updateProductionPlanRequest.getQty() != null ? updateProductionPlanRequest.getQty() : productionPlan.getQty())
         .remark(updateProductionPlanRequest.getRemark() != null ? updateProductionPlanRequest.getRemark() : productionPlan.getRemark())
