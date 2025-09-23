@@ -42,6 +42,17 @@ public class BomCommandServiceImpl implements BomCommandService {
   @Override
   @Transactional
   public BomDetailResponse createBom(final CreateBomRequest request) {
+    // 중복 관계 방지
+    if (bomRepository.existsByParentItem_ItemIdAndChildItem_ItemId(request.getParentItemId(),
+        request.getChildItemId())) {
+      throw new CustomException(ErrorCode.BOM_DUPLICATE_RELATIONSHIP);
+    }
+    // 순환 참조 방지
+    if (bomClosureRepository.existsById_AncestorItemIdAndId_DescendantItemId(
+        request.getChildItemId(), request.getParentItemId())) {
+      throw new CustomException(ErrorCode.BOM_CIRCULAR_REFERENCE);
+    }
+
     final Item parentItem;
     final Item childItem;
 
@@ -66,7 +77,6 @@ public class BomCommandServiceImpl implements BomCommandService {
     updateBomClosure(parentItem.getItemId(), childItem.getItemId());
 
     // 이벤트 발행 → Listener에서 캐시 갱신
-    //eventPublisher.publishEvent(new BomChangedEvent(parentItem.getItemId()));
     eventPublisher.publishEvent(new BomChangedEvent(findRootId(parentItem.getItemId())));
 
     return BomDetailResponse.fromEntity(savedBom);
@@ -121,7 +131,7 @@ public class BomCommandServiceImpl implements BomCommandService {
   }
 
 
-  // BOM 삭제
+  // BOM 삭제 (자식 있을 경우 불가)
   @Override
   @Transactional
   public void deleteBom(final Long bomId) {

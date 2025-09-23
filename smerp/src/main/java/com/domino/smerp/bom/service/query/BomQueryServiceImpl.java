@@ -40,7 +40,7 @@ public class BomQueryServiceImpl implements BomQueryService {
 
   private final ApplicationEventPublisher eventPublisher;
 
-  //
+  // BOM 전체 FlatList로 불러옴(계층 표현X)
   @Override
   @Transactional(readOnly = true)
   public List<BomListResponse> getBoms() {
@@ -68,6 +68,9 @@ public class BomQueryServiceImpl implements BomQueryService {
       final Item root = itemService.findItemById(itemId);
       eventPublisher.publishEvent(new BomChangedEvent(itemId));
       caches = bomCostCacheRepository.findByRootItemId(itemId);
+      if (caches.isEmpty()) {
+        throw new CustomException(ErrorCode.BOM_NOT_FOUND);
+      }
     }
 
     // 캐시 맵핑
@@ -84,8 +87,7 @@ public class BomQueryServiceImpl implements BomQueryService {
     List<BomCostCacheResponse> outbound =
         List.of(buildOutboundTree(itemId, allEdges, cacheMap, 0));
 
-
-// rawMaterials (flat list)
+    // RawMaterials (원재료 리스트)
     final List<BomRawMaterialListResponse> rawMaterials = caches.stream()
         .filter(
             c -> "원재료".equals(c.getItemStatus().getDescription())) // itemStatusId 대신 description
@@ -112,8 +114,7 @@ public class BomQueryServiceImpl implements BomQueryService {
   @Override
   @Transactional(readOnly = true)
   public BomDetailResponse getBomDetail(final Long bomId, final String direction) {
-    final Bom bom = bomRepository.findById(bomId)
-        .orElseThrow(() -> new CustomException(ErrorCode.BOM_NOT_FOUND));
+    final Bom bom = findBomById(bomId);
     return BomDetailResponse.fromEntity(bom);
   }
 
@@ -142,21 +143,20 @@ public class BomQueryServiceImpl implements BomQueryService {
     return buildTree(rootItemId, allEdges, cacheMap, 0);
   }
 
+  // ==========================
+  // 공통 메소드 (e.g. findBy)
+  // ==========================
+  @Override
+  @Transactional(readOnly = true)
+  public Bom findBomById(final Long bomId) {
+    return bomRepository.findById(bomId)
+        .orElseThrow(() -> new CustomException(ErrorCode.BOM_NOT_FOUND));
+  }
+
 
   // ==========================
   // 내부 유틸
   // ==========================
-
-  // 후손들 가져오기
-  private void attachChildren(final BomListResponse parentNode) {
-    List<Bom> children = bomRepository.findByParentItem_ItemId(parentNode.getItemId());
-    for (Bom childBom : children) {
-      BomListResponse childNode = BomListResponse.fromEntity(childBom);
-      parentNode.getChildren().add(childNode);
-      attachChildren(childNode);
-    }
-  }
-
   // 정전개 트리 제작
   private BomCostCacheResponse buildTree(
       final Long itemId,

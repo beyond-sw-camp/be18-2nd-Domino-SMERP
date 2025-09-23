@@ -45,7 +45,7 @@ public interface BomClosureRepository extends JpaRepository<BomClosure, BomClosu
   List<BomClosure> findById_DescendantItemId(final Long descendantItemId);
 
   // 특정 조상-자손 관계가 존재하는지 확인
-  boolean existsById_AncestorItemIdAndId_DescendantItemId(Long ancestorId, Long descendantId);
+  boolean existsById_AncestorItemIdAndId_DescendantItemId(final Long ancestorId, final Long descendantId);
 
   List<BomClosure> findById_AncestorItemIdAndDepth(final Long ancestorItemId, int depth);
 

@@ -4,6 +4,7 @@ import com.domino.smerp.bom.dto.response.BomAllResponse;
 import com.domino.smerp.bom.dto.response.BomCostCacheResponse;
 import com.domino.smerp.bom.dto.response.BomDetailResponse;
 import com.domino.smerp.bom.dto.response.BomListResponse;
+import com.domino.smerp.bom.entity.Bom;
 import java.math.BigDecimal;
 import java.util.List;
 
@@ -26,5 +27,7 @@ public interface BomQueryService {
 
   // BOM 소요량 계산 및 산출
   BomCostCacheResponse calculateTotalQtyAndCost(final Long rootItemId);
+
+  Bom findBomById(final Long bomId);
 
 }
