@@ -52,6 +52,7 @@ public class WarehouseController {
     return ResponseEntity.status(200).body(locationListResponse);
   }
 
+
   //창고 목록 조회
   @GetMapping
   public ResponseEntity<List<WarehouseResponse>> getWarehouses() {
