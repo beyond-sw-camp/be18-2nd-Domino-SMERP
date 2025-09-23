@@ -14,7 +14,7 @@ import java.time.Instant;
 @Builder
 @AllArgsConstructor
 public class ListOrderResponse {
-
+    private final Long orderId; // 주문PK
     private final String documentNo;   // 전표번호
     private final String companyName;  // 거래처명
     private final String status;       // 주문 상태
@@ -28,6 +28,7 @@ public class ListOrderResponse {
 
     public static ListOrderResponse from(Order order) {
         return ListOrderResponse.builder()
+                .orderId(order.getOrderId())
                 .documentNo(order.getDocumentNo())
                 .companyName(order.getClient().getCompanyName())
                 .status(order.getStatus().name())
