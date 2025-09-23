@@ -13,6 +13,7 @@ import java.math.RoundingMode;
 @AllArgsConstructor
 public class ListSalesOrderResponse {
 
+    private final Long soId;
     private final String documentNo;     // 판매 번호
     private final String companyName;    // 거래처
     private final String userName;       // 담당자
@@ -24,6 +25,7 @@ public class ListSalesOrderResponse {
 
     public static ListSalesOrderResponse from(SalesOrder so) {
         return ListSalesOrderResponse.builder()
+                .soId(so.getSoId())
                 .documentNo(so.getDocumentNo())
                 .companyName(so.getOrder().getClient().getCompanyName())
                 .userName(so.getOrder().getUser().getName())

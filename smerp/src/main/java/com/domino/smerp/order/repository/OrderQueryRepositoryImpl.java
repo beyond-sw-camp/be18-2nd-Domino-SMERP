@@ -44,7 +44,7 @@ public class OrderQueryRepositoryImpl implements OrderQueryRepository {
         QUser user = QUser.user;
 
         List<Order> results = queryFactory
-                .selectFrom(order).distinct() // 중복 제거
+                .selectFrom(order).distinct()
                 .join(order.client, client).fetchJoin()
                 .join(order.user, user).fetchJoin()
                 .leftJoin(order.orderItems, QItemOrder.itemOrder).fetchJoin()
@@ -55,7 +55,8 @@ public class OrderQueryRepositoryImpl implements OrderQueryRepository {
                         userNameContains(condition.getUserName()),
                         documentNoContains(condition.getDocumentNo()),
                         remarkContains(condition.getRemark()),
-                        documentNoBetween(condition.getStartDocDate(), condition.getEndDocDate())
+                        documentNoBetween(condition.getStartDocDate(), condition.getEndDocDate()),
+                        isNotReturnOrder(order.documentNo) // 반품 제외
                 )
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
@@ -73,7 +74,8 @@ public class OrderQueryRepositoryImpl implements OrderQueryRepository {
                         userNameContains(condition.getUserName()),
                         documentNoContains(condition.getDocumentNo()),
                         remarkContains(condition.getRemark()),
-                        documentNoBetween(condition.getStartDocDate(), condition.getEndDocDate())
+                        documentNoBetween(condition.getStartDocDate(), condition.getEndDocDate()),
+                        isNotReturnOrder(order.documentNo) // countQuery에도 반품 제외
                 );
 
         return PageableExecutionUtils.getPage(results, pageable, countQuery::fetchOne);
@@ -110,7 +112,8 @@ public class OrderQueryRepositoryImpl implements OrderQueryRepository {
                         qtyEq(condition.getQty()),
                         specialPriceEq(condition.getSpecialPrice()),
                         supplyAmountEq(condition.getSupplyAmount()),
-                        documentNoBetween(condition.getStartDocDate(), condition.getEndDocDate())
+                        documentNoBetween(condition.getStartDocDate(), condition.getEndDocDate()),
+                        itemOrder.qty.gt(BigDecimal.ZERO)
                 )
                 .orderBy(getOrderSpecifiers(pageable, order, client, itemOrder, item))
                 .fetch();
@@ -211,6 +214,10 @@ public class OrderQueryRepositoryImpl implements OrderQueryRepository {
 
     private BooleanExpression isReturnOrder(com.querydsl.core.types.dsl.StringPath documentNo) {
         return documentNo.contains("(-"); // "-" 포함된 전표번호만 반품
+    }
+
+    private BooleanExpression isNotReturnOrder(com.querydsl.core.types.dsl.StringPath documentNo) {
+        return documentNo.contains("(-").not();
     }
 
     // 전표번호에서 날짜 부분만 잘라서 between 검색
