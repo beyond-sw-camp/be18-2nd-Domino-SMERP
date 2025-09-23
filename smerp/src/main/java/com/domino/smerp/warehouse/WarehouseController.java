@@ -42,7 +42,7 @@ public class WarehouseController {
   }
 
   //창고 조회
-  @GetMapping
+  @GetMapping("/search")
   public ResponseEntity<PageResponse<WarehouseListResponse>> getWarehouses(
       @ModelAttribute SearchWarehouseRequest keyword, Pageable pageable) {
     return ResponseEntity.ok(warehouseService.searchWarehouses(keyword, pageable));

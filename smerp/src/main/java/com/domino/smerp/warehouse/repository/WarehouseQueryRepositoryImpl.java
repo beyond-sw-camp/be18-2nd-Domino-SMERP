@@ -29,11 +29,19 @@ public class WarehouseQueryRepositoryImpl implements WarehouseQueryRepository{
   public Page<Warehouse> searchWarehouses(final SearchWarehouseRequest keyword, final Pageable pageable) {
     QWarehouse warehouse = QWarehouse.warehouse;
 
-    BooleanExpression condition = warehouseNameContains(keyword.getWarehouseName())
-        .and(divisionTypeEq(keyword.getDivisionType()))
-        .and(activeEq(keyword.isActive()))
-        .and(addressContains(keyword.getAddress()))
-        .and(zipcodeContains(keyword.getZipcode()));
+    BooleanExpression condition = null;
+
+    BooleanExpression nameCond = warehouseNameContains(keyword.getWarehouseName());
+    BooleanExpression divisionCond = divisionTypeEq(keyword.getDivisionType());
+    BooleanExpression activeCond = activeEq(keyword.isActive());
+    BooleanExpression addressCond = addressContains(keyword.getAddress());
+    BooleanExpression zipcodeCond = zipcodeContains(keyword.getZipcode());
+
+    if (nameCond != null) condition = nameCond;
+    if (divisionCond != null) condition = (condition == null ? divisionCond : condition.and(divisionCond));
+    if (activeCond != null) condition = (condition == null ? activeCond : condition.and(activeCond));
+    if (addressCond != null) condition = (condition == null ? addressCond : condition.and(addressCond));
+    if (zipcodeCond != null) condition = (condition == null ? zipcodeCond : condition.and(zipcodeCond));
 
     // 정렬 컬럼 매핑
     Map<String, Path<? extends Comparable<?>>> sortMapping = Map.of(
