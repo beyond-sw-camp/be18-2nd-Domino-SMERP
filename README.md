@@ -357,12 +357,6 @@
   <hr>
 </details>
 
-<details>
-  <summary><b>기타 관리</b></summary>
-</details>
-
-
-
 ## <a id="requirements"></a>7. UI/UX 단위 테스트 결과서
 
 <details>
@@ -462,8 +456,4 @@
   ![lot 등록 목록,상세 조회 수정 삭제](https://github.com/user-attachments/assets/aaa84eee-96a8-4231-9c0e-a56a62e61aaa)
   <br>
   
-</details>
-
-<details>
-  <summary><b>기타 관리</b></summary>
 </details>
