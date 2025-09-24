@@ -58,7 +58,22 @@
 </table>
          
 ## 📚 목차
-
+1. 개요
+2. 배경
+3. 문제 정의
+4. 프로젝트 배경, 주제 및 소개
+5. 유사 서비스
+6. 프로젝트 주요 기능 및 기대 효과
+7. 기술 스택
+8. WBS
+9. 시스템 아키텍처
+10. 요구 사항 명세서
+11. ERD
+12. 테이블 명세서
+13. API 명세서
+14. 백엔드 주요 테스트 케이스
+15. 향후 개선 방안
+16. 회고록
 <br>
 
 ## ⭐ 기술 스택
@@ -82,40 +97,113 @@
 
 <br>
 
-## <a id="requirements"></a>1. 요구사항 명세서
+## <a id="requirements"></a>1. 개요
 
 <details>
-<summary>요구사항 명세서 링크</summary>
+<summary>세부사항</summary>
 <div markdown="1">
  <a href="https://docs.google.com/spreadsheets/d/1atr55TXd0Bk1su-PHP-4pP_yuwYqgyo55p04q3iMQh0/edit?gid=726808703#gid=726808703">요구사항 명세서</a>
 </div>
 </details>
 <br>
 
-## <a id="requirements"></a>2. 시스템 아키텍쳐
- <details>
-<img width="1178" height="768" alt="SMERP 시스템 아키텍쳐" src="https://github.com/user-attachments/assets/8c160043-afd2-4dea-b7e5-d4b686c87acd" />
+## <a id="requirements"></a>2. 배경
+
+<details>
+<summary>세부사항</summary>
+<div markdown="1">
+ <a href="https://docs.google.com/spreadsheets/d/1atr55TXd0Bk1su-PHP-4pP_yuwYqgyo55p04q3iMQh0/edit?gid=726808703#gid=726808703">요구사항 명세서</a>
 </div>
 </details>
 <br>
 
-## <a id="requirements"></a>3. WBS
- <details>
+## <a id="requirements"></a>3. 문제 정의
 
+<details>
+<summary>세부사항</summary>
+<div markdown="1">
+ <a href="https://docs.google.com/spreadsheets/d/1atr55TXd0Bk1su-PHP-4pP_yuwYqgyo55p04q3iMQh0/edit?gid=726808703#gid=726808703">요구사항 명세서</a>
 </div>
 </details>
 <br>
 
-## <a id="requirements"></a>4. ERD
+## <a id="requirements"></a>4. 프로젝트 배경, 주제 및 소개
+
+<details>
+<summary>세부사항</summary>
+<div markdown="1">
+ <a href="https://docs.google.com/spreadsheets/d/1atr55TXd0Bk1su-PHP-4pP_yuwYqgyo55p04q3iMQh0/edit?gid=726808703#gid=726808703">요구사항 명세서</a>
+</div>
+</details>
+<br>
+
+## <a id="requirements"></a>5. 유사 서비스
+
+<details>
+<summary>세부사항</summary>
+<div markdown="1">
+ <a href="https://docs.google.com/spreadsheets/d/1atr55TXd0Bk1su-PHP-4pP_yuwYqgyo55p04q3iMQh0/edit?gid=726808703#gid=726808703">요구사항 명세서</a>
+</div>
+</details>
+<br>
+
+## <a id="requirements"></a>6. 프로젝트 주요 기능 및 기대 효과
+
+<details>
+<summary>세부사항</summary>
+<div markdown="1">
+ <a href="https://docs.google.com/spreadsheets/d/1atr55TXd0Bk1su-PHP-4pP_yuwYqgyo55p04q3iMQh0/edit?gid=726808703#gid=726808703">요구사항 명세서</a>
+</div>
+</details>
+<br>
+
+## <a id="requirements"></a>7. 기술 스택
+
+<details>
+<summary>세부사항</summary>
+<div markdown="1">
+ <a href="https://docs.google.com/spreadsheets/d/1atr55TXd0Bk1su-PHP-4pP_yuwYqgyo55p04q3iMQh0/edit?gid=726808703#gid=726808703">요구사항 명세서</a>
+</div>
+</details>
+<br>
+
+## <a id="requirements"></a>8. WBS
+
+<details>
+<summary>세부사항</summary>
+<div markdown="1">
+ <a href="https://docs.google.com/spreadsheets/d/1atr55TXd0Bk1su-PHP-4pP_yuwYqgyo55p04q3iMQh0/edit?gid=726808703#gid=726808703">요구사항 명세서</a>
+</div>
+</details>
+<br>
+
+## <a id="requirements"></a>9. 시스템 아키텍처
+
+<details>
+<img width="800" height="768" alt="SMERP 시스템 아키텍쳐" src="https://github.com/user-attachments/assets/8c160043-afd2-4dea-b7e5-d4b686c87acd" />
+</div>
+</details>
+<br>
+
+## <a id="requirements"></a>10. 요구사항 명세서
+
+<details>
+<summary>세부사항</summary>
+<div markdown="1">
+ <a href="https://docs.google.com/spreadsheets/d/1atr55TXd0Bk1su-PHP-4pP_yuwYqgyo55p04q3iMQh0/edit?gid=726808703#gid=726808703">요구사항 명세서</a>
+</div>
+</details>
+<br>
+
+## <a id="requirements"></a>11. ERD
  <details>
   <a href="https://www.erdcloud.com/d/7BswmMbtjRa2rshiZ">ERD</a>
 <img width="6040" height="2442" alt="Domino_ERD_보고용" src="https://github.com/user-attachments/assets/e8d5452c-3c64-4eee-a72a-9e2ad7f638bf" />
-
 </div>
 </details>
 <br>
 
-## <a id="requirements"></a>5. 테이블 명세서
+## <a id="requirements"></a>12. 테이블 명세서
 <details>
  <a href="https://docs.google.com/spreadsheets/d/1atr55TXd0Bk1su-PHP-4pP_yuwYqgyo55p04q3iMQh0/edit?gid=421782869#gid=421782869">테이블 명세서</a>
 
@@ -123,7 +211,7 @@
 </details>
 <br>
 
-## <a id="requirements"></a>6. API 명세서
+## <a id="requirements"></a>13. API 명세서
 <details>
  <a href="https://abalone-poppyseed-018.notion.site/254819b5e8c6813795d1ffae47426f4b?v=254819b5e8c6814baf53000c647a6bf3">API 명세서</a>
 
@@ -131,14 +219,7 @@
 </details>
 <br>
 
-## <a id="requirements"></a>1. 화면 및 기능 설계서
-<details>
- <a href="https://www.figma.com/design/ExNHg393ExldbNN0TACTIc/Project-SMERP?node-id=0-1&t=4y6ryU68AoMk8w1V-1">화면 및 기능 설계서</a>
-</div>
-</details>
-<br>
-
-## <a id="requirements"></a>7. 단위 테스트 결과서
+## <a id="requirements"></a>14. 주요 단위 테스트 케이스
 <details>
   <summary><b>기초 관리</b></summary>
 </details>
@@ -358,6 +439,31 @@
   <br>
   <hr>
 </details>
+<br>
+
+## <a id="requirements"></a>15. 향후 개선 방안
+<details>
+ <a href="https://www.figma.com/design/LbG41JvpR35x1pO2skQ069/SMERP?node-id=0-1&t=eZnFgf17fhanYC6o-1">화면 및 기능 설계서</a>
+
+</div>
+</details>
+<br>
+
+## <a id="requirements"></a>16. 회고록
+<details>
+ <a href="https://www.figma.com/design/LbG41JvpR35x1pO2skQ069/SMERP?node-id=0-1&t=eZnFgf17fhanYC6o-1">화면 및 기능 설계서</a>
+
+</div>
+</details>
+<br>
+
+
+## <a id="requirements"></a>1. 화면 및 기능 설계서
+<details>
+ <a href="https://www.figma.com/design/ExNHg393ExldbNN0TACTIc/Project-SMERP?node-id=0-1&t=4y6ryU68AoMk8w1V-1">화면 및 기능 설계서</a>
+</div>
+</details>
+<br>
 
 ## <a id="requirements"></a>7. UI/UX 단위 테스트 결과서
 
