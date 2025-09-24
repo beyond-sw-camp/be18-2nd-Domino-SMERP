@@ -1,6 +1,7 @@
 package com.domino.smerp.workorder.service;
 
 import com.domino.smerp.client.Client;
+import com.domino.smerp.common.dto.PageResponse;
 import com.domino.smerp.common.util.DocumentNoGenerator;
 import com.domino.smerp.item.Item;
 import com.domino.smerp.item.repository.ItemRepository;
@@ -12,6 +13,8 @@ import com.domino.smerp.user.UserRepository;
 import com.domino.smerp.warehouse.Warehouse;
 import com.domino.smerp.warehouse.repository.WarehouseRepository;
 import com.domino.smerp.workorder.WorkOrder;
+import com.domino.smerp.workorder.dto.request.SearchWorkOrderRequest;
+import com.domino.smerp.workorder.dto.response.SearchWorkOrderListResponse;
 import com.domino.smerp.workorder.repository.WorkOrderRepository;
 import com.domino.smerp.workorder.constants.Status;
 import com.domino.smerp.workorder.dto.request.CreateWorkOrderRequest;
@@ -26,6 +29,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -85,8 +89,8 @@ public class WorkOrderServiceImpl implements WorkOrderService {
     return toWorkOrderResponse(workOrder);
   }
 
-  @Override
   @Transactional(readOnly = true)
+  @Override
   public CurrentWorkOrderListResponse getAllCurrentWorkOrders(){
     //soft delete 안된 대상만 조회
     List<WorkOrder> workOrders = workOrderRepository.findByIsDeletedFalse();
@@ -195,15 +199,33 @@ public class WorkOrderServiceImpl implements WorkOrderService {
 
  */
 
+  //검색
+  @Override
+  @Transactional(readOnly = true)
+  public PageResponse<SearchWorkOrderListResponse> searchWorkOrders(
+      final SearchWorkOrderRequest keyword,
+      final Pageable pageable)
+  {
+    return PageResponse.from(
+        workOrderRepository
+            .searchWorkOrders(keyword, pageable)
+            .map(SearchWorkOrderListResponse::fromEntity));
+  }
+
   //수정 요청
   @Override
   @Transactional
   public WorkOrderResponse updateWorkOrder(final Long id,
       final UpdateWorkOrderRequest updateWorkOrderRequest) {
 
+
     //id 유효
     WorkOrder workOrder = workOrderRepository.findById(id)
         .orElseThrow(() -> new EntityNotFoundException("No work order of id: " + id));
+
+    if(workOrder.getStatus().equals(Status.COMPLETED)) {
+      throw new EntityNotFoundException("work order 작업 완료, 수정 불가합니다");
+    }
 
     //유효성 체크 필요 x
 

@@ -9,6 +9,8 @@ import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.ConstraintMode;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.ForeignKey;
 import jakarta.persistence.GeneratedValue;
@@ -73,6 +75,7 @@ public class WorkOrder extends BaseEntity {
 
   @Column(nullable = false)
   @Builder.Default
+  @Enumerated(EnumType.STRING)
   private Status status = Status.APPROVED;
 
   //지시 qty
