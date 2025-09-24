@@ -1,5 +1,6 @@
 package com.domino.smerp.productionresult.service;
 
+import com.domino.smerp.common.util.DocumentNoGenerator;
 import com.domino.smerp.item.Item;
 import com.domino.smerp.item.repository.ItemRepository;
 import com.domino.smerp.productionresult.ProductionResult;
@@ -15,6 +16,8 @@ import com.domino.smerp.warehouse.repository.WarehouseRepository;
 import com.domino.smerp.workorder.WorkOrder;
 import com.domino.smerp.workorder.repository.WorkOrderRepository;
 import jakarta.persistence.EntityNotFoundException;
+import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -29,6 +32,7 @@ public class ProductionResultServiceImpl implements ProductionResultService {
   private final WarehouseRepository warehouseRepository;
   private final ItemRepository itemRepository;
   private final UserRepository userRepository;
+  private final DocumentNoGenerator documentNoGenerator;
   //private final StockMovementService stockMovementService;
 
   @Override
@@ -41,13 +45,17 @@ public class ProductionResultServiceImpl implements ProductionResultService {
 
     List<ProductionResultResponse> productionResultResponses = new ArrayList<>();
 
+    BigDecimal totalQty = BigDecimal.ZERO;
+
     for(ProductionResult productionResult : productionResults){
       ProductionResultResponse productionResultResponse = toProductionResultResponse(productionResult);
       productionResultResponses.add(productionResultResponse);
+      totalQty = totalQty.add(productionResultResponse.getQty());
     }
 
     ProductionResultListResponse productionResultListResponse = ProductionResultListResponse.builder()
         .productionResultResponses(productionResultResponses)
+        .totalQty(totalQty)
         .build();
 
     return productionResultListResponse;
@@ -66,14 +74,17 @@ public class ProductionResultServiceImpl implements ProductionResultService {
     return toProductionResultResponse(productionResult);
   }
 
+  // 전표 생성
+  @Transactional
+  public String generateDocumentNoWithRetry(LocalDate documentDate) {
+    return documentNoGenerator.generate(documentDate, productionResultRepository::findMaxSequenceByPrefix);
+  }
 
   //생산실적 생성
   //생산실적 생성 시 complete된 work order만 보여줌 or 선택 work order complete 확인
   @Override
   @Transactional
   public ProductionResultResponse createProductionResult(final CreateProductionResultRequest createProductionResultRequest){
-
-    //document no 를 생성
 
     WorkOrder workOrder = workOrderRepository.findById(createProductionResultRequest.getWorkOrderId())
         .orElseThrow(() -> new EntityNotFoundException("work order not found by id"));
@@ -97,9 +108,11 @@ public class ProductionResultServiceImpl implements ProductionResultService {
     //창고가 바로 만들어짐
     //생산 수량에 대해 가능한 위치를 지닌 창고를 선택했어야함
 
+    String documentNo = generateDocumentNoWithRetry(LocalDate.now());
+
 
     ProductionResult productionResult = ProductionResult.builder()
-        //.documentNo(documentNo)
+        .documentNo(documentNo)
         .user(user)
         .departWarehouse(departWarehouse)
         .workOrder(workOrder)
@@ -124,9 +137,13 @@ public class ProductionResultServiceImpl implements ProductionResultService {
   @Transactional
   //작업지시 status complete으로 수정 시 production result 생성됨
   public void createProductionResultByWorkOrder(WorkOrder workOrder){
+
+    String documentNo = generateDocumentNoWithRetry(LocalDate.now());
+
+
     //생산결과 생성
     ProductionResult productionResult = ProductionResult.builder()
-        //.documentNo(documentNo)
+        .documentNo(documentNo)
         .user(workOrder.getProductionPlan().getUser())
         .departWarehouse(workOrder.getWarehouse())
         .workOrder(workOrder)

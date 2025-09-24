@@ -1,5 +1,6 @@
 package com.domino.smerp.productionresult.dto.response;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.AccessLevel;
@@ -12,5 +13,7 @@ import lombok.Getter;
 @Getter
 public class ProductionResultListResponse {
   @Builder.Default
-  private List<ProductionResultResponse> productionResultResponses = new ArrayList<>();
+  private final List<ProductionResultResponse> productionResultResponses = new ArrayList<>();
+
+  private final BigDecimal totalQty;
 }
