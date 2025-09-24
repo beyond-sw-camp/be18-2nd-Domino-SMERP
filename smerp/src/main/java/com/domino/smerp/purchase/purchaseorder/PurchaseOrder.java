@@ -9,6 +9,7 @@ import org.hibernate.annotations.Comment;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import org.hibernate.annotations.SQLRestriction;
 
 /**
  * 구매(PurchaseOrder) 엔티티 - 발주(RequestOrder)와 1:1 매핑 - 발주 없는 구매는 존재할 수 없음
@@ -21,6 +22,7 @@ import java.time.format.DateTimeFormatter;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Table(name = "purchase_order")
 // @Table(name = "purchase_order" ,indexes = {@Index(name = "idx_po_ro_id", columnList = "ro_id")})
+@SQLRestriction("is_deleted = false")
 public class PurchaseOrder extends BaseEntity {
 
   @Id
