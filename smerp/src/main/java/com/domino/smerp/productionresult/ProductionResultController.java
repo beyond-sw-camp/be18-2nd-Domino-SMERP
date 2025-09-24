@@ -1,6 +1,5 @@
 package com.domino.smerp.productionresult;
 
-import com.domino.smerp.productionresult.dto.request.CreateProductionResultRequest;
 import com.domino.smerp.productionresult.dto.request.UpdateProductionResultRequest;
 import com.domino.smerp.productionresult.dto.response.ProductionResultListResponse;
 import com.domino.smerp.productionresult.dto.response.ProductionResultResponse;
