@@ -91,4 +91,5 @@ public class ProductionPlan extends BaseEntity {
     this.remark = remark;
   }
 
+  public void setQty(BigDecimal qty){ this.qty = qty; }
 }
