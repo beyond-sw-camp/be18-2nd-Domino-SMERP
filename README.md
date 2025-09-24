@@ -349,6 +349,10 @@
 <details>
   <summary><b>생산 관리</b></summary>
   <br>
+
+  <b>📌 생산 계획 등록, 목록/상세 조회, 수정, 삭제<b>
+  ![생산 계획 등록 목록, 상세 조회 수정 삭제](https://github.com/user-attachments/assets/df7a0644-740c-4b0a-b387-c28c43c25846)
+  <br>
   
   <b>📌 로트 등록, 목록/상세 조회, 수정, 삭제<b>
   ![lot 등록 목록,상세 조회 수정 삭제](https://github.com/user-attachments/assets/aaa84eee-96a8-4231-9c0e-a56a62e61aaa)
