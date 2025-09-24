@@ -1,4 +1,3 @@
-
 # <img src="docs/팀 도미노.svg">
 
 
@@ -213,6 +212,54 @@
 
 <details>
   <summary><b>구매 관리</b></summary>
+  <br>
+  <b>📌 구매 요청 등록</b> 
+  <br>
+  <img width="800" height="894" alt="POST구매요청" src="https://github.com/user-attachments/assets/424d3f7d-9231-413f-815c-53dc4c5e52bc" />
+  <br>
+  <hr>
+  
+  <b>📌 발주 등록</b>
+  <br>
+  <img width="800" height="904" alt="POST발주" src="https://github.com/user-attachments/assets/c8665cb2-ac8e-4414-811d-466e36cc0b16" />
+  <br>
+  <hr>
+
+  <b>📌 구매 등록</b> 
+  <br>
+  <img width="800" height="895" alt="POST구매" src="https://github.com/user-attachments/assets/274d33fc-25c9-4f81-bf26-3ddd83e1f0ee" />
+  <br>
+  <hr>
+
+  <b>📌 구매 목록 조회</b> 
+  <br>
+  <img width="800" height="899" alt="GET구매목록" src="https://github.com/user-attachments/assets/99625296-2f43-46e7-a2c9-4d29e758cd70" />
+  <br>
+  <hr>
+
+  <b>📌 구매 상세 조회</b> 
+  <br>
+  <img width="800" height="783" alt="GET구매상세" src="https://github.com/user-attachments/assets/31ad80af-ba7a-4c5c-b7e5-d54f96becdcb" />
+  <br>
+  <hr>
+  
+  <b>📌 구매 현황 조회</b> 
+  <br>
+  <img width="800" height="902" alt="GET구매현황" src="https://github.com/user-attachments/assets/658aebcf-c157-4ddf-8555-14854c9d2626" />
+  <br>
+  <hr>
+
+  <b>📌 구매 수정</b> 
+  <br>
+  <img width="800" height="901" alt="UPDATE구매" src="https://github.com/user-attachments/assets/1b6c3f17-bd6c-479b-b4a2-f376e20b97b7" />
+  <br>
+  <hr>
+
+  <b>📌 구매 삭제</b> 
+  <br>
+  <img width="800" height="903" alt="DELETE구매" src="https://github.com/user-attachments/assets/a9e0c973-a116-43b9-93b4-fb3418d7beb5" />
+  <br>
+  <hr>
 </details>
 
 <details>
