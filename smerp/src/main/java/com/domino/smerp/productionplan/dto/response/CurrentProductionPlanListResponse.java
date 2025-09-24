@@ -1,4 +1,4 @@
-package com.domino.smerp.warehouse;
+package com.domino.smerp.productionplan.dto.response;
 
 import com.domino.smerp.productionplan.constants.Status;
 import com.domino.smerp.productionplan.ProductionPlan;
@@ -22,7 +22,6 @@ public class CurrentProductionPlanListResponse {
   private final String remark;
   private final BigDecimal qty;
   private final String documentNo;
-  private final boolean isDeleted;
 
   public static CurrentProductionPlanListResponse fromEntity(ProductionPlan plan) {
     return CurrentProductionPlanListResponse.builder()
@@ -32,7 +31,6 @@ public class CurrentProductionPlanListResponse {
         .remark(plan.getRemark())
         .qty(plan.getQty())
         .documentNo(plan.getDocumentNo())
-        .isDeleted(plan.isDeleted())
         .build();
   }
 }
