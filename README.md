@@ -228,6 +228,24 @@
 
 <details>
   <summary><b>기초 관리</b></summary>
+  <br>
+  
+  <b>📌 사용자 등록</b>
+  ![사용자 등록](https://github.com/user-attachments/assets/cef73b0b-618a-49d8-81b0-75c50291e971)
+  <br>
+
+  <b>📌 사용자 목록, 상세 조회, 수정</b>
+  ![사용자 목록조회, 상세조회, 수정](https://github.com/user-attachments/assets/f4fb1604-182d-4371-8591-947722f87459)
+  <br>
+
+  <b>📌 거래처 등록</b>
+  ![거래처 등록](https://github.com/user-attachments/assets/077061f1-a7f8-4fb4-9224-573c76b4c44f)
+  <br>
+
+  <b>📌 거래처 목록, 상세 조회, 수정, 삭제</b>
+  ![거래처 목록, 상세 조회, 수정, 삭제](https://github.com/user-attachments/assets/cb29ac8a-b392-4dbf-b93c-b19a441936e7)
+  <br>
+  
 </details>
 
 <details>
