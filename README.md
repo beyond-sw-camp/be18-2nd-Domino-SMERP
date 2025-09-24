@@ -90,7 +90,7 @@
 </details>
 <br>
 
-## <a id="requirements"></a>2. ERD
+## <a id="requirements"></a>2. 시스템 아키텍쳐
  <details>
   <a href="https://www.erdcloud.com/d/7BswmMbtjRa2rshiZ">ERD</a>
 <img width="6040" height="2442" alt="Domino_ERD_보고용" src="https://github.com/user-attachments/assets/e8d5452c-3c64-4eee-a72a-9e2ad7f638bf" />
@@ -99,7 +99,25 @@
 </details>
 <br>
 
-## <a id="requirements"></a>3. 테이블 명세서
+## <a id="requirements"></a>3. WBS
+ <details>
+  <a href="https://www.erdcloud.com/d/7BswmMbtjRa2rshiZ">ERD</a>
+<img width="6040" height="2442" alt="Domino_ERD_보고용" src="https://github.com/user-attachments/assets/e8d5452c-3c64-4eee-a72a-9e2ad7f638bf" />
+
+</div>
+</details>
+<br>
+
+## <a id="requirements"></a>4. ERD
+ <details>
+  <a href="https://www.erdcloud.com/d/7BswmMbtjRa2rshiZ">ERD</a>
+<img width="6040" height="2442" alt="Domino_ERD_보고용" src="https://github.com/user-attachments/assets/e8d5452c-3c64-4eee-a72a-9e2ad7f638bf" />
+
+</div>
+</details>
+<br>
+
+## <a id="requirements"></a>5. 테이블 명세서
 <details>
  <a href="https://docs.google.com/spreadsheets/d/1atr55TXd0Bk1su-PHP-4pP_yuwYqgyo55p04q3iMQh0/edit?gid=421782869#gid=421782869">테이블 명세서</a>
 
@@ -107,7 +125,7 @@
 </details>
 <br>
 
-## <a id="requirements"></a>4. API 명세서
+## <a id="requirements"></a>6. API 명세서
 <details>
  <a href="https://abalone-poppyseed-018.notion.site/254819b5e8c6813795d1ffae47426f4b?v=254819b5e8c6814baf53000c647a6bf3">API 명세서</a>
 
@@ -115,14 +133,14 @@
 </details>
 <br>
 
-## <a id="requirements"></a>5. 화면 및 기능 설계서
+## <a id="requirements"></a>1. 화면 및 기능 설계서
 <details>
  <a href="https://www.figma.com/design/ExNHg393ExldbNN0TACTIc/Project-SMERP?node-id=0-1&t=4y6ryU68AoMk8w1V-1">화면 및 기능 설계서</a>
 </div>
 </details>
 <br>
 
-## <a id="requirements"></a>6. 단위 테스트 결과서
+## <a id="requirements"></a>7. 단위 테스트 결과서
 <details>
   <summary><b>기초 관리</b></summary>
 </details>
