@@ -74,7 +74,7 @@ public class WorkOrderServiceImpl implements WorkOrderService {
   // 전표 생성
   @Transactional
   public String generateDocumentNoWithRetry(LocalDate documentDate) {
-    return documentNoGenerator.generate(documentDate, productionPlanRepository::findMaxSequenceByPrefix);
+    return documentNoGenerator.generate(documentDate, workOrderRepository::findMaxSequenceByPrefix);
   }
 
   //상세 조회

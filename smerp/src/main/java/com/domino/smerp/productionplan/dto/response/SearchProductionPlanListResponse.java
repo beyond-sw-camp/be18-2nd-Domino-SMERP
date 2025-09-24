@@ -1,4 +1,4 @@
-package com.domino.smerp.warehouse;
+package com.domino.smerp.productionplan.dto.response;
 
 import com.domino.smerp.productionplan.constants.Status;
 import com.domino.smerp.productionplan.ProductionPlan;
