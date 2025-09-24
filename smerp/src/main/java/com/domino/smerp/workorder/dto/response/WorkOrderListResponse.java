@@ -1,6 +1,4 @@
 package com.domino.smerp.workorder.dto.response;
-
-import com.domino.smerp.productionresult.dto.response.ProductionResultResponse;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.AccessLevel;
