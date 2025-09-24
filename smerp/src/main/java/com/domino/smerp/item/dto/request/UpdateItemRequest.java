@@ -18,9 +18,9 @@ public class UpdateItemRequest {
   private final Long itemStatusId;
 
   // Optional 수정 가능
-  private final String name;
-  private final String specification;
-  private final String unit;
+  private final String name;          // 품목명
+  private final String specification;  // 규격
+  private final String unit;          // 단위
 
   @DecimalMin(value = "0.0", inclusive = true, message = "입고 단가는 0.0 이상이어야 합니다.")
   private final BigDecimal inboundUnitPrice;

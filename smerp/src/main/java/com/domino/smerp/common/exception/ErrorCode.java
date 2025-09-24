@@ -40,6 +40,14 @@ public enum ErrorCode {
     DUPLICATE_ITEM_CODE(HttpStatus.CONFLICT, "ITEM_CODE_DUPLICATED", "이미 존재하는 품목 코드입니다."),
     ITEM_DELETE_CONFLICT(HttpStatus.CONFLICT, "ITEM_DELETE_CONFLICT", "다른 데이터에서 참조 중이라 품목을 삭제할 수 없습니다.(수불이력)"),
 
+    // bom
+    BOM_REQUIRED(HttpStatus.BAD_REQUEST, "BOM_REQUIRED", "BOM은 필수입니다."),
+    // bom - 404
+    BOM_NOT_FOUND(HttpStatus.NOT_FOUND, "BOM_NOT_FOUND", "존재하지 않는 BOM입니다."),
+    // bom - 409
+    BOM_DUPLICATE_RELATIONSHIP(HttpStatus.CONFLICT, "BOM_DUPLICATE_RELATIONSHIP", "이미 존재하는 BOM 관계입니다."),
+    BOM_CIRCULAR_REFERENCE(HttpStatus.CONFLICT, "BOM_CIRCULAR_REFERENCE", "BOM 관계에서 순환 참조가 발생하여 수정할 수 없습니다."),
+    BOM_DELETE_CONFLICT(HttpStatus.CONFLICT, "BOM_DELETE_CONFLICT", "하위 품목이 존재하여 삭제가 불가능합니다."),
 
     // lot_number - Lot.No 관련 예외 정보
     // lot_number - 400

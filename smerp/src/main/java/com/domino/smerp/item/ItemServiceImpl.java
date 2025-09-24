@@ -138,6 +138,17 @@ public class ItemServiceImpl implements ItemService {
         .orElseThrow(() -> new CustomException(ErrorCode.ITEM_NOT_FOUND));
   }
 
+
+  // 품목 비관적 락 findById
+  @Override
+  @Transactional
+  public Item findItemByIdWithLock(final Long itemId) {
+    return itemRepository.findByIdWithPessimisticLock(itemId)
+        .orElseThrow(() -> new CustomException(ErrorCode.ITEM_NOT_FOUND));
+  }
+
+
+
   // 품목 구분으로 리스트 조회
   @Override
   @Transactional(readOnly = true)
