@@ -50,7 +50,7 @@ public class WorkOrder extends BaseEntity {
   )
   private Warehouse warehouse;
 
-  //품목 - 같은 품목애 대해 여러 작업지시 가능
+  //품목 - 같은 품목에 대해 여러 작업지시 가능
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "item_id",
     foreignKey =  @ForeignKey(ConstraintMode.NO_CONSTRAINT)

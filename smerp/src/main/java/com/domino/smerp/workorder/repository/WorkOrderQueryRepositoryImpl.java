@@ -1,14 +1,12 @@
 package com.domino.smerp.workorder.repository;
 
 import com.domino.smerp.common.util.QuerydslUtils;
-import com.domino.smerp.workorder.WorkOrder;
 import com.domino.smerp.workorder.QWorkOrder;
-import com.domino.smerp.workorder.constants.Status;
+import com.domino.smerp.workorder.WorkOrder;
 import com.domino.smerp.workorder.dto.request.SearchWorkOrderRequest;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.Path;
-import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.util.List;
