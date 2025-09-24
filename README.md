@@ -77,7 +77,82 @@
 16. 회고록
 <br>
 
-## ⭐ 기술 스택
+## <a id="requirements"></a>1. 개요
+<img width="1920" height="1080" alt="개요" src="https://github.com/user-attachments/assets/b3ac8095-be33-491c-9826-d5194ca6484a" />
+<br>
+
+## <a id="requirements"></a>2. 배경
+<details>
+<summary>세부사항</summary>
+<div markdown="1">
+ <a href="https://www.dailypharm.com/Users/News/NewsView.html?ID=245686">2-A. 대웅 ERP 재구축 사례</a>
+  </div>
+  <div markdown="1">
+  <img width="700" height="809" alt="기사2" src="https://github.com/user-attachments/assets/4a6d0b4c-6a71-448a-806e-c670567407c2" />
+</div>
+<div markdown="1">
+  <br>
+ <a href="https://www.mk.co.kr/news/it/9005333">2-B. ERP는 돈 먹는 하마</a>
+</div>
+  <div markdown="1">
+  <img width="700" height="737" alt="기사1" src="https://github.com/user-attachments/assets/e3c33459-8cec-49ed-a8dd-7b808bf37e3a" />
+</div>
+</details>
+<br>
+
+## <a id="requirements"></a>3. 문제 정의
+
+<details>
+<summary>세부사항</summary>
+<div markdown="1">
+  <img width="1920" height="1080" alt="문제정의" src="https://github.com/user-attachments/assets/681d1f3e-572c-4d81-929e-81a1bee22c25" />
+</div>
+</details>
+<br>
+
+## <a id="requirements"></a>4. 프로젝트 배경, 주제 및 소개
+
+<details>
+<summary>세부사항</summary>
+<div markdown="1">
+  <img width="1920" height="1080" alt="프로젝트 배경" src="https://github.com/user-attachments/assets/1d536684-ef5e-4529-8539-75923b9af517" />
+</div>
+</details>
+<br>
+
+## <a id="requirements"></a>5. 유사 서비스
+<details>
+<summary>세부사항</summary>
+<div markdown="1">
+ <a>5-A. 유사서비스 간 차이점</a>
+  </div>
+  <div markdown="1">
+  <img width="1900" height="1080" alt="유사서비스" src="https://github.com/user-attachments/assets/83a61ada-fb16-4ca4-a206-30a51549052b" />
+</div>
+<div markdown="1">
+  <br>
+ <a>5-B. 유사서비스별 특징</a>
+</div>
+  <div markdown="1">
+  <img width="1900" height="1080" alt="유사서비스의 한계" src="https://github.com/user-attachments/assets/71114464-0bd6-4102-a513-2b4a210c023c" />
+</div>
+</details>
+<br>
+
+## <a id="requirements"></a>6. 프로젝트 주요 기능 및 기대 효과
+
+<details>
+<summary>세부사항</summary>
+<div markdown="1">
+ <img width="1920" height="1080" alt="프로젝트 기대효과" src="https://github.com/user-attachments/assets/60a1bab0-71d5-4019-a1dc-d809500c85d5" />
+</div>
+</details>
+<br>
+
+## <a id="requirements"></a>7. 기술 스택
+<details>
+<summary>세부사항</summary>
+  
 ### 📌백엔드
 ![Spring Boot](https://img.shields.io/badge/Spring%20Boot-6DB33F?style=for-the-badge&logo=springboot&logoColor=white)
 ![Spring Security](https://img.shields.io/badge/Spring%20Security-6DB33F?style=for-the-badge&logo=springsecurity&logoColor=white)
@@ -94,79 +169,6 @@
 ### 📌Communication & 협업툴
 ![GitHub](https://img.shields.io/badge/GitHub-181717?style=for-the-badge&logo=github&logoColor=white)
 ![Notion](https://img.shields.io/badge/Notion-000000?style=for-the-badge&logo=notion&logoColor=white)
-
-
-<br>
-
-## <a id="requirements"></a>1. 개요
-<img width="1920" height="1080" alt="개요" src="https://github.com/user-attachments/assets/b3ac8095-be33-491c-9826-d5194ca6484a" />
-<br>
-
-## <a id="requirements"></a>2. 배경
-<details>
-<summary>세부사항</summary>
-<div markdown="1">
- <a href="https://www.dailypharm.com/Users/News/NewsView.html?ID=245686">사례 1. 대웅 ERP 재구축 사례</a>
-  </div>
-  <div markdown="1">
-  <img width="679" height="809" alt="기사2" src="https://github.com/user-attachments/assets/4a6d0b4c-6a71-448a-806e-c670567407c2" />
-</div>
-<div markdown="1">
-  <br>
- <a href="https://www.mk.co.kr/news/it/9005333">사례 2. ERP는 돈 먹는 하마</a>
-</div>
-  <div markdown="1">
-  <img width="735" height="737" alt="기사1" src="https://github.com/user-attachments/assets/e3c33459-8cec-49ed-a8dd-7b808bf37e3a" />
-</div>
-<br>
-
-## <a id="requirements"></a>3. 문제 정의
-
-<details>
-<summary>세부사항</summary>
-<div markdown="1">
-<img width="1920" height="1080" alt="문제정의" src="https://github.com/user-attachments/assets/d144a1e4-56b6-4bbd-b20a-c626764a559a" />
-</div>
-</details>
-<br>
-
-## <a id="requirements"></a>4. 프로젝트 배경, 주제 및 소개
-
-<details>
-<summary>세부사항</summary>
-<div markdown="1">
- <a href="https://docs.google.com/spreadsheets/d/1atr55TXd0Bk1su-PHP-4pP_yuwYqgyo55p04q3iMQh0/edit?gid=726808703#gid=726808703">요구사항 명세서</a>
-</div>
-</details>
-<br>
-
-## <a id="requirements"></a>5. 유사 서비스
-
-<details>
-<summary>세부사항</summary>
-<div markdown="1">
- <a href="https://docs.google.com/spreadsheets/d/1atr55TXd0Bk1su-PHP-4pP_yuwYqgyo55p04q3iMQh0/edit?gid=726808703#gid=726808703">요구사항 명세서</a>
-</div>
-</details>
-<br>
-
-## <a id="requirements"></a>6. 프로젝트 주요 기능 및 기대 효과
-
-<details>
-<summary>세부사항</summary>
-<div markdown="1">
- <a href="https://docs.google.com/spreadsheets/d/1atr55TXd0Bk1su-PHP-4pP_yuwYqgyo55p04q3iMQh0/edit?gid=726808703#gid=726808703">요구사항 명세서</a>
-</div>
-</details>
-<br>
-
-## <a id="requirements"></a>7. 기술 스택
-
-<details>
-<summary>세부사항</summary>
-<div markdown="1">
- <a href="https://docs.google.com/spreadsheets/d/1atr55TXd0Bk1su-PHP-4pP_yuwYqgyo55p04q3iMQh0/edit?gid=726808703#gid=726808703">요구사항 명세서</a>
-</div>
 </details>
 <br>
 
@@ -195,29 +197,42 @@
 <div markdown="1">
  <a href="https://docs.google.com/spreadsheets/d/1atr55TXd0Bk1su-PHP-4pP_yuwYqgyo55p04q3iMQh0/edit?gid=726808703#gid=726808703">요구사항 명세서</a>
 </div>
+  <div markdown="1">
+  <img width="1091" height="773" alt="요구사항명세서" src="https://github.com/user-attachments/assets/52034563-faf1-4910-bb8d-8629f6441224" />
+</div>
 </details>
 <br>
 
 ## <a id="requirements"></a>11. ERD
  <details>
+   <summary>세부사항</summary>
+<div markdown="1">
   <a href="https://www.erdcloud.com/d/7BswmMbtjRa2rshiZ">ERD</a>
-<img width="6040" height="2442" alt="Domino_ERD_보고용" src="https://github.com/user-attachments/assets/e8d5452c-3c64-4eee-a72a-9e2ad7f638bf" />
+  <img width="1919" height="1080" alt="ERD" src="https://github.com/user-attachments/assets/7bb8da01-e135-4386-b2e7-f352228d1930" />
 </div>
 </details>
 <br>
 
 ## <a id="requirements"></a>12. 테이블 명세서
 <details>
+  <summary>세부사항</summary>
+<div markdown="1">
  <a href="https://docs.google.com/spreadsheets/d/1atr55TXd0Bk1su-PHP-4pP_yuwYqgyo55p04q3iMQh0/edit?gid=421782869#gid=421782869">테이블 명세서</a>
-
+</div>
+  <div markdown="1">
+ <img width="1211" height="772" alt="테이블명세서" src="https://github.com/user-attachments/assets/9def6824-2502-4a97-a7a4-7a6a5e946761" />
 </div>
 </details>
 <br>
 
 ## <a id="requirements"></a>13. API 명세서
 <details>
+  <summary>세부사항</summary>
+<div markdown="1">
  <a href="https://abalone-poppyseed-018.notion.site/254819b5e8c6813795d1ffae47426f4b?v=254819b5e8c6814baf53000c647a6bf3">API 명세서</a>
-
+</div>
+  <div markdown="1">
+ <img width="1584" height="894" alt="API명세서" src="https://github.com/user-attachments/assets/3ba9f377-4ca8-400f-8f7f-e2da2de297b7" />
 </div>
 </details>
 <br>
@@ -453,11 +468,15 @@
 <br>
 
 ## <a id="requirements"></a>16. 회고록
-<details>
- <a href="https://www.figma.com/design/LbG41JvpR35x1pO2skQ069/SMERP?node-id=0-1&t=eZnFgf17fhanYC6o-1">화면 및 기능 설계서</a>
+# 회고
 
-</div>
-</details>
+| 조원이름 | 회고 |
+|----------|------|
+|육세윤| 이번 프로젝트는 실무에서 PM으로서 다양한 경험을 쌓아왔음에도 불구하고, DB 설계, 백엔드, 프론트엔드 등 팀원 모두에게 생소한 기술들을 처음부터 함께 익히며 진행해야 했다는 점에서 매우 고무적이었습니다. 특히 JPA와 Gradle 같은 라이브러리를 활용한 개발은 우리 팀에게 처음이었고, ERP 시스템과 각 모듈을 학습하고 이를 실제 개발에 적용해 본 경험은 큰 자산이 되었습니다. 다만, 제 무리한 기획으로 인해 팀원들이 정신적·체력적으로 고생하는 모습을 보며, 다음 파이널 프로젝트에서는 기획 범위를 보다 철저히 조율한 뒤 진행해야겠다는 교훈을 얻었습니다. 실무에서 PM 경험이 있었지만, 개발 PM은 완전히 다른 영역이라는 점을 크게 느낄 수 있는 계기였습니다. 이번 경험을 양분 삼아 앞으로 IT 기획/ 컨설턴트 직무를 꿈꾸는 입장에서 더 성장할 것입니다.|
+|최정필|  |
+|김민준|  |
+|박종원|  |
+|박채연|  |
 <br>
 
 
