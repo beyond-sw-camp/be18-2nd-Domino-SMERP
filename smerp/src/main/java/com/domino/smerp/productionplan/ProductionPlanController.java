@@ -1,15 +1,13 @@
 package com.domino.smerp.productionplan;
 
 import com.domino.smerp.common.dto.PageResponse;
-import com.domino.smerp.lotno.dto.request.SearchLotNumberRequest;
-import com.domino.smerp.lotno.dto.response.LotNumberListResponse;
 import com.domino.smerp.productionplan.dto.request.CreateProductionPlanRequest;
 import com.domino.smerp.productionplan.dto.request.SearchProductionPlanRequest;
 import com.domino.smerp.productionplan.dto.request.UpdateProductionPlanRequest;
-import com.domino.smerp.productionplan.dto.response.CurrentProductionPlanListResponse;
 import com.domino.smerp.productionplan.dto.response.ProductionPlanListResponse;
 import com.domino.smerp.productionplan.dto.response.ProductionPlanResponse;
 import com.domino.smerp.productionplan.service.ProductionPlanService;
+import com.domino.smerp.warehouse.SearchProductionPlanListResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -40,7 +38,7 @@ public class ProductionPlanController {
 
   //검색
   @GetMapping("/search")
-  public ResponseEntity<PageResponse<CurrentProductionPlanListResponse>> getLotNumbers(
+  public ResponseEntity<PageResponse<SearchProductionPlanListResponse>> getLotNumbers(
       final @ModelAttribute SearchProductionPlanRequest keyword,
       final Pageable pageable) {
     return ResponseEntity.ok(productionPlanService.searchProductionPlans(keyword, pageable));
