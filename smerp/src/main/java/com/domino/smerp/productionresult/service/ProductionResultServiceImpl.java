@@ -136,7 +136,7 @@ public class ProductionResultServiceImpl implements ProductionResultService {
   @Override
   @Transactional
   //작업지시 status complete으로 수정 시 production result 생성됨
-  public void createProductionResultByWorkOrder(WorkOrder workOrder){
+  public ProductionResult createProductionResultByWorkOrder(WorkOrder workOrder){
 
     String documentNo = generateDocumentNoWithRetry(LocalDate.now());
 
@@ -155,6 +155,7 @@ public class ProductionResultServiceImpl implements ProductionResultService {
     workOrder.setProductionResult(productionResult);
 
     productionResultRepository.save(productionResult);
+    return productionResult;
   }
 
   //수정

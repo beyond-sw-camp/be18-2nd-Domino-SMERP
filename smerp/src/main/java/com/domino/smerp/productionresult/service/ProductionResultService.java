@@ -1,5 +1,6 @@
 package com.domino.smerp.productionresult.service;
 
+import com.domino.smerp.productionresult.ProductionResult;
 import com.domino.smerp.productionresult.dto.request.CreateProductionResultRequest;
 import com.domino.smerp.productionresult.dto.request.UpdateProductionResultRequest;
 import com.domino.smerp.productionresult.dto.response.ProductionResultListResponse;
@@ -14,7 +15,7 @@ public interface ProductionResultService {
 
   ProductionResultResponse createProductionResult(final CreateProductionResultRequest createProductionResultRequest);
 
-  void createProductionResultByWorkOrder(WorkOrder workOrder);
+  ProductionResult createProductionResultByWorkOrder(WorkOrder workOrder);
 
   ProductionResultResponse updateProductionResult(
       final Long id,
