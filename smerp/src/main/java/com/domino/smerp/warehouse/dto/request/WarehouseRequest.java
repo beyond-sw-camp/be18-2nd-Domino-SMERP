@@ -1,4 +1,4 @@
-package com.domino.smerp.warehouse.dto;
+package com.domino.smerp.warehouse.dto.request;
 
 import com.domino.smerp.warehouse.constants.DivisionType;
 import lombok.AccessLevel;

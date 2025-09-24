@@ -52,11 +52,11 @@ public class Location {
   @Builder.Default
   private boolean filled = false;
 
-  @Column(nullable = false, precision = 12, scale = 2)
+  @Column(nullable = false, precision = 12, scale = 3)
   @Builder.Default
   private BigDecimal maxQty = new BigDecimal("500.00");
 
-  @Column(nullable = false, precision = 12, scale = 2)
+  @Column(nullable = false, precision = 12, scale = 3)
   @Builder.Default
   private BigDecimal curQty = BigDecimal.ZERO;
 
