@@ -1,4 +1,3 @@
-# 📉 Project_SMERP
 
 # <img src="docs/팀 도미노.svg">
 
@@ -121,5 +120,85 @@
  <a href="https://www.figma.com/design/LbG41JvpR35x1pO2skQ069/SMERP?node-id=0-1&t=eZnFgf17fhanYC6o-1">화면 및 기능 설계서</a>
 
 </div>
+</details>
+<br>
+
+## <a id="requirements"></a>6. 단위 테스트 결과서
+<details>
+  <br>
+  
+  <b>📌 주문 등록</b> 
+  <br>
+  <img width="800" height="725" alt="POST주문등록" src="https://github.com/user-attachments/assets/7236b1fa-8259-4ffb-af5a-8f9fdff24394" />
+  <br>
+  <hr>
+  
+  <b>📌 주문 목록 조회</b>
+  <br>
+  <img width="800" height="757" alt="GET주문 조회" src="https://github.com/user-attachments/assets/42133387-c574-4ef1-942c-5dba230561c1" />
+  <br>
+  <hr>
+
+  <b>📌 주문 상세 조회</b> 
+  <br>
+  <img width="800" height="817" alt="GET주문 상세 조회" src="https://github.com/user-attachments/assets/65c8f3d7-3871-4e1a-b118-27fafef1a7bc" />
+  <br>
+  <hr>
+
+  <b>📌 주문 변경</b> 
+  <br>
+<img width="800" height="584" alt="PATCH주문 변경" src="https://github.com/user-attachments/assets/a9c62c3c-2299-4b8b-acb0-2a2dec27c7eb" />
+  <br>
+  <hr>
+
+  <b>📌 주문 삭제</b> 
+  <br>
+  <img width="800" height="500" alt="DELETE주문 삭제" src="https://github.com/user-attachments/assets/9c667502-8867-498e-8594-8bf6c69c57e4" />
+  <br>
+  <hr>
+  
+  <b>📌 주문 현황 조회</b> 
+  <br>
+  <img width="798" height="814" alt="PATCH주문 현황 조회" src="https://github.com/user-attachments/assets/f7b3142c-a3ce-4951-924c-0d7bdabccfaf" />
+  <br>
+  <hr>
+
+</details>
+<br>
+
+## <a id="requirements"></a>7. UI/UX 단위 테스트 결과서
+<details>
+  <br>
+  <b>📌 주문 등록</b>
+  ![주문 등록 (2)](https://github.com/user-attachments/assets/bdcc415e-6a31-445e-9986-5307f209e3e1)
+  <br>
+
+  <b>📌 주문 상세 조회,수정</b>
+  ![주문 상세 조회,수정](https://github.com/user-attachments/assets/b4ccf050-9104-4f20-826a-ca1ce6949eb7)
+  <br>
+
+  <b>📌 주문 삭제<b>
+  ![주문 삭제](https://github.com/user-attachments/assets/58c2ac9a-d36e-4321-8f33-07e7c8612312)
+  <br>
+
+  <b>📌 판매 등록</b>
+  ![판매 등록](https://github.com/user-attachments/assets/3ecfa5c9-29ca-4977-a48c-b2ea9d42f7f3)
+  <br>
+
+  <b>📌 판매 상세 조회, 수정</b>
+  ![판매 상세 조회,수정](https://github.com/user-attachments/assets/b8de6fd1-8c15-4afa-a7c7-41957e1dffd8)
+  <br>
+
+  <b>📌 판매 목록,현황 조회</b>
+  ![판매 목록,현황 조회](https://github.com/user-attachments/assets/6725782f-2c8b-4452-be32-dc19e5f514a9)
+  <br>
+
+  <b>📌 반품 등록<b>
+  ![반품 현황](https://github.com/user-attachments/assets/dbacde11-7388-4579-88df-dcdc2f5a2b2d)
+  <br>
+
+  <b>📌 반품 현황 조회<b>
+  ![반품 현황](https://github.com/user-attachments/assets/4d0826d8-b385-49f0-9eb3-5c69115c9ce1)
+  <br>
 </details>
 <br>
