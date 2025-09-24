@@ -3,6 +3,7 @@ package com.domino.smerp.workorder;
 import com.domino.smerp.common.BaseEntity;
 import com.domino.smerp.item.Item;
 import com.domino.smerp.productionplan.ProductionPlan;
+import com.domino.smerp.productionresult.ProductionResult;
 import com.domino.smerp.warehouse.Warehouse;
 import com.domino.smerp.workorder.constants.Status;
 import jakarta.persistence.CascadeType;
@@ -65,13 +66,11 @@ public class WorkOrder extends BaseEntity {
   )
   private ProductionPlan productionPlan;
 
-  /*
+
   //생산실적
   @OneToOne(mappedBy = "workOrder", cascade = CascadeType.REMOVE, orphanRemoval = true)
   private ProductionResult productionResult;
 
-
-   */
 
   @Column(nullable = false)
   @Builder.Default
@@ -103,7 +102,6 @@ public class WorkOrder extends BaseEntity {
     this.isDeleted = isDeleted;
   }
 
-  /*
   public void setProductionResult(ProductionResult productionResult) {
     this.productionResult = productionResult;
     if (productionResult != null) {
@@ -111,5 +109,4 @@ public class WorkOrder extends BaseEntity {
     }
   }
 
-   */
 }
