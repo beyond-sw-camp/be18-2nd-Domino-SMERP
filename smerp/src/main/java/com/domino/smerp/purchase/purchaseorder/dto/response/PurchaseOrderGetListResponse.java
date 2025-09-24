@@ -15,6 +15,9 @@ import lombok.Getter;
 @Builder
 @AllArgsConstructor(access = lombok.AccessLevel.PRIVATE)
 public class PurchaseOrderGetListResponse {
+
+    private final Long poId;
+
     private final String documentNo;
 
     private String empNo; // 사번
@@ -36,6 +39,7 @@ public class PurchaseOrderGetListResponse {
 
     public static PurchaseOrderGetListResponse fromEntity(PurchaseOrder purchaseOrder) {
         return PurchaseOrderGetListResponse.builder()
+                .poId(purchaseOrder.getPoId())
                 .documentNo(purchaseOrder.getDocumentNo())  // 전표번호
                 .empNo(purchaseOrder.getRequestOrder().getUser().getEmpNo()) // 담당자 사번
                 .companyName(purchaseOrder.getRequestOrder().getClient().getCompanyName()) // 거래처명
