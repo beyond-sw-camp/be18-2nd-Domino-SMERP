@@ -125,8 +125,12 @@
 
 ## <a id="requirements"></a>6. 단위 테스트 결과서
 <details>
+  <summary><b>기초 관리</b></summary>
+</details>
+
+<details>
+    <summary><b>영업 관리</b></summary>
   <br>
-  
   <b>📌 주문 등록</b> 
   <br>
   <img width="800" height="725" alt="POST주문등록" src="https://github.com/user-attachments/assets/7236b1fa-8259-4ffb-af5a-8f9fdff24394" />
@@ -147,7 +151,7 @@
 
   <b>📌 주문 변경</b> 
   <br>
-<img width="800" height="584" alt="PATCH주문 변경" src="https://github.com/user-attachments/assets/a9c62c3c-2299-4b8b-acb0-2a2dec27c7eb" />
+  <img width="800" height="584" alt="PATCH주문 변경" src="https://github.com/user-attachments/assets/a9c62c3c-2299-4b8b-acb0-2a2dec27c7eb" />
   <br>
   <hr>
 
@@ -163,11 +167,71 @@
   <br>
   <hr>
 
+  <b>📌 판매 수정</b> 
+  <br>
+  <img width="800" height="400" alt="POST판매 등록" src="https://github.com/user-attachments/assets/3a8d9eb1-b0c4-4012-828a-7959e30c1d66" />
+  <br>
+  <hr>
+
+  <b>📌 판매 목록 조회</b> 
+  <br>
+  <img width="800" height="817" alt="GET판매 조회" src="https://github.com/user-attachments/assets/619cdded-0448-46b3-a4c2-d8be6be6816c" />
+  <br>
+  <hr>
+
+  <b>📌 판매 상세 조회</b> 
+  <br>
+  <img width="800" height="900" alt="GET판매 상세 조회" src="https://github.com/user-attachments/assets/26cf183a-987b-4abc-a78c-847849b37c63" />
+  <br>
+  <hr>
+
+  <b>📌 판매 수정</b> 
+  <br>
+  <img width="800" height="400" alt="PATCH판매 수정" src="https://github.com/user-attachments/assets/18297cb7-4b6d-4b20-bd9b-6fd55abfe33f" />
+  <br>
+  <hr>
+
+  <b>📌 판매 현황</b> 
+  <br>
+  <img width="800" height="900" alt="GET 판매 현황 조회" src="https://github.com/user-attachments/assets/ff2e10a0-3d4b-41db-a9c2-aab202f0f769" />
+  <br>
+  <hr>
+
+  <b>📌 반품 등록</b> 
+  <br>
+  <img width="800" height="470" alt="POST반품 등록" src="https://github.com/user-attachments/assets/eb186b47-cdaf-4b1b-9fb8-0879ef9c9877" />
+  <br>
+  <hr>  
+
+  <b>📌 반품 현황</b> 
+  <br>
+  <img width="800" height="819" alt="GET반품 현황 조회" src="https://github.com/user-attachments/assets/14144d88-6b07-4358-a65e-d5b0060a59da" />
+  <br>
+  <hr>
 </details>
-<br>
+
+<details>
+  <summary><b>구매 관리</b></summary>
+</details>
+
+<details>
+  <summary><b>생산 관리</b></summary>
+</details>
+
+<details>
+  <summary><b>기타 관리</b></summary>
+</details>
+
+
 
 ## <a id="requirements"></a>7. UI/UX 단위 테스트 결과서
+
 <details>
+  <summary><b>기초 관리</b></summary>
+</details>
+
+<details>
+  <summary><b>영업 관리</b></summary>
   <br>
   
   <b>📌 주문 등록</b>
@@ -202,4 +266,15 @@
   ![반품 현황](https://github.com/user-attachments/assets/4d0826d8-b385-49f0-9eb3-5c69115c9ce1)
   <br>
 </details>
-<br>
+
+<details>
+  <summary><b>구매 관리</b></summary>
+</details>
+
+<details>
+  <summary><b>생산 관리</b></summary>
+</details>
+
+<details>
+  <summary><b>기타 관리</b></summary>
+</details>
