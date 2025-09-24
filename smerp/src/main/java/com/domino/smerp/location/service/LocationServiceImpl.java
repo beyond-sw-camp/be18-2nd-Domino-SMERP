@@ -7,7 +7,7 @@ import com.domino.smerp.location.dto.response.LocationIdListResponse;
 import com.domino.smerp.location.dto.response.LocationListResponse;
 import com.domino.smerp.location.dto.response.LocationResponse;
 import com.domino.smerp.warehouse.Warehouse;
-import com.domino.smerp.warehouse.WarehouseRepository;
+import com.domino.smerp.warehouse.repository.WarehouseRepository;
 import jakarta.persistence.EntityNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
@@ -62,7 +62,7 @@ public class LocationServiceImpl implements LocationService {
 
   }
 
-  public List<String> parseFixedRange(final String prefix, final int start, final int end) {
+  private List<String> parseFixedRange(final String prefix, final int start, final int end) {
     List<String> result = new ArrayList<>();
     for (int i = start; i <= end; i++) {
       if (i < 10) { //10 밑 R01..
@@ -74,7 +74,7 @@ public class LocationServiceImpl implements LocationService {
     return result;
   }
 
-  public String parseId(final String prefix, final Long id, final Integer padding) {
+  private String parseId(final String prefix, final Long id, final Integer padding) {
 
     String result = "";
     if (id < 10) { //10 밑 W01..
@@ -85,7 +85,7 @@ public class LocationServiceImpl implements LocationService {
     return result;
   }
 
-  public String generateRfid(final String w, final String r, final String l, final String b) {
+  private String generateRfid(final String w, final String r, final String l, final String b) {
     String rfid = "RFID" + "-" + w + "-" + r + "-" + l + "-" + b;
     return rfid;
   }
@@ -159,7 +159,7 @@ public class LocationServiceImpl implements LocationService {
   }
 
 
-  public LocationResponse toLocationResponse(final Location location) {
+  private LocationResponse toLocationResponse(final Location location) {
     return LocationResponse.builder()
         .id(location.getId())
         .rackNo(location.getRackNo())

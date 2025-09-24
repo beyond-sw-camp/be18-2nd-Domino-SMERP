@@ -1,15 +1,21 @@
 package com.domino.smerp.warehouse.service;
 
+import com.domino.smerp.common.dto.PageResponse;
 import com.domino.smerp.location.service.LocationService;
+import com.domino.smerp.lotno.dto.request.SearchLotNumberRequest;
+import com.domino.smerp.lotno.dto.response.LotNumberListResponse;
 import com.domino.smerp.warehouse.Warehouse;
-import com.domino.smerp.warehouse.WarehouseRepository;
-import com.domino.smerp.warehouse.dto.WarehouseRequest;
+import com.domino.smerp.warehouse.dto.request.SearchWarehouseRequest;
+import com.domino.smerp.warehouse.dto.response.WarehouseListResponse;
+import com.domino.smerp.warehouse.repository.WarehouseRepository;
+import com.domino.smerp.warehouse.dto.request.WarehouseRequest;
 import com.domino.smerp.warehouse.dto.response.WarehouseIdListResponse;
 import com.domino.smerp.warehouse.dto.response.WarehouseResponse;
 import jakarta.persistence.EntityNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -45,6 +51,18 @@ public class WarehouseServiceImpl implements WarehouseService {
     }
 
     return warehouseResponses;
+  }
+
+
+  @Override
+  @Transactional(readOnly = true)
+  public PageResponse<WarehouseListResponse> searchWarehouses(
+      final SearchWarehouseRequest keyword,
+      final Pageable pageable)
+  {
+    return PageResponse.from(
+        warehouseRepository.searchWarehouses(keyword, pageable)
+            .map(WarehouseListResponse::fromEntity));
   }
 
   @Override
