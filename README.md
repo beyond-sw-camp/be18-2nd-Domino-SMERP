@@ -118,7 +118,6 @@
 ## <a id="requirements"></a>5. 화면 및 기능 설계서
 <details>
  <a href="https://www.figma.com/design/ExNHg393ExldbNN0TACTIc/Project-SMERP?node-id=0-1&t=4y6ryU68AoMk8w1V-1">화면 및 기능 설계서</a>
-
 </div>
 </details>
 <br>
@@ -264,6 +263,84 @@
 
 <details>
   <summary><b>생산 관리</b></summary>
+  <b>📌 창고 등록</b> 
+  <br>
+  <img width="1198" height="767" alt="POST창고" src="https://github.com/user-attachments/assets/5accce24-edb6-4c73-ba9f-0921d30a6d67" />
+  <br>
+  <hr>
+  
+  <b>📌 창고 수정</b> 
+  <br>
+  <img width="1182" height="773" alt="UPDATE창고" src="https://github.com/user-attachments/assets/167087ed-322b-4a2b-8d40-b007eac8206d" />
+  <br>
+  <hr>
+
+  <b>📌 창고 목록 조회</b> 
+  <br>
+  <img width="1131" height="771" alt="GET창고목록" src="https://github.com/user-attachments/assets/b37e57ab-adbb-4f89-ad30-ef44b088dcb4" />
+  <br>
+  <hr>
+
+  <b>📌 창고 삭제</b> 
+  <br>
+  <img width="1145" height="580" alt="DELETE창고" src="https://github.com/user-attachments/assets/88fddbbb-b485-4333-b6e8-5633c5a152cb" />
+  <br>
+  <hr>
+  
+  <br>
+  <b>📌 생산 계획 등록</b> 
+  <br>
+  <img width="1167" height="752" alt="POST생산계획" src="https://github.com/user-attachments/assets/ae59235e-2b06-4255-af87-5669d4fcf24d" />
+  <br>
+  <hr>
+  
+  <b>📌 생산 계획 수정</b>
+  <br>
+  <img width="1159" height="732" alt="UPDATE생산계획" src="https://github.com/user-attachments/assets/d572cc65-3eac-4d61-a074-00bc5ec743c4" />
+  <br>
+  <hr>
+
+  <b>📌 생산 목록 조회</b> 
+  <br>
+  <img width="1144" height="786" alt="GET생산목록" src="https://github.com/user-attachments/assets/1093db84-113e-4e31-9b73-b1431aa05800" />
+  <br>
+  <hr>
+
+  <b>📌 생산 계획 삭제</b> 
+  <br>
+  <img width="1161" height="794" alt="DELETE생산계획" src="https://github.com/user-attachments/assets/33566a89-8961-43d0-853f-8896040b37f0" />
+  <br>
+  <hr>
+
+  <b>📌 작업 지시 등록</b> 
+  <br>
+  <img width="1158" height="781" alt="POST작업지시" src="https://github.com/user-attachments/assets/9b87e3aa-5412-4423-a6bd-ae13f5ed7045" />
+  <br>
+  <hr>
+  
+  <b>📌 작업 지시 수정</b> 
+  <br>
+  <img width="1156" height="771" alt="UPDATE작업지시" src="https://github.com/user-attachments/assets/c90879c0-a521-4033-96de-5fd557a785f7" />
+  <br>
+  <hr>
+
+  <b>📌 작업 지시 목록 조회</b> 
+  <br>
+  <img width="1117" height="780" alt="GET작업지시목록" src="https://github.com/user-attachments/assets/4df43eed-373a-4e22-9a4a-22d8922b3cb3" />
+  <br>
+  <hr>
+
+  <b>📌 작업 지시 삭제</b> 
+  <br>
+  <img width="1179" height="658" alt="DELETE작업지시" src="https://github.com/user-attachments/assets/41ef02a2-c08b-430f-97ad-ce8b50557c33" />
+  <br>
+  <hr>
+
+  <b>📌 생산 실적 현황 조회</b> 
+  <br>
+  <img width="800" height="817" alt="GET판매 조회" src="https://github.com/user-attachments/assets/619cdded-0448-46b3-a4c2-d8be6be6816c" />
+  <br>
+  <hr>
 </details>
 
 <details>
