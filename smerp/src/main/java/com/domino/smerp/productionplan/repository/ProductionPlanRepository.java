@@ -29,9 +29,9 @@ public interface ProductionPlanRepository extends JpaRepository<ProductionPlan, 
   );
 */
 
-  @Query(value = "SELECT MAX(CAST(SUBSTRING_INDEX(o.document_no, '-', -1) AS UNSIGNED)) " +
-      "FROM `order` o " +
-      "WHERE o.document_no LIKE CONCAT(:prefix, '%')",
+  @Query(value = "SELECT MAX(CAST(SUBSTRING_INDEX(p.document_no, '-', -1) AS UNSIGNED)) " +
+      "FROM `production_plan` p " +
+      "WHERE p.document_no LIKE CONCAT(:prefix, '%')",
       nativeQuery = true)
   Optional<Integer> findMaxSequenceByPrefix(@Param("prefix") String prefix);
 
