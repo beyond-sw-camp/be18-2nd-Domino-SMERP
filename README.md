@@ -429,6 +429,16 @@
 
 <details>
   <summary><b>구매 관리</b></summary>
+  <br>
+
+  <b>📌 발주 계획 등록, 목록/상세 조회, 수정, 삭제<b>
+  ![발주 등록 목록,상세 조회 수정 삭제](https://github.com/user-attachments/assets/da171b8d-4201-4c3f-b5d7-f0f253e7477d)
+  <br>
+
+  <b>📌 구매 등록, 목록/상세 조회, 수정<b>
+  ![구매 등록 목록, 상세 조회 수정](https://github.com/user-attachments/assets/f7928a8c-2b89-4bba-82b3-323fb11049b9)
+  <br>
+  
 </details>
 
 <details>
