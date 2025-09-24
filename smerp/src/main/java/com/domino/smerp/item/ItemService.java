@@ -41,6 +41,9 @@ public interface ItemService {
 
   Item findItemById(final Long itemId);
 
+  // 비관적 락
+  Item findItemByIdWithLock(final Long itemId);
+
   List<Item> findItemByStatus(final ItemStatus itemStatus);
 
   Item findItemByName(final String name);

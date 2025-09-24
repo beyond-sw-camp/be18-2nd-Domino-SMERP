@@ -12,6 +12,7 @@ import com.domino.smerp.lotno.dto.response.LotNumberDetailResponse;
 import com.domino.smerp.lotno.dto.response.LotNumberListResponse;
 import com.domino.smerp.lotno.dto.response.LotNumberSimpleResponse;
 import com.domino.smerp.lotno.repository.LotNumberRepository;
+import java.math.BigDecimal;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
@@ -118,7 +119,9 @@ public class LotNumberServiceImpl implements LotNumberService {
 
   // TODO: count 굳이 필요한지 생각하기, 추후 품목명 -> 품목코드 기준으로 바꿀 것
   // Lot.No 이름을 생성하는 헬퍼 메소드
-  private String generateLotNumberName(final Instant lotInstant, final Item item) {
+  @Override
+  @Transactional
+  public String generateLotNumberName(final Instant lotInstant, final Item item) {
 
     // 1. 품목명에서 영문과 숫자만 추출 (아직 한글은 구현 못 함)
     final String nameEnglishAndNumbers = item.getName().replaceAll("[^a-zA-Z0-9]", "")
@@ -157,6 +160,26 @@ public class LotNumberServiceImpl implements LotNumberService {
     }
 
     return newLotNumberName;
+  }
+
+  @Override
+  @Transactional
+  public LotNumber createLotNumberForStock(final Item item, final BigDecimal qty) {
+    //로트 넘버
+    CreateLotNumberRequest createLotNumberRequest = CreateLotNumberRequest.builder()
+        .itemId(item.getItemId())
+        .lotInstant(Instant.now())
+        .qty(qty) //총 생산량
+        .status("ACTIVE")
+        .build();
+
+    String name = generateLotNumberName(createLotNumberRequest.getLotInstant(), item);
+
+    LotNumber lotNumber = LotNumber.create(createLotNumberRequest, item, name);
+
+    lotNumberRepository.save(lotNumber);
+
+    return lotNumber;
   }
 
 }
