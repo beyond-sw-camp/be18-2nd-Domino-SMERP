@@ -56,6 +56,7 @@
     </tr>
     </tbody>
 </table>
+<br>
          
 ## 📚 목차
 1. 개요
@@ -98,23 +99,25 @@
 <br>
 
 ## <a id="requirements"></a>1. 개요
-
-<details>
-<summary>세부사항</summary>
-<div markdown="1">
- <a href="https://docs.google.com/spreadsheets/d/1atr55TXd0Bk1su-PHP-4pP_yuwYqgyo55p04q3iMQh0/edit?gid=726808703#gid=726808703">요구사항 명세서</a>
-</div>
-</details>
+<img width="1920" height="1080" alt="개요" src="https://github.com/user-attachments/assets/b3ac8095-be33-491c-9826-d5194ca6484a" />
 <br>
 
 ## <a id="requirements"></a>2. 배경
-
 <details>
 <summary>세부사항</summary>
 <div markdown="1">
- <a href="https://docs.google.com/spreadsheets/d/1atr55TXd0Bk1su-PHP-4pP_yuwYqgyo55p04q3iMQh0/edit?gid=726808703#gid=726808703">요구사항 명세서</a>
+ <a href="https://www.dailypharm.com/Users/News/NewsView.html?ID=245686">사례 1. 대웅 ERP 재구축 사례</a>
+  </div>
+  <div markdown="1">
+  <img width="679" height="809" alt="기사2" src="https://github.com/user-attachments/assets/4a6d0b4c-6a71-448a-806e-c670567407c2" />
 </div>
-</details>
+<div markdown="1">
+  <br>
+ <a href="https://www.mk.co.kr/news/it/9005333">사례 2. ERP는 돈 먹는 하마</a>
+</div>
+  <div markdown="1">
+  <img width="735" height="737" alt="기사1" src="https://github.com/user-attachments/assets/e3c33459-8cec-49ed-a8dd-7b808bf37e3a" />
+</div>
 <br>
 
 ## <a id="requirements"></a>3. 문제 정의
@@ -122,7 +125,7 @@
 <details>
 <summary>세부사항</summary>
 <div markdown="1">
- <a href="https://docs.google.com/spreadsheets/d/1atr55TXd0Bk1su-PHP-4pP_yuwYqgyo55p04q3iMQh0/edit?gid=726808703#gid=726808703">요구사항 명세서</a>
+<img width="1920" height="1080" alt="문제정의" src="https://github.com/user-attachments/assets/d144a1e4-56b6-4bbd-b20a-c626764a559a" />
 </div>
 </details>
 <br>
@@ -168,12 +171,12 @@
 <br>
 
 ## <a id="requirements"></a>8. WBS
-
 <details>
 <summary>세부사항</summary>
 <div markdown="1">
- <a href="https://docs.google.com/spreadsheets/d/1atr55TXd0Bk1su-PHP-4pP_yuwYqgyo55p04q3iMQh0/edit?gid=726808703#gid=726808703">요구사항 명세서</a>
+ <a href="https://docs.google.com/spreadsheets/d/1atr55TXd0Bk1su-PHP-4pP_yuwYqgyo55p04q3iMQh0/edit?gid=726808703#gid=726808703">WBS 스프레드 시트</a>
 </div>
+<img width="1665" height="756" alt="WBS" src="https://github.com/user-attachments/assets/208adf64-1284-424e-afdb-15ae2d925a71" />
 </details>
 <br>
 
