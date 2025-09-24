@@ -1,7 +1,7 @@
-# <img src="docs/팀 도미노.svg">
-# be18-2nd-Team_Domino-project
-
 # 📉 Project_SMERP
+
+# <img src="docs/팀 도미노.svg">
+
 
 ## ✨팀원✨
 <table style="width:100%;">
@@ -73,6 +73,7 @@
 
 ## <a id="requirements"></a>2. ERD
  <details>
+  <a href="https://www.erdcloud.com/d/DoDGNTmSjS7EYKnFs">ERD</a>
 <img width="4199" height="2042" alt="Domino_SMERP_ERD" src="https://github.com/user-attachments/assets/67e6a031-d88c-4ec8-a015-5e49f9fcbb5d" />
 </div>
 </details>
@@ -81,6 +82,22 @@
 ## <a id="requirements"></a>3. 테이블 명세서
 <details>
  <a href="https://docs.google.com/spreadsheets/d/1atr55TXd0Bk1su-PHP-4pP_yuwYqgyo55p04q3iMQh0/edit?gid=421782869#gid=421782869">테이블 명세서</a>
+
+</div>
+</details>
+<br>
+
+## <a id="requirements"></a>4. API 명세서
+<details>
+ <a href="https://abalone-poppyseed-018.notion.site/254819b5e8c6813795d1ffae47426f4b?v=254819b5e8c6814baf53000c647a6bf3">API 명세서</a>
+
+</div>
+</details>
+<br>
+
+## <a id="requirements"></a>5. 화면 및 기능 설계서
+<details>
+ <a href="https://www.figma.com/design/LbG41JvpR35x1pO2skQ069/SMERP?node-id=0-1&t=eZnFgf17fhanYC6o-1">화면 및 기능 설계서</a>
 
 </div>
 </details>
