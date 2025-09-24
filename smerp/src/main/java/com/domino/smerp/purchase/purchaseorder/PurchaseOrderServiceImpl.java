@@ -5,22 +5,27 @@ import com.domino.smerp.purchase.purchaseorder.dto.request.PurchaseOrderCreateRe
 import com.domino.smerp.purchase.purchaseorder.dto.request.PurchaseOrderUpdateRequest;
 import com.domino.smerp.purchase.purchaseorder.dto.request.SearchPurchaseOrderRequest;
 import com.domino.smerp.purchase.purchaseorder.dto.request.SearchSummaryPurchaseOrderRequest;
-import com.domino.smerp.purchase.purchaseorder.dto.response.*;
+import com.domino.smerp.purchase.purchaseorder.dto.response.PurchaseOrderCreateResponse;
+import com.domino.smerp.purchase.purchaseorder.dto.response.PurchaseOrderDeleteResponse;
+import com.domino.smerp.purchase.purchaseorder.dto.response.PurchaseOrderDetailItemResponse;
+import com.domino.smerp.purchase.purchaseorder.dto.response.PurchaseOrderGetDetailResponse;
+import com.domino.smerp.purchase.purchaseorder.dto.response.PurchaseOrderGetListResponse;
+import com.domino.smerp.purchase.purchaseorder.dto.response.PurchaseOrderUpdateResponse;
+import com.domino.smerp.purchase.purchaseorder.dto.response.SummaryPurchaseOrderResponse;
 import com.domino.smerp.purchase.purchaseorder.repository.PurchaseOrderRepository;
 import com.domino.smerp.purchase.requestorder.RequestOrder;
 import com.domino.smerp.purchase.requestorder.repository.RequestOrderRepository;
 import jakarta.persistence.EntityNotFoundException;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -39,8 +44,14 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
         .orElseThrow(() -> new EntityNotFoundException("발주 전표를 조회할 수 없습니다."));
 
     // 자동 계산 로직
-      BigDecimal qty = requestOrder.getItems().get(0).getQty();
-      BigDecimal inboundUnitPrice = requestOrder.getItems().get(0).getInboundUnitPrice();
+      BigDecimal qty = requestOrder.getItems()
+                                   .stream()
+                                   .map(item -> item.getQty())
+                                   .reduce(BigDecimal.ZERO, BigDecimal::add);
+      BigDecimal inboundUnitPrice = requestOrder.getItems()
+                                                .stream()
+                                                .map(item -> item.getInboundUnitPrice())
+                                                .reduce(BigDecimal.ZERO, BigDecimal::add);
 
       BigDecimal surtax = qty.multiply(inboundUnitPrice).multiply(BigDecimal.valueOf(0.1));
       BigDecimal price = qty.multiply(inboundUnitPrice).add(surtax);
