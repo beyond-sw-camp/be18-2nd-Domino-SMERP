@@ -25,14 +25,8 @@ public class CreateWorkOrderRequest {
   //계획수량
   private final BigDecimal planQty;
 
-  //생산수량
-  private final BigDecimal producedQty;
-
   //계획된 작업일
   private final Instant planAt;
-
-  //실제 작업일
-  private final Instant producedAt;
 
   private final String factoryName;
 
