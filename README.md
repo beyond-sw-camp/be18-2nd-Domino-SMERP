@@ -169,8 +169,9 @@
 ## <a id="requirements"></a>7. UI/UX 단위 테스트 결과서
 <details>
   <br>
+  
   <b>📌 주문 등록</b>
-  ![주문 등록 (2)](https://github.com/user-attachments/assets/bdcc415e-6a31-445e-9986-5307f209e3e1)
+  ![주문 등록 (2)](https://github.com/user-attachments/assets/2fa9a9f4-7445-4714-bf6b-e3649080562f)
   <br>
 
   <b>📌 주문 상세 조회,수정</b>
