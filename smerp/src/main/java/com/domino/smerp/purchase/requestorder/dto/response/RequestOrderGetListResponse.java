@@ -17,6 +17,9 @@ import java.util.List;
 @Builder
 @AllArgsConstructor(access = lombok.AccessLevel.PRIVATE)
 public class RequestOrderGetListResponse {
+
+    private final Long roId;
+
     private final String documentNo;
 
     private String empNo; // 사번
@@ -54,6 +57,7 @@ public class RequestOrderGetListResponse {
         }
 
         return RequestOrderGetListResponse.builder()
+                .roId(entity.getRoId())
                 .empNo(entity.getUser().getEmpNo())
                 .companyName(entity.getClient().getCompanyName())
                 .itemName(itemName)
