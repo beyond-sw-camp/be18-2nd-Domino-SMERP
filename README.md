@@ -348,6 +348,12 @@
 
 <details>
   <summary><b>생산 관리</b></summary>
+  <br>
+  
+  <b>📌 로트 등록, 목록/상세 조회, 수정, 삭제<b>
+  ![lot 등록 목록,상세 조회 수정 삭제](https://github.com/user-attachments/assets/aaa84eee-96a8-4231-9c0e-a56a62e61aaa)
+  <br>
+  
 </details>
 
 <details>
