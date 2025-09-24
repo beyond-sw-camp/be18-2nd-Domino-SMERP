@@ -1,14 +1,21 @@
 package com.domino.smerp.warehouse.service;
 
+import com.domino.smerp.common.dto.PageResponse;
+import com.domino.smerp.location.service.LocationService;
+import com.domino.smerp.lotno.dto.request.SearchLotNumberRequest;
+import com.domino.smerp.lotno.dto.response.LotNumberListResponse;
 import com.domino.smerp.warehouse.Warehouse;
-import com.domino.smerp.warehouse.WarehouseRepository;
-import com.domino.smerp.warehouse.dto.WarehouseRequest;
+import com.domino.smerp.warehouse.dto.request.SearchWarehouseRequest;
+import com.domino.smerp.warehouse.dto.response.WarehouseListResponse;
+import com.domino.smerp.warehouse.repository.WarehouseRepository;
+import com.domino.smerp.warehouse.dto.request.WarehouseRequest;
 import com.domino.smerp.warehouse.dto.response.WarehouseIdListResponse;
 import com.domino.smerp.warehouse.dto.response.WarehouseResponse;
 import jakarta.persistence.EntityNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,7 +25,7 @@ public class WarehouseServiceImpl implements WarehouseService {
 
   private final WarehouseRepository warehouseRepository;
 
-  //private final LocationService locationService;
+  private final LocationService locationService;
 
   @Override
   @Transactional(readOnly = true)
@@ -46,6 +53,18 @@ public class WarehouseServiceImpl implements WarehouseService {
     return warehouseResponses;
   }
 
+
+  @Override
+  @Transactional(readOnly = true)
+  public PageResponse<WarehouseListResponse> searchWarehouses(
+      final SearchWarehouseRequest keyword,
+      final Pageable pageable)
+  {
+    return PageResponse.from(
+        warehouseRepository.searchWarehouses(keyword, pageable)
+            .map(WarehouseListResponse::fromEntity));
+  }
+
   @Override
   @Transactional
   public void deleteWarehouse(final Long id) {
@@ -70,7 +89,7 @@ public class WarehouseServiceImpl implements WarehouseService {
     warehouseRepository.save(warehouse);
 
     //기본 위치 생성해줘야함
-    //locationService.createLocation(warehouse.getId());
+    locationService.createLocation(warehouse.getId());
 
     return toWarehouseResponse(warehouse);
   }
@@ -93,7 +112,7 @@ public class WarehouseServiceImpl implements WarehouseService {
 
     return toWarehouseResponse(warehouse);
   }
-/*
+
   @Override
   @Transactional(readOnly = true)
   public WarehouseIdListResponse getAllUnFilledWarehouses() {
@@ -109,7 +128,7 @@ public class WarehouseServiceImpl implements WarehouseService {
 
     return warehouseIdListResponse;
   }
-*/
+
   @Override
   public WarehouseResponse toWarehouseResponse(final Warehouse warehouse) {
     WarehouseResponse warehouseResponse = WarehouseResponse.builder()
