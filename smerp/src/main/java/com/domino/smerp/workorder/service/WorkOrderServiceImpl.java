@@ -296,7 +296,7 @@ public class WorkOrderServiceImpl implements WorkOrderService {
 
     if(updatedWorkOrder.getStatus() == Status.APPROVED) {
 
-      ProductionResult productionResult = productionResultService.createProductionResultByWorkOrder(updatedWorkOrder);
+      ProductionResult productionResult = productionResultService.createProductionResultByWorkOrder(updatedWorkOrder, updateWorkOrderRequest.getProducedQty());
       updatedWorkOrder.setProductionResult(productionResult);
       //stock movement 저장은 produce stock에서
       //stockMovementService.createProduceStockMovement(workOrder);
@@ -376,6 +376,7 @@ public class WorkOrderServiceImpl implements WorkOrderService {
         .planAt(workOrder.getPlanAt() != null ?
             workOrder.getPlanAt() : null) //null 가능
         .producedAt(producedAt)
+        .remark(workOrder.getProductionPlan().getRemark())
         .build();
   }
 

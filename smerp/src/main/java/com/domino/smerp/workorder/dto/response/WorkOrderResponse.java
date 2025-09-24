@@ -46,4 +46,6 @@ public class WorkOrderResponse {
 
   private final Instant producedAt;
 
+  private final String remark;
+
 }

@@ -136,7 +136,8 @@ public class ProductionResultServiceImpl implements ProductionResultService {
   @Override
   @Transactional
   //작업지시 status complete으로 수정 시 production result 생성됨
-  public ProductionResult createProductionResultByWorkOrder(WorkOrder workOrder){
+  public ProductionResult createProductionResultByWorkOrder(
+      WorkOrder workOrder, BigDecimal producedQty){
 
     String documentNo = generateDocumentNoWithRetry(LocalDate.now());
 
@@ -148,7 +149,7 @@ public class ProductionResultServiceImpl implements ProductionResultService {
         .departWarehouse(workOrder.getWarehouse())
         .workOrder(workOrder)
         .item(workOrder.getItem()) //품목 코드, 품목명, 규격 생략
-        .qty(workOrder.getQty())
+        .qty(producedQty)
         .isDeleted(false)
         .build();
 
