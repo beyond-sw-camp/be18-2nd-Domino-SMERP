@@ -69,7 +69,9 @@ public class WorkOrder extends BaseEntity {
   private ProductionResult productionResult;
 
 
-   */
+ */
+
+
 
   @Column(nullable = false)
   @Builder.Default
@@ -78,6 +80,7 @@ public class WorkOrder extends BaseEntity {
 
   //지시 qty
   @Builder.Default
+  @Column(precision = 12,  scale = 3)
   private BigDecimal qty = BigDecimal.ZERO;
 
   @Column(name = "plan_at") //자동 생성 시
@@ -101,7 +104,11 @@ public class WorkOrder extends BaseEntity {
     this.isDeleted = isDeleted;
   }
 
+  public void setStatus(Status status) {
+    this.status = status;
+  }
   /*
+
   public void setProductionResult(ProductionResult productionResult) {
     this.productionResult = productionResult;
     if (productionResult != null) {
@@ -109,5 +116,6 @@ public class WorkOrder extends BaseEntity {
     }
   }
 
-   */
+
+ */
 }

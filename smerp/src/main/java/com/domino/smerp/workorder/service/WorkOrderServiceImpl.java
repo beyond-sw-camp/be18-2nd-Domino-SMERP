@@ -25,10 +25,12 @@ import com.domino.smerp.workorder.dto.response.WorkOrderListResponse;
 import com.domino.smerp.workorder.dto.response.WorkOrderResponse;
 import jakarta.persistence.EntityNotFoundException;
 import java.math.BigDecimal;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -137,11 +139,10 @@ public class WorkOrderServiceImpl implements WorkOrderService {
     WorkOrder workOrder = WorkOrder.builder()
         .item(item)
         .qty(createWorkOrderRequest.getPlanQty())
-        .productionPlan(productionPlan) //실제로 필요
+        .productionPlan(productionPlan)
         .warehouse(warehouse)
         .status(Status.PENDING)
         .planAt(createWorkOrderRequest.getPlanAt())
-        .producedAt(createWorkOrderRequest.getProducedAt())
         .documentNo(documentNo)
         .isDeleted(false)
         .build();
@@ -153,6 +154,8 @@ public class WorkOrderServiceImpl implements WorkOrderService {
     productionPlan.setUser(user);
 
     productionPlan.setRemark(createWorkOrderRequest.getRemark());
+
+    productionPlan.setQty(createWorkOrderRequest.getPlanQty());
 
     return toWorkOrderResponse(workOrder);
   }
@@ -284,25 +287,28 @@ public class WorkOrderServiceImpl implements WorkOrderService {
     productionPlan.setRemark(updateWorkOrderRequest.getRemark() != null ?
         updateWorkOrderRequest.getRemark() : productionPlan.getRemark());
 
-    /*
-    workOrderRepository.save(updatedWorkOrder);
 
-    if(workOrder.getStatus() == Status.APPROVED) {
 
-      productionResultService.createProductionResultByWorkOrder(workOrder);
+
+
+    if(updatedWorkOrder.getStatus() == Status.APPROVED) {
+
+      //productionResultService.createProductionResultByWorkOrder(updatedWorkOrder);
 
       //stock movement 저장은 produce stock에서
-      stockMovementService.createProduceStockMovement(workOrder);
+      //stockMovementService.createProduceStockMovement(updatedWorkOrder);
 
       productionPlan.setStatus(com.domino.smerp.productionplan.constants.Status.COMPLETED);
+      updatedWorkOrder.setStatus(Status.COMPLETED);
+
 
     }
 
-     */
+
 
     workOrderRepository.save(updatedWorkOrder);
 
-    return toWorkOrderResponse(workOrder);
+    return toWorkOrderResponse(updatedWorkOrder);
   }
 
 
@@ -335,12 +341,15 @@ public class WorkOrderServiceImpl implements WorkOrderService {
   }
 
   public WorkOrderResponse toWorkOrderResponse(final WorkOrder workOrder) {
-
+/*
     BigDecimal producedQty = BigDecimal.ZERO;
-    /*
+    Instant producedAt = null;
+
     if (workOrder.getProductionResult() != null) {
       //생산실적 있는 경우 qty 반드시 있음
       producedQty = workOrder.getProductionResult().getQty();
+      log.info("생산실적 수량: qty={}",workOrder.getProductionResult().getQty());
+      producedAt = workOrder.getProductionResult().getCreatedAt();
     }
 
      */
@@ -362,7 +371,7 @@ public class WorkOrderServiceImpl implements WorkOrderService {
             workOrder.getItem().getName() : null) //null 가능
         .status(workOrder.getStatus())
         .planQty(workOrder.getQty())
-        .producedQty(producedQty) //없다면 0
+        //.producedQty(producedQty) //없다면 0
         .planAt(workOrder.getPlanAt() != null ?
             workOrder.getPlanAt() : null) //null 가능
 

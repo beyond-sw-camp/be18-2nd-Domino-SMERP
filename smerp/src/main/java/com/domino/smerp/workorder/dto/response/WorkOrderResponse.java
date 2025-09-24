@@ -44,5 +44,6 @@ public class WorkOrderResponse {
   //계획된 작업일
   private final Instant planAt;
 
+  private final Instant producedAt;
 
 }
