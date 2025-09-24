@@ -6,7 +6,7 @@ import com.domino.smerp.productionplan.dto.request.SearchProductionPlanRequest;
 import com.domino.smerp.productionplan.dto.request.UpdateProductionPlanRequest;
 import com.domino.smerp.productionplan.dto.response.ProductionPlanListResponse;
 import com.domino.smerp.productionplan.dto.response.ProductionPlanResponse;
-import com.domino.smerp.warehouse.SearchProductionPlanListResponse;
+import com.domino.smerp.productionplan.dto.response.SearchProductionPlanListResponse;
 import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
 
