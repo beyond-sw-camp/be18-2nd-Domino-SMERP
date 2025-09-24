@@ -30,9 +30,9 @@ public class LocationServiceImpl implements LocationService {
     Warehouse warehouse = warehouseRepository.findById(warehouseId)
         .orElseThrow(() -> new EntityNotFoundException("창고를 찾을 수 없습니다."));
 
-    List<String> racks = parseFixedRange("R", 1, 20);
-    List<String> levels = parseFixedRange("L", 1, 5);
-    List<String> bins = parseFixedRange("B", 1, 30);
+    List<String> racks = parseFixedRange("R", 1, 10);
+    List<String> levels = parseFixedRange("L", 1, 2);
+    List<String> bins = parseFixedRange("B", 1, 6);
 
     //warehouse는 id 기준
     String w = parseId("W", warehouse.getId(), 2);
