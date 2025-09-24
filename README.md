@@ -117,7 +117,7 @@
 
 ## <a id="requirements"></a>5. 화면 및 기능 설계서
 <details>
- <a href="https://www.figma.com/design/LbG41JvpR35x1pO2skQ069/SMERP?node-id=0-1&t=eZnFgf17fhanYC6o-1">화면 및 기능 설계서</a>
+ <a href="https://www.figma.com/design/ExNHg393ExldbNN0TACTIc/Project-SMERP?node-id=0-1&t=4y6ryU68AoMk8w1V-1">화면 및 기능 설계서</a>
 
 </div>
 </details>
