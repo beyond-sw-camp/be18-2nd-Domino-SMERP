@@ -38,6 +38,7 @@ public class BomQueryRepositoryImpl implements BomQueryRepository {
     QItem item = QItem.item;
     QBom bom = QBom.bom;
     QItemStatus itemStatus = QItemStatus.itemStatus;
+    QBomClosure bc = QBomClosure.bomClosure;
     QItem child = new QItem("child");
 
     List<BomListResponse> results = queryFactory
@@ -57,11 +58,11 @@ public class BomQueryRepositoryImpl implements BomQueryRepository {
             ),
             // materialCount → 자식 BOM 중 원재료 개수
             ExpressionUtils.as(
-                JPAExpressions.select(bom.count())
-                    .from(bom)
-                    .join(bom.childItem, child)
+                JPAExpressions.select(bc.count())
+                    .from(bc)
+                    .join(child).on(child.itemId.eq(bc.id.descendantItemId))
                     .where(
-                        bom.parentItem.eq(item),
+                        bc.id.ancestorItemId.eq(item.itemId),
                         child.itemStatus.status.eq(ItemStatusStatus.RAW_MATERIAL)
                     ),
                 "materialCount"
@@ -73,7 +74,8 @@ public class BomQueryRepositoryImpl implements BomQueryRepository {
         .where(
             statusEq(request.getItemStatus()),
             nameContains(request.getItemName()),
-            specificationContains(request.getSpecification())
+            specificationContains(request.getSpecification()),
+            hasBomTrue(item, bom)
         )
         .groupBy(item.itemId)
         .offset(pageable.getOffset())
@@ -88,7 +90,8 @@ public class BomQueryRepositoryImpl implements BomQueryRepository {
         .where(
             statusEq(request.getItemStatus()),
             nameContains(request.getItemName()),
-            specificationContains(request.getSpecification())
+            specificationContains(request.getSpecification()),
+            hasBomTrue(item, bom)
         );
 
     return PageableExecutionUtils.getPage(results, pageable, countQuery::fetchOne);
@@ -111,6 +114,12 @@ public class BomQueryRepositoryImpl implements BomQueryRepository {
   private BooleanExpression specificationContains(final String specification) {
     return (specification == null || specification.isEmpty()) ? null
         : QItem.item.specification.contains(specification);
+  }
+  private BooleanExpression hasBomTrue(final QItem item, final QBom bom) {
+    return JPAExpressions.selectOne()
+        .from(bom)
+        .where(bom.parentItem.eq(item))
+        .exists();
   }
 
 
