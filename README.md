@@ -336,6 +336,23 @@
   <img width="1358" height="475" alt="image" src="https://github.com/user-attachments/assets/ab28777d-3d1f-4504-8afd-b60995a9c555" />
   <br>
   <hr>
+  <hr>
+  <br>
+  <hr>
+  <br>
+  <b>📌 로그 조회</b> 
+  <br>
+  <img width="1382" height="868" alt="image" src="https://github.com/user-attachments/assets/e8d2938d-1ca2-4972-bfd3-77f9ae5d4e36" />
+
+  <br>
+  <hr>
+  <br>
+  <b>📌 로그 상세 조회</b> 
+  <br>
+  <img width="1361" height="742" alt="image" src="https://github.com/user-attachments/assets/4b10d275-d8f6-403d-8d28-37f27d23fde0" />
+
+  <br>
+  <hr>
 </details>
 
 <details>
