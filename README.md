@@ -602,7 +602,7 @@
   
   <b>📌 작업 지시 수정</b> 
   <br>
-  <img width="1156" height="771" alt="UPDATE작업지시" src="https://github.com/user-attachments/assets/c90879c0-a521-4033-96de-5fd557a785f7" />
+  <img width="1189" height="796" alt="image" src="https://github.com/user-attachments/assets/7acc30e1-dc64-4f37-9ac2-dd054fc9091e" />
   <br>
   <hr>
 
@@ -620,9 +620,23 @@
 
   <b>📌 생산 실적 현황 조회</b> 
   <br>
-  <img width="1165" height="770" alt="image" src="https://github.com/user-attachments/assets/aba43348-2947-4d71-918e-19fa1062c7db" />
+  <img width="1216" height="744" alt="image" src="https://github.com/user-attachments/assets/182366d7-6cdc-4b2f-9f06-59a11ac363b6" />
   <br>
   <hr>
+
+  <b>📌 재고 목록 조회</b> 
+  <br>
+  <img width="1186" height="783" alt="image" src="https://github.com/user-attachments/assets/38659c85-ac73-47ad-8779-2a1ded4e1ab9" />
+  <br>
+  <hr>
+
+  <b>📌 재고 수불 목록 조회</b> 
+  <br>
+  <img width="1144" height="781" alt="image" src="https://github.com/user-attachments/assets/420c2739-ea57-4ac8-ac76-43a0cd6d34b0" />
+  <br>
+  <hr>
+
+  
   
 
   <b>📌 BOM 생성</b> 
