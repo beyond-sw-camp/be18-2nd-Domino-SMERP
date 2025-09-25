@@ -50,8 +50,8 @@
         <img src="https://img.shields.io/badge/GitHub-Link-black?logo=github" alt="GitHub Link"/></a>
       </td>
       <td>
-        <a href="https://github.com/pcochoco" target="_blank">
-        <img src="https://img.shields.io/badge/GitHub-Link-black?logo=github" alt="GitHub Link"/></a>
+        <a href="<img width="1165" height="770" alt="image" src="https://github.com/user-attachments/assets/e2310267-a9b5-4fef-b24b-c537261a4efa" />
+" target="_blank">
       </td>
     </tr>
     </tbody>
