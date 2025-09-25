@@ -466,8 +466,8 @@
 
   <b>📌 생산 실적 현황 조회</b> 
   <br>
-  <img width="800" height="817" alt="GET판매 조회" src="https://github.com/user-attachments/assets/619cdded-0448-46b3-a4c2-d8be6be6816c" />
-  <br>
+  <img width="1165" height="770" alt="image" src="https://github.com/user-attachments/assets/aba43348-2947-4d71-918e-19fa1062c7db" />
+
   <hr>
 </details>
 <br>
