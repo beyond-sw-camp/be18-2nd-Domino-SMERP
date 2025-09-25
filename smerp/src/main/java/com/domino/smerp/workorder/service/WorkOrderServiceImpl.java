@@ -11,6 +11,8 @@ import com.domino.smerp.productionplan.repository.ProductionPlanRepository;
 import com.domino.smerp.productionresult.ProductionResult;
 import com.domino.smerp.productionresult.ProductionResultRepository;
 import com.domino.smerp.productionresult.service.ProductionResultService;
+import com.domino.smerp.stock.service.StockService;
+import com.domino.smerp.stockmovement.service.StockMovementService;
 import com.domino.smerp.user.User;
 import com.domino.smerp.user.UserRepository;
 import com.domino.smerp.warehouse.Warehouse;
@@ -45,13 +47,13 @@ public class WorkOrderServiceImpl implements WorkOrderService {
 
   private final WorkOrderRepository workOrderRepository;
   //private final BomService bomService;
-  //private final StockService stockService;
+  private final StockService stockService;
   private final ProductionPlanRepository productionPlanRepository;
   private final ProductionResultRepository productionResultRepository;
   private final ItemRepository itemRepository;
   private final WarehouseRepository warehouseRepository;
   private final LocationService locationService;
-  //private final StockMovementService stockMovementService;
+  private final StockMovementService stockMovementService;
   private final UserRepository userRepository;
   private final ProductionResultService productionResultService;
   private final DocumentNoGenerator documentNoGenerator;
@@ -292,22 +294,18 @@ public class WorkOrderServiceImpl implements WorkOrderService {
         updateWorkOrderRequest.getRemark() : productionPlan.getRemark());
 
 
-//    workOrderRepository.save(updatedWorkOrder);
-
     if(updatedWorkOrder.getStatus() == Status.APPROVED) {
 
       ProductionResult productionResult = productionResultService.createProductionResultByWorkOrder(updatedWorkOrder, updateWorkOrderRequest.getProducedQty());
       updatedWorkOrder.setProductionResult(productionResult);
       //stock movement 저장은 produce stock에서
-      //stockMovementService.createProduceStockMovement(workOrder);
+      stockMovementService.createProduceStockMovement(updatedWorkOrder);
 
       productionPlan.setStatus(com.domino.smerp.productionplan.constants.Status.COMPLETED);
       updatedWorkOrder.setStatus(Status.COMPLETED);
 
 
     }
-
-
 
     workOrderRepository.save(updatedWorkOrder);
 
