@@ -23,9 +23,9 @@ public class ProductionResultResponse {
   @NotNull
   private final String factoryName;
 
-  //받는 창고
-  @NotNull
-  private final String arriveWarehouseName;
+//  //받는 창고
+//  @NotNull
+//  private final String arriveWarehouseName;
 
   //품목명
   @NotNull

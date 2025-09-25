@@ -161,7 +161,9 @@ public class WorkOrderServiceImpl implements WorkOrderService {
 
     productionPlan.setRemark(createWorkOrderRequest.getRemark());
 
-    productionPlan.setQty(createWorkOrderRequest.getPlanQty());
+    //productionPlan.setQty(createWorkOrderRequest.getPlanQty());
+
+    productionPlanRepository.save(productionPlan);
 
     return toWorkOrderResponse(workOrder);
   }
