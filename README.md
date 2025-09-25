@@ -582,7 +582,7 @@
   <br>
   <hr>
 
-  <b>📌 생산 목록 조회</b> 
+  <b>📌 생산 계획 목록 조회</b> 
   <br>
   <img width="1144" height="786" alt="GET생산목록" src="https://github.com/user-attachments/assets/1093db84-113e-4e31-9b73-b1431aa05800" />
   <br>
