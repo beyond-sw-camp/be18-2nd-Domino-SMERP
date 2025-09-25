@@ -608,7 +608,7 @@
 
   <b>📌 작업 지시 목록 조회</b> 
   <br>
-  <img width="1117" height="780" alt="GET작업지시목록" src="https://github.com/user-attachments/assets/4df43eed-373a-4e22-9a4a-22d8922b3cb3" />
+  <img width="1170" height="788" alt="image" src="https://github.com/user-attachments/assets/6fe02c9d-d91b-4eb9-8ed7-ba2a022cdca8" />
   <br>
   <hr>
 
