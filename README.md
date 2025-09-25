@@ -829,5 +829,17 @@
   <b>📌 로트 등록, 목록/상세 조회, 수정, 삭제<b>
   ![lot 등록 목록,상세 조회 수정 삭제](https://github.com/user-attachments/assets/aaa84eee-96a8-4231-9c0e-a56a62e61aaa)
   <br>
-  
+
+  <b>📌 BOM 등록<b>
+  ![BOM 등록](https://github.com/user-attachments/assets/363a9aef-d9fe-4b04-a2d5-073a46bbe768)
+  <br>
+
+  <b>📌 BOM 계층 시연<b>
+  ![BOM 계층 시연](https://github.com/user-attachments/assets/6017273f-a1a8-4639-ae63-92509edab2a2)
+  <br>
+
+  <b>📌 소요량 계산<b>
+  ![BOM 소요량 계산](https://github.com/user-attachments/assets/3768dce3-7ac7-431c-9c58-d049c4df370a)
+  <br>
+
 </details>
