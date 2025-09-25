@@ -253,6 +253,36 @@
 ## <a id="requirements"></a>14. 주요 단위 테스트 케이스
 <details>
   <summary><b>기초 관리</b></summary>
+  <br>
+  <b>📌 회원 등록</b> 
+  <br>
+  <img width="1367" height="807" alt="image" src="https://github.com/user-attachments/assets/5818e8ed-fc57-413c-b846-707d515546cd" />
+  <br>
+  <hr>
+  <br>
+  <b>📌 회원 목록</b> 
+  <br>
+  <img width="1372" height="861" alt="image" src="https://github.com/user-attachments/assets/81bb79c2-e25f-4957-b7c4-01b5fbfae51b" />
+  <br>
+  <hr>
+  <br>
+  <b>📌 회원상세 조회</b> 
+  <br>
+  <img width="1377" height="721" alt="image" src="https://github.com/user-attachments/assets/6d38761c-d31a-4616-a18c-541911c1bfcb" />
+  <br>
+  <hr>
+  <br>
+  <b>📌 회원 수정</b> 
+  <br>
+  <img width="1361" height="557" alt="image" src="https://github.com/user-attachments/assets/815e9afc-bc14-44f6-9615-e7a38162cf4b" />
+  <br>
+  <hr>
+  <br>
+  <b>📌 회원 삭제</b> 
+  <br>
+  <img width="1353" height="502" alt="image" src="https://github.com/user-attachments/assets/1b52f0b3-36b8-41be-b648-4ec2d6c587b7" />
+  <br>
+  <hr>
 </details>
 
 <details>
