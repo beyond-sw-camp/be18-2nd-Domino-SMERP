@@ -155,6 +155,7 @@ public class WorkOrderServiceImpl implements WorkOrderService {
 
     workOrderRepository.save(workOrder);
 
+    //
     //work order 생성 시 생산계획 담당자, 적요 넣어야함
     //생산계획이 없음
     productionPlan.setUser(user);
