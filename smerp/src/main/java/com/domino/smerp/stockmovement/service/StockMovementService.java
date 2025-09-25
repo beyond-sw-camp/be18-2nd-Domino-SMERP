@@ -22,8 +22,8 @@ public interface StockMovementService {
 
   List<StockMovement> createProduceStockMovement(WorkOrder workOrder);
 
-  void createOutboundStockMovement(BigDecimal movedQty, Item item, User user,
-      TransactionType transactionType, String documentNo);
+  //void createOutboundStockMovement(BigDecimal movedQty, Item item, User user,
+      //TransactionType transactionType, String documentNo);
 
   StockMovementResponse createAdjustStockMovement(UpdateStockMovementRequest updateStockMovementRequest);
 

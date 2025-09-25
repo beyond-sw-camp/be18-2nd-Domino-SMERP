@@ -82,10 +82,11 @@ public class StockMovementServiceImpl implements StockMovementService {
 
     //판매를 한다, 폐기를 한다 (+) => outbound
 
-
+/*
     if(movedQty.compareTo(BigDecimal.ZERO) > 0) {
       createOutboundStockMovement(movedQty, item, user, createStockMovementRequest.getTransactionType(), documentNo);
     }
+ */
   }
 
 
@@ -188,7 +189,7 @@ public class StockMovementServiceImpl implements StockMovementService {
     return stockMovements;
   }
 
-
+/*
   //판매한다 (+)로 받음 -> 실제 재고 수불 (-)로 저장(빠져나가므로)
   //1. 판매
   //2.
@@ -247,6 +248,8 @@ public class StockMovementServiceImpl implements StockMovementService {
   }
 
 
+ */
+
   //직접 재고 수정 x, adjust 용도
   //실제 재고에 변경 없으므로 audit x
   public StockMovementResponse createAdjustStockMovement(UpdateStockMovementRequest updateStockMovementRequest){
@@ -280,6 +283,8 @@ public class StockMovementServiceImpl implements StockMovementService {
     return toStockMovementResponse(stockMovement);
 
   }
+
+
 
   //수정 - 이력이므로 수정 x
 
@@ -317,6 +322,8 @@ public class StockMovementServiceImpl implements StockMovementService {
         .createdAt(stockMovement.getCreatedAt())
         .build();
   }
+
+
 
 
 
