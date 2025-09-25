@@ -252,6 +252,27 @@
 
 ## <a id="requirements"></a>14. 주요 단위 테스트 케이스
 <details>
+  <summary><b>로그인 / 로그아웃</b></summary>
+  <br>
+  <b>📌 로그인</b> 
+  <br>
+  <img width="1350" height="568" alt="image" src="https://github.com/user-attachments/assets/305404f3-1b85-4514-8e6f-53690a0ceb1d" />
+  <br>
+  <hr>
+    <br>
+  <b>📌 로그아웃</b> 
+  <br>
+  <img width="1367" height="645" alt="image" src="https://github.com/user-attachments/assets/9a2e9ec8-fb79-4495-8f48-f9297df30be6" />
+  <br>
+  <hr>
+    <br>
+  <b>📌 로그인 유저 권한 확인</b> 
+  <br>
+  <img width="1362" height="577" alt="image" src="https://github.com/user-attachments/assets/f777e763-b4d4-4ca6-b904-e4b3059156f0" />
+  <br>
+  <hr>
+</details>
+<details>
   <summary><b>기초 관리</b></summary>
   <br>
   <b>📌 회원 등록</b> 
@@ -281,6 +302,38 @@
   <b>📌 회원 삭제</b> 
   <br>
   <img width="1353" height="502" alt="image" src="https://github.com/user-attachments/assets/1b52f0b3-36b8-41be-b648-4ec2d6c587b7" />
+  <br>
+  <hr>
+  <br>
+  <b>📌 거래처 등록</b> 
+  <br>
+  <img width="1372" height="791" alt="image" src="https://github.com/user-attachments/assets/9a1f9730-1197-4788-8ffb-53d31b0eb430" />
+
+  <br>
+  <hr>
+  <br>
+  <b>📌 거래처 목록</b> 
+  <br>
+  <img width="1358" height="860" alt="image" src="https://github.com/user-attachments/assets/690ee021-d769-490c-85e6-eea0aa72ecba" />
+
+  <br>
+  <hr>
+  <br>
+  <b>📌 거래처 상세 조회</b> 
+  <br>
+  <img width="1363" height="777" alt="image" src="https://github.com/user-attachments/assets/89b00e39-3ea9-4d87-aff1-ea261dbf4b36" />
+  <br>
+  <hr>
+  <br>
+  <b>📌 거래처 수정</b> 
+  <br>
+  <img width="1365" height="591" alt="image" src="https://github.com/user-attachments/assets/342bf5e3-7e3b-4d4c-bd0e-e7baca31d21b" />
+  <br>
+  <hr>
+  <br>
+  <b>📌 거래처 삭제</b> 
+  <br>
+  <img width="1358" height="475" alt="image" src="https://github.com/user-attachments/assets/ab28777d-3d1f-4504-8afd-b60995a9c555" />
   <br>
   <hr>
 </details>
