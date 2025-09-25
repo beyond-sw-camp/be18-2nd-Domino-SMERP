@@ -609,6 +609,10 @@
 <details>
   <summary><b>기초 관리</b></summary>
   <br>
+
+  <b>📌 로그인, 로그아웃 </b>
+  ![로그인, 로그아웃 (1)](https://github.com/user-attachments/assets/2f6c2187-bbe0-42b7-b876-b083abbe381b)
+  <br>
   
   <b>📌 사용자 등록</b>
   ![사용자 등록](https://github.com/user-attachments/assets/cef73b0b-618a-49d8-81b0-75c50291e971)
@@ -645,12 +649,16 @@
   ![주문 등록 (2)](https://github.com/user-attachments/assets/2fa9a9f4-7445-4714-bf6b-e3649080562f)
   <br>
 
-  <b>📌 주문 상세 조회,수정</b>
+  <b>📌 주문 목록, 상세 조회,수정</b>
   ![주문 상세 조회,수정](https://github.com/user-attachments/assets/b4ccf050-9104-4f20-826a-ca1ce6949eb7)
   <br>
 
   <b>📌 주문 삭제<b>
   ![주문 삭제](https://github.com/user-attachments/assets/58c2ac9a-d36e-4321-8f33-07e7c8612312)
+  <br>
+
+  <b>📌 주문 현황, 엑셀로 내보내<b>
+  ![주문 현황 엑셀로 내보내기](https://github.com/user-attachments/assets/38aaea59-ef9c-4e4e-b8fa-5abf9a2078c1)
   <br>
 
   <b>📌 판매 등록</b>
@@ -663,6 +671,10 @@
 
   <b>📌 판매 목록,현황 조회</b>
   ![판매 목록,현황 조회](https://github.com/user-attachments/assets/6725782f-2c8b-4452-be32-dc19e5f514a9)
+  <br>
+
+  <b>📌 판매 엑셀로 내보내기</b>
+  ![판매 엑셀로 내보내기](https://github.com/user-attachments/assets/c40b3681-898e-4fc7-9a25-ae0f84063ce5)
   <br>
 
   <b>📌 반품 등록<b>
@@ -688,6 +700,10 @@
 
   <b>📌 구매 현황 조회, 엑셀 내보내기<b>
   ![구매 현황, 엑셀로 내보내기](https://github.com/user-attachments/assets/c158a012-5c6d-4278-8048-a3b0ed960fef)
+  <br>
+
+  <b>📌 구매 요청 등록, 현황 조회, 엑셀 내보내기<b>
+  ![구매요청 등록 엑셀로 내보내기](https://github.com/user-attachments/assets/17a012cb-1046-4705-98e1-753fcf6d6c49)
   <br>
   
 </details>
