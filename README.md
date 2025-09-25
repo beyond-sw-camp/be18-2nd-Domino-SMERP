@@ -336,10 +336,7 @@
   <b>📌 거래처 삭제</b> 
   <br>
   <img width="1358" height="475" alt="image" src="https://github.com/user-attachments/assets/ab28777d-3d1f-4504-8afd-b60995a9c555" />
-  <br>
-  <hr>
-  <hr>
-  <br>
+  
   <hr>
   <br>
   <b>📌 로그 조회</b> 
@@ -353,6 +350,61 @@
   <br>
   <img width="1361" height="742" alt="image" src="https://github.com/user-attachments/assets/4b10d275-d8f6-403d-8d28-37f27d23fde0" />
 
+  <br>
+  <hr>
+    <b>📌 품목 생성</b> 
+  <br>
+  <img width="940" height="730" alt="image" src="https://github.com/user-attachments/assets/5ca8793b-ec7c-4db0-9aa4-3fc5991c10bf" />
+  <br>
+  <hr>
+  <b>📌 품목 목록 조회</b> 
+  <br>
+  <img width="922" height="738" alt="image" src="https://github.com/user-attachments/assets/9e27cc79-2678-4ef2-ab6c-1fb59b21db24" />
+  <br>
+  <hr>
+  <b>📌 품목 상세 조회</b> 
+  <br>
+  <img width="929" height="742" alt="image" src="https://github.com/user-attachments/assets/14dae0ba-eb64-49e0-ba55-dfc0ad4f3c52" />
+  <br>
+  <hr>
+  <b>📌 품목 수정</b> 
+  <br>
+  <img width="947" height="728" alt="image" src="https://github.com/user-attachments/assets/a101a386-7a8e-4282-bc66-b79cc32fc2ab" />
+  <br>
+  <hr>
+  <b>📌 품목 상태 수정</b> 
+  <br>
+  <img width="905" height="743" alt="image" src="https://github.com/user-attachments/assets/696fb0a6-ac37-4f0b-988b-d1c4370a7cef" />
+  <br>
+  <hr>
+  <b>📌 품목 삭제</b> 
+  <br>
+  <img width="925" height="658" alt="image" src="https://github.com/user-attachments/assets/ab6166c9-caf8-4468-84fd-45b038128ceb" />
+  <br>
+  <hr>
+  <b>📌 Lot.No 생성</b> 
+  <br>
+  <img width="901" height="747" alt="image" src="https://github.com/user-attachments/assets/9486ba8a-8d48-4856-b309-036fab0b9a4d" />
+  <br>
+  <hr>
+  <b>📌 Lot.No 목록 조회</b> 
+  <br>
+  <img width="929" height="768" alt="image" src="https://github.com/user-attachments/assets/428f7024-e10f-445a-8fe5-1ef7a8b0217b" />
+  <br>
+  <hr>
+  <b>📌 Lot.No 상세 조회</b> 
+  <br>
+  <img width="900" height="744" alt="image" src="https://github.com/user-attachments/assets/2f6a065b-5f77-48fa-87cf-0165fab7c51c" />
+  <br>
+  <hr>
+  <b>📌 Lot.No 수정</b> 
+  <br>
+  <img width="903" height="657" alt="image" src="https://github.com/user-attachments/assets/e3ffb89f-6082-400e-9854-6d6383678401" />
+  <br>
+  <hr>
+  <b>📌 Lot.No 삭제</b> 
+  <br>
+  <img width="897" height="515" alt="image" src="https://github.com/user-attachments/assets/8d400089-cdcf-446f-94dd-284d9d40acbd" />
   <br>
   <hr>
 </details>
@@ -569,6 +621,46 @@
   <b>📌 생산 실적 현황 조회</b> 
   <br>
   <img width="1165" height="770" alt="image" src="https://github.com/user-attachments/assets/aba43348-2947-4d71-918e-19fa1062c7db" />
+  <br>
+  <hr>
+  
+
+  <b>📌 BOM 생성</b> 
+  <br>
+  <img width="930" height="708" alt="image" src="https://github.com/user-attachments/assets/d55f0436-9ae7-42fe-ad46-e85c3e614360" />
+  <br>
+  <hr>
+  <b>📌 BOM 목록 조회</b> 
+  <br>
+  <img width="897" height="730" alt="image" src="https://github.com/user-attachments/assets/12706abc-e0b1-434e-92f9-220eadbf4c6d" />
+  <br>
+  <hr>
+  <b>📌 BOM 특정품목 BOM 전부 조회</b> 
+  <br>
+  <img width="906" height="747" alt="image" src="https://github.com/user-attachments/assets/af9816ee-ae68-4da3-87eb-e1876e0ce975" />
+  <br>
+  <hr>
+  <b>📌 BOM 특정품목 소요량 산출</b> 
+  <br>
+  <img width="912" height="739" alt="image" src="https://github.com/user-attachments/assets/577bef55-af22-4987-8558-7bc4c87611c7" />
+  <br>
+  <hr>
+  <b>📌 BOM 수정</b> 
+  <br>
+  <img width="915" height="582" alt="image" src="https://github.com/user-attachments/assets/a3c3f1ab-a818-4731-97e1-dd4d872495b7" />
+  <br>
+  <hr>
+  <b>📌 BOM 삭제</b> 
+  <br>
+  <img width="882" height="496" alt="image" src="https://github.com/user-attachments/assets/94b3700d-12ae-4afd-a3eb-cc7394effe89" />
+  <br>
+  <hr>
+  <b>📌 BOM 전체 캐시 재생성</b> 
+  <br>
+  <img width="862" height="497" alt="image" src="https://github.com/user-attachments/assets/159a6856-5d9a-4bcf-bd26-c1248b69f5d0" />
+  <br>
+  <hr>
+  
 
   <hr>
 </details>
@@ -590,7 +682,7 @@
 | 조원이름 | 회고 |
 |----------|------|
 |육세윤| 이번 프로젝트는 실무에서 PM으로서 다양한 경험을 쌓아왔음에도 불구하고, DB 설계, 백엔드, 프론트엔드 등 팀원 모두에게 생소한 기술들을 처음부터 함께 익히며 진행해야 했다는 점에서 매우 고무적이었습니다. 특히 JPA와 Gradle 같은 라이브러리를 활용한 개발은 우리 팀에게 처음이었고, ERP 시스템과 각 모듈을 학습하고 이를 실제 개발에 적용해 본 경험은 큰 자산이 되었습니다. 다만, 제 무리한 기획으로 인해 팀원들이 정신적·체력적으로 고생하는 모습을 보며, 다음 파이널 프로젝트에서는 기획 범위를 보다 철저히 조율한 뒤 진행해야겠다는 교훈을 얻었습니다. 실무에서 PM 경험이 있었지만, 개발 PM은 완전히 다른 영역이라는 점을 크게 느낄 수 있는 계기였습니다. 이번 경험을 양분 삼아 앞으로 IT 기획/ 컨설턴트 직무를 꿈꾸는 입장에서 더 성장할 것입니다.|
-|최정필|  |
+|최정필|  늪에 빠졌습니다. JPA를 처음 써보며 RDBMS를 잘 알려하고 이해하는게 매우 중요하구나 느낍니다. 공부를 하면 할수록 공부량이 3배는 되어서 돌아왔죠. 그래도 그만큼 알아가는게 많고 새로운 경험을 많이 해서 좋았습니다. DB 계층 카테고리 설계 시 재귀테이블의 조회 성능을 어떻게 하면 더 잘 끌어올릴 수 있을까??,  newman을 이용해 한번에 많은 데이터 입력시 성능 상승을 위해 비동기처리로 하며 @Async어노테이션을 사용할지 블로킹큐를 이용할지, 제약조건없이 데이터 정합성을 보장하기 위해 어떤 서비스 로직을 구현할까. 하지만 과도한 업무량으로 인해 Jmeter를 이용한 동시성 테스트를 한번 체험하는 수준에 그치고, N+1문제 미해결과 Docker를 이용한 협업 등을 못해본 건 매우 아쉬웠어요. 그래도 git cli 숙련도의 상승, 접근제어자의 설정 범위, PR과 코드 리뷰를 통한 협업등으로 인한 CS지식과 개발능력상승, DDD와 CSQR패턴, FLYWAY 등 다음 프로젝트 때 적용해보고 싶은 것들을 알아갑니다. 같이 프로젝트한 팀원분들 정말 고생많으셨습니다~. 특히 우리의 든든한 에이스 종원이의 건강을 기원합니다. |
 |김민준|  |
 |박종원|  |
 |박채연|  |
