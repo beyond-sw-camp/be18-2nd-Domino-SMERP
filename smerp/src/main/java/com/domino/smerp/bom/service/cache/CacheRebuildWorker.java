@@ -40,7 +40,9 @@ public class CacheRebuildWorker {
 
   public void enqueue(final Long rootId) {
     queue.offer(rootId);
+    log.info("현재 큐 사이즈 = {}", queue.size());
     log.info("캐시 리빌드 요청 큐에 적재: rootId={}", rootId);
+    log.info("캐시 리빌드 요청 큐에 적재: rootId={}, 현재 큐 사이즈={}", rootId, queue.size());
   }
 
   @PostConstruct

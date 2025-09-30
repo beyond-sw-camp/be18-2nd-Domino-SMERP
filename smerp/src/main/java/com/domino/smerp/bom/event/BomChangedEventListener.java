@@ -1,17 +1,9 @@
 package com.domino.smerp.bom.event;
 
-import com.domino.smerp.bom.service.cache.BomCacheService;
 import com.domino.smerp.bom.service.cache.CacheRebuildWorker;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.locks.ReentrantLock;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.dao.CannotAcquireLockException;
-import org.springframework.dao.DeadlockLoserDataAccessException;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.event.TransactionPhase;
 import org.springframework.transaction.event.TransactionalEventListener;
 
