@@ -55,15 +55,6 @@ public class BomQueryServiceImpl implements BomQueryService {
     // 캐시 조회
     List<BomCostCache> caches = bomCostCacheRepository.findByRootItemId(itemId);
 
-    // 비어있으면 캐시 즉시 빌드 + 저장
-    if (caches.isEmpty()) {
-      final Item root = itemService.findItemById(itemId);
-      caches = bomCacheBuilder.build(root);
-      if (!caches.isEmpty()) {
-        bomCostCacheRepository.saveAll(caches);
-      }
-    }
-
     // 진짜 비어있는지 확인
     if (caches.isEmpty()) {
       throw new CustomException(ErrorCode.BOM_NOT_FOUND);
