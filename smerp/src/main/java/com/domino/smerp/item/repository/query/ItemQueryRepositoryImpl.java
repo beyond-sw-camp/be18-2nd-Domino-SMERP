@@ -131,4 +131,19 @@ public class ItemQueryRepositoryImpl implements ItemQueryRepository {
     return (groupName3 == null || groupName3.isEmpty()) ? null
         : QItem.item.groupName3.contains(groupName3);
   }
+
+  @Override
+  public List<Long> findAllActiveItemIds() {
+    final QItem i = QItem.item;
+
+    // isDeleted = false인 모든 Item ID를 조회
+    return queryFactory
+        .selectDistinct(i.itemId)
+        .from(i)
+        .where(
+            i.isDeleted.eq(false) // 삭제되지 않은 모든 아이템을 대상
+        )
+        .fetch();
+  }
+
 }
