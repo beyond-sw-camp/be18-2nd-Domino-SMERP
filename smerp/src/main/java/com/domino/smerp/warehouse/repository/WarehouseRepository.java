@@ -27,15 +27,20 @@ public interface WarehouseRepository extends JpaRepository<Warehouse, Long>, War
     FROM Warehouse w
     JOIN w.locations l
     WHERE COALESCE(l.curQty, 0) < l.maxQty
+      AND w.divisionType = 'WAREHOUSE'
+      AND w.active = true
   """)
   List<Warehouse> findAvailableWarehousesWithCurQty();
 
 
   @Query("""
-    SELECT DISTINCT s.location.warehouse
+    SELECT DISTINCT w
     FROM Stock s
+    JOIN s.location.warehouse w 
     WHERE s.item.itemId = :itemId
       AND s.qty > 0
+      AND w.active = true
+      AND w.divisionType = 'WAREHOUSE'
   """)
   List<Warehouse> findWarehousesWithStock(@Param("itemId") Long itemId);
 

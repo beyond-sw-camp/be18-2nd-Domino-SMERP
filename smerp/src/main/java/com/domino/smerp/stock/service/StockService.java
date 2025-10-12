@@ -17,7 +17,7 @@ public interface StockService {
 
   List<Stock> allocateStock(Long itemId, BigDecimal qty);
 
-  List<Stock> removeStock(Long itemId, BigDecimal qty, User user);
+  List<Stock> removeStock(Long itemId, BigDecimal qty, String username);
 
   //alert까지 추상으로 두는게 맞나
   //일단 재고의 특성상 필수로 가져가긴 함

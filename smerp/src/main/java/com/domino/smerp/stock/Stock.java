@@ -89,7 +89,7 @@ public class Stock extends BaseEntity {
   }
 
   public void setCurrentQty(BigDecimal qty){
-    this.qty = qty;
+    this.currentQty = qty;
   }
 
   public void setLotNumber(LotNumber lotNumber){
