@@ -54,7 +54,7 @@ public class Location {
 
   @Column(nullable = false, precision = 12, scale = 3)
   @Builder.Default
-  private BigDecimal maxQty = new BigDecimal("500.00");
+  private BigDecimal maxQty = new BigDecimal("500.000");
 
   @Column(nullable = false, precision = 12, scale = 3)
   @Builder.Default
