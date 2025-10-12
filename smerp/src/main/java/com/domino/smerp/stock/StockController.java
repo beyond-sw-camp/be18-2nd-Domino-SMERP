@@ -51,7 +51,7 @@ public class StockController {
       @RequestParam String username
   ) {
     stockService.removeStock(itemId, qty, username);
-    return ResponseEntity.status(204).build();
+    return ResponseEntity.status(200).build();
   }
 //  @PatchMapping("/{stock-id}")
 //  public ResponseEntity<StockResponse> updateStock(
