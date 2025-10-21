@@ -14,6 +14,8 @@ import jakarta.persistence.EnumType;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.EnumType;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.ForeignKey;
