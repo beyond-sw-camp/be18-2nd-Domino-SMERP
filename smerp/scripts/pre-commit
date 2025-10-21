@@ -2,24 +2,24 @@
 
 # === Git 루트 경로 가져오기 ===
 PROJECT_ROOT=$(git rev-parse --show-toplevel)
-GRADLE_DIR="$PROJECT_ROOT/smerp"
 
-# === OS별 gradlew 선택 ===
-if [ -f "$GRADLE_DIR/gradlew" ]; then
-  GRADLEW_PATH="$GRADLE_DIR/gradlew"
-elif [ -f "$GRADLE_DIR/gradlew.bat" ]; then
-  GRADLEW_PATH="$GRADLE_DIR/gradlew.bat"
-else
-  echo "gradlew(.bat) not found under $GRADLE_DIR"
+# === gradlew 자동 탐색 ===
+GRADLEW_PATH=$(find "$PROJECT_ROOT" -maxdepth 3 -type f \( -name "gradlew" -o -name "gradlew.bat" \) | head -n 1)
+
+# === gradlew 유효성 검사 ===
+if [ -z "$GRADLEW_PATH" ]; then
+  echo "❌ gradlew(.bat) not found anywhere under project root!"
   exit 1
 fi
+
+GRADLE_DIR=$(dirname "$GRADLEW_PATH")
 
 # === Spotless 실행 ===
 echo "Running spotlessApply. Formatting code..."
 cd "$GRADLE_DIR" && "$GRADLEW_PATH" spotlessApply
 
 if [ $? -ne 0 ]; then
-  echo "Spotless apply failed!"
+  echo "❌ Spotless apply failed!"
   exit 1
 fi
 
