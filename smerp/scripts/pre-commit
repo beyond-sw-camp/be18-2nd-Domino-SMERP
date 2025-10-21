@@ -1,18 +1,22 @@
 #!/bin/sh
 
-# === Root & Gradle Path 설정 ===
+# === Git 루트 경로 가져오기 ===
 PROJECT_ROOT=$(git rev-parse --show-toplevel)
+GRADLE_DIR="$PROJECT_ROOT/smerp"
 
-# OS 감지 (Windows, macOS, Linux 대응)
-if [ "$(uname -s | tr '[:upper:]' '[:lower:]')" = "darwin" ] || [ "$(uname -s | tr '[:upper:]' '[:lower:]')" = "linux" ]; then
-    GRADLEW_PATH="$PROJECT_ROOT/smerp/gradlew"        # macOS/Linux용
+# === OS별 gradlew 선택 ===
+if [ -f "$GRADLE_DIR/gradlew" ]; then
+  GRADLEW_PATH="$GRADLE_DIR/gradlew"
+elif [ -f "$GRADLE_DIR/gradlew.bat" ]; then
+  GRADLEW_PATH="$GRADLE_DIR/gradlew.bat"
 else
-    GRADLEW_PATH="$PROJECT_ROOT/smerp/gradlew.bat"    # Windows용
+  echo "gradlew(.bat) not found under $GRADLE_DIR"
+  exit 1
 fi
 
 # === Spotless 실행 ===
 echo "Running spotlessApply. Formatting code..."
-cd $PROJECT_ROOT/smerp && GRADLEW_PATH spotlessApply
+cd "$GRADLE_DIR" && "$GRADLEW_PATH" spotlessApply
 
 if [ $? -ne 0 ]; then
   echo "Spotless apply failed!"
@@ -22,7 +26,7 @@ fi
 # === 변경 파일 다시 add ===
 stagedFiles=$(git diff --staged --name-only)
 for file in $stagedFiles; do
-  if test -f "$file"; then
+  if [ -f "$file" ]; then
     git add "$file"
   fi
 done
