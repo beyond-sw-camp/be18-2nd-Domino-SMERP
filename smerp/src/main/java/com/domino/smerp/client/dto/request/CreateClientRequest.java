@@ -61,6 +61,5 @@ public class CreateClientRequest {
     @NotBlank(message = "우편번호는 필수 입력입니다.")
     private final String zipCode;
 
-    @NotNull(message = "상태는 필수 입력입니다.")
-    private final TradeType status;
+    @NotNull(message = "상태는 필수 입력입니다.") private final TradeType status;
 }

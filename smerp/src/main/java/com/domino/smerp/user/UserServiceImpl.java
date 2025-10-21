@@ -46,33 +46,31 @@ public class UserServiceImpl implements UserService {
 
         Client client = null;
         if (request.getCompanyName() != null) {
-            client = clientRepository.findByCompanyName(request.getCompanyName())
-                                     .orElseThrow(
-                                         () -> new CustomException(ErrorCode.CLIENT_NOT_FOUND));
+            client = clientRepository
+                    .findByCompanyName(request.getCompanyName())
+                    .orElseThrow(() -> new CustomException(ErrorCode.CLIENT_NOT_FOUND));
         }
 
         String empNo = generateEmpNo(request.getHireDate());
 
         User user = User.builder()
-                        .name(request.getName())
-                        .email(request.getEmail())
-                        .phone(request.getPhone())
-                        .address(request.getAddress())
-                        .ssn(encryptedSsn)
-                        .loginId(request.getLoginId())
-                        .password(passwordEncoder.encode(request.getPassword()))
-                        .hireDate(request.getHireDate())
-                        .fireDate(
-                            request.getFireDate() != null ? request.getFireDate() : null)
-                        .deptTitle(request.getDeptTitle())
-                        .role(request.getRole())
-                        .empNo(empNo)
-                        .client(client)
-                        .build();
+                .name(request.getName())
+                .email(request.getEmail())
+                .phone(request.getPhone())
+                .address(request.getAddress())
+                .ssn(encryptedSsn)
+                .loginId(request.getLoginId())
+                .password(passwordEncoder.encode(request.getPassword()))
+                .hireDate(request.getHireDate())
+                .fireDate(request.getFireDate() != null ? request.getFireDate() : null)
+                .deptTitle(request.getDeptTitle())
+                .role(request.getRole())
+                .empNo(empNo)
+                .client(client)
+                .build();
 
         userRepository.save(user);
     }
-
 
     @Override
     @Transactional(readOnly = true)
@@ -81,23 +79,22 @@ public class UserServiceImpl implements UserService {
         List<User> allUser = userRepository.findAll();
 
         return allUser.stream()
-                      .map(users -> UserListResponse.builder()
-                                                    .name(users.getName())
-                                                    .email(users.getEmail())
-                                                    .address(users.getAddress())
-                                                    .phone(users.getPhone())
-                                                    .deptTitle(users.getDeptTitle())
-                                                    .role(users.getRole())
-                                                    .build())
-                      .collect(Collectors.toList());
+                .map(users -> UserListResponse.builder()
+                        .name(users.getName())
+                        .email(users.getEmail())
+                        .address(users.getAddress())
+                        .phone(users.getPhone())
+                        .deptTitle(users.getDeptTitle())
+                        .role(users.getRole())
+                        .build())
+                .collect(Collectors.toList());
     }
 
     @Override
     @Transactional
     public void deleteUser(final Long userId) {
 
-        User user = userRepository.findById(userId)
-                                  .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+        User user = userRepository.findById(userId).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
         userRepository.deleteById(userId);
     }
 
@@ -105,28 +102,27 @@ public class UserServiceImpl implements UserService {
     @Transactional(readOnly = true)
     public UserResponse findUserById(final Long userId) {
 
-        User user = userRepository.findById(userId)
-                                  .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+        User user = userRepository.findById(userId).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
         Client client = user.getClient();
 
         String decryptSsn = ssnEncryptor.decryptSsn(user.getSsn());
 
         return UserResponse.builder()
-                           .userId(user.getUserId())
-                           .name(user.getName())
-                           .email(user.getEmail())
-                           .phone(user.getPhone())
-                           .address(user.getAddress())
-                           .ssn(decryptSsn.substring(0,8)+"******")
-                           .hireDate(user.getHireDate())
-                           .fireDate(user.getFireDate())
-                           .loginId(user.getLoginId())
-                           .deptTitle(user.getDeptTitle())
-                           .role(user.getRole())
-                           .empNo(user.getEmpNo())
-                           .clientName(client != null ? client.getCompanyName() : "거래처 아님")
-                           .build();
+                .userId(user.getUserId())
+                .name(user.getName())
+                .email(user.getEmail())
+                .phone(user.getPhone())
+                .address(user.getAddress())
+                .ssn(decryptSsn.substring(0, 8) + "******")
+                .hireDate(user.getHireDate())
+                .fireDate(user.getFireDate())
+                .loginId(user.getLoginId())
+                .deptTitle(user.getDeptTitle())
+                .role(user.getRole())
+                .empNo(user.getEmpNo())
+                .clientName(client != null ? client.getCompanyName() : "거래처 아님")
+                .build();
     }
 
     @Override
@@ -137,12 +133,13 @@ public class UserServiceImpl implements UserService {
             throw new CustomException(ErrorCode.DUPLICATE_PHONE);
         }
 
-        User user = userRepository.findById(userId)
-                                  .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+        User user = userRepository.findById(userId).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
         user.updateUser(request);
 
-        if(request.getCompanyName()!=null) {
-            Client client = clientRepository.findByCompanyName(request.getCompanyName()).orElseThrow(() -> new CustomException(ErrorCode.CLIENT_NOT_FOUND));
+        if (request.getCompanyName() != null) {
+            Client client = clientRepository
+                    .findByCompanyName(request.getCompanyName())
+                    .orElseThrow(() -> new CustomException(ErrorCode.CLIENT_NOT_FOUND));
             user.updateClient(client);
         }
     }

@@ -54,8 +54,7 @@ public class ClientController {
 
     @PatchMapping("/{clientId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void updateClient(@PathVariable final Long clientId,
-        @Valid @RequestBody final UpdateClientRequest request) {
+    public void updateClient(@PathVariable final Long clientId, @Valid @RequestBody final UpdateClientRequest request) {
 
         clientService.updateClient(clientId, request);
     }

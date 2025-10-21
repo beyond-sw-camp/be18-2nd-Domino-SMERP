@@ -1,7 +1,6 @@
 package com.domino.smerp.auth;
 
 import com.domino.smerp.user.User;
-import com.domino.smerp.user.constants.UserRole;
 import java.util.Collection;
 import java.util.List;
 import lombok.RequiredArgsConstructor;

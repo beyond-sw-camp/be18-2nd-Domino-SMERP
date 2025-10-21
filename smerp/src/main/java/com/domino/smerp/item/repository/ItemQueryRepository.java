@@ -7,6 +7,5 @@ import org.springframework.data.domain.Pageable;
 
 public interface ItemQueryRepository {
 
-  Page<Item> searchItems(final ItemSearchRequest keyword, final Pageable pageable);
-
+    Page<Item> searchItems(final ItemSearchRequest keyword, final Pageable pageable);
 }

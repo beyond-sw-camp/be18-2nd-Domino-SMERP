@@ -53,8 +53,7 @@ public class UserController {
 
     @PatchMapping("/{userId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void updateUser(@PathVariable final Long userId,
-        @Valid @RequestBody final UpdateUserRequest request) {
+    public void updateUser(@PathVariable final Long userId, @Valid @RequestBody final UpdateUserRequest request) {
 
         userService.updateUser(userId, request);
     }

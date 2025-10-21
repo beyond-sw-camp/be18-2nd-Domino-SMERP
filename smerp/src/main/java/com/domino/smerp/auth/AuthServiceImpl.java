@@ -22,18 +22,15 @@ public class AuthServiceImpl implements AuthService {
         if (loginId == null || loginId.isEmpty() || password == null || password.isEmpty()) {
             throw new CustomException(ErrorCode.INVALID_LOGIN);
         }
-        Authentication authentication = authenticationManager.authenticate(
-            new UsernamePasswordAuthenticationToken(loginId, password)
-        );
-        SecurityContextHolder.getContext()
-                             .setAuthentication(authentication);
-        session.setAttribute(HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY,
-            SecurityContextHolder.getContext());
+        Authentication authentication =
+                authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginId, password));
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+        session.setAttribute(
+                HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY, SecurityContextHolder.getContext());
         if (authentication.getPrincipal() instanceof CustomUserDetails customUserDetails) {
             session.setAttribute("loginId", customUserDetails.getUsername());
             session.setAttribute("name", customUserDetails.getName());
-            session.setAttribute("role", customUserDetails.getAuthorities()
-                                                          .toString());
+            session.setAttribute("role", customUserDetails.getAuthorities().toString());
         }
     }
 
@@ -41,7 +38,6 @@ public class AuthServiceImpl implements AuthService {
     public void logout(HttpSession session) {
 
         session.invalidate();
-        SecurityContextHolder.getContext()
-                             .setAuthentication(null);
+        SecurityContextHolder.getContext().setAuthentication(null);
     }
 }

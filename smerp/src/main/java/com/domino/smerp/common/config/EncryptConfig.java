@@ -14,7 +14,7 @@ public class EncryptConfig {
     private String salt;
 
     @Bean
-    public AesBytesEncryptor aesBytesEncryptor() throws  Exception{
+    public AesBytesEncryptor aesBytesEncryptor() throws Exception {
         return new AesBytesEncryptor(key, salt);
     }
 }

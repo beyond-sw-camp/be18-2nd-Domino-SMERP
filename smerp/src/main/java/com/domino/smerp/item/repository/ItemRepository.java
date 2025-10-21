@@ -7,8 +7,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface ItemRepository extends JpaRepository<Item, Long>, ItemQueryRepository {
 
-  boolean existsByRfid(final String rfid);
-
+    boolean existsByRfid(final String rfid);
 }
-
-

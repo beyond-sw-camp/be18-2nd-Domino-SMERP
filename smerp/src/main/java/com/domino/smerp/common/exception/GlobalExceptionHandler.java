@@ -16,19 +16,23 @@ public class GlobalExceptionHandler {
         ErrorCode errorCode = ex.getErrorCode();
         log.info("[{}] {}", errorCode.getCode(), errorCode.getMessage());
         return new ResponseEntity<>(
-            new ErrorResponse(errorCode.getCode(), errorCode.getMessage(),errorCode.getStatus().value()), errorCode.getStatus()
-        );
+                new ErrorResponse(
+                        errorCode.getCode(),
+                        errorCode.getMessage(),
+                        errorCode.getStatus().value()),
+                errorCode.getStatus());
     }
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleException(Exception ex) {
         return ResponseEntity.internalServerError()
-                             .body(new ErrorResponse("INTERNAL_SERVER_ERROR", ex.getMessage(),
-                                 HttpStatus.INTERNAL_SERVER_ERROR.value()));
+                .body(new ErrorResponse(
+                        "INTERNAL_SERVER_ERROR", ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR.value()));
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ErrorResponse> handleMethodArgumentNotValidException(MethodArgumentNotValidException ex) {
-        return ResponseEntity.badRequest().body(new ErrorResponse("BAD_REQUEST", "유효성 검사 실패",HttpStatus.BAD_REQUEST.value()));
+        return ResponseEntity.badRequest()
+                .body(new ErrorResponse("BAD_REQUEST", "유효성 검사 실패", HttpStatus.BAD_REQUEST.value()));
     }
 }
