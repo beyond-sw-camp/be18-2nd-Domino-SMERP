@@ -92,13 +92,22 @@ clean {
 }
 
 tasks.register('updateGitHooks', Copy) {
-    from './scripts/pre-commit'
-    into './.git/hooks'
+    from 'scripts/pre-commit'        // 현재 폴더의 scripts 디렉터리
+    into './.git/hooks'              // 실제 git hooks 폴더 위치
 }
 
-tasks.register('makeGitHooksExecutable', Exec) {
-    commandLine 'chmod', '+x', './.git/hooks/pre-commit'
+tasks.register('makeGitHooksExecutable') {
     dependsOn updateGitHooks
+    doLast {
+        def osName = System.getProperty("os.name").toLowerCase()
+        if (osName.contains("windows")) {
+            println "Skipping chmod (Windows detected) — Git hooks assumed already executable."
+        } else {
+            exec {
+                commandLine 'chmod', '+x', './.git/hooks/pre-commit'
+            }
+        }
+    }
 }
 
 compileJava.dependsOn makeGitHooksExecutable
