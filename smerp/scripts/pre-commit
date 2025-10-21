@@ -8,7 +8,7 @@ GRADLEW_PATH=$(find "$PROJECT_ROOT" -maxdepth 3 -type f \( -name "gradlew" -o -n
 
 # === gradlew 유효성 검사 ===
 if [ -z "$GRADLEW_PATH" ]; then
-  echo "❌ gradlew(.bat) not found anywhere under project root!"
+  echo "gradlew(.bat) not found anywhere under project root!"
   exit 1
 fi
 
@@ -19,7 +19,7 @@ echo "Running spotlessApply. Formatting code..."
 cd "$GRADLE_DIR" && "$GRADLEW_PATH" spotlessApply
 
 if [ $? -ne 0 ]; then
-  echo "❌ Spotless apply failed!"
+  echo "Spotless apply failed!"
   exit 1
 fi
 
