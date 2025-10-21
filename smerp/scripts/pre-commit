@@ -5,9 +5,9 @@ PROJECT_ROOT=$(git rev-parse --show-toplevel)
 
 # OS 감지 (Windows, macOS, Linux 대응)
 if [ "$(uname -s | tr '[:upper:]' '[:lower:]')" = "darwin" ] || [ "$(uname -s | tr '[:upper:]' '[:lower:]')" = "linux" ]; then
-    GRADLEW_PATH="$PROJECT_ROOT/gradlew"        # macOS/Linux용
+    GRADLEW_PATH="$PROJECT_ROOT/smerp/gradlew"        # macOS/Linux용
 else
-    GRADLEW_PATH="$PROJECT_ROOT/gradlew.bat"    # Windows용
+    GRADLEW_PATH="$PROJECT_ROOT/smerp/gradlew.bat"    # Windows용
 fi
 
 # === Spotless 실행 ===
