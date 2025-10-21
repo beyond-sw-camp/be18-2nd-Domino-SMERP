@@ -12,7 +12,7 @@ fi
 
 # === Spotless 실행 ===
 echo "Running spotlessApply. Formatting code..."
-cd $PROJECT_ROOT && GRADLEW_PATH spotlessApply
+cd $PROJECT_ROOT/smerp && GRADLEW_PATH spotlessApply
 
 if [ $? -ne 0 ]; then
   echo "Spotless apply failed!"
