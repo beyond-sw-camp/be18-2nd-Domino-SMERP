@@ -1,10 +1,8 @@
 package com.domino.smerp.item;
 
 import com.domino.smerp.item.constants.ItemStatusStatus;
-import com.domino.smerp.log.audit.AuditLogEntityListener;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.EntityListeners;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
@@ -20,7 +18,6 @@ import org.hibernate.envers.Audited;
 @Getter
 @ToString
 @Audited
-@EntityListeners(AuditLogEntityListener.class)
 @NoArgsConstructor
 @Table(name = "item_status")
 public class ItemStatus {

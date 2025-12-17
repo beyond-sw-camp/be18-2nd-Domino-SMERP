@@ -2,7 +2,6 @@ package com.domino.smerp.client;
 
 import com.domino.smerp.client.constants.TradeType;
 import com.domino.smerp.client.dto.request.UpdateClientRequest;
-import com.domino.smerp.log.audit.AuditLogEntityListener;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
@@ -23,7 +22,6 @@ import org.hibernate.envers.Audited;
 @Getter
 @Builder
 @ToString
-@EntityListeners(AuditLogEntityListener.class)
 @Audited
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
