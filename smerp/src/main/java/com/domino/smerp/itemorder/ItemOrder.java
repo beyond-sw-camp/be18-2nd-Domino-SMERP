@@ -21,9 +21,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
-//@ToString
-//@Audited
-//@EntityListeners(AuditLogEntityListener.class)
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor

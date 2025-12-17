@@ -22,9 +22,6 @@ import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLRestriction;
 
 @Entity
-//@ToString
-//@Audited
-//@EntityListeners(AuditLogEntityListener.class)
 @Table(name = "sales_order")
 @Getter
 @SQLDelete(sql = "UPDATE sales_order SET is_deleted = true WHERE sales_order_id = ?")

@@ -4,7 +4,6 @@ import com.domino.smerp.client.constants.TradeType;
 import com.domino.smerp.client.dto.request.UpdateClientRequest;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.EntityListeners;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
@@ -16,13 +15,11 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
-import org.hibernate.envers.Audited;
 
 @Entity
 @Getter
 @Builder
 @ToString
-@Audited
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class Client {

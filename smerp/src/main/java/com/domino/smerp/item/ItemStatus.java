@@ -12,12 +12,10 @@ import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
-import org.hibernate.envers.Audited;
 
 @Entity
 @Getter
 @ToString
-@Audited
 @NoArgsConstructor
 @Table(name = "item_status")
 public class ItemStatus {
