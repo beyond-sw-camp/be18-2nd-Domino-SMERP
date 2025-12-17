@@ -6,27 +6,33 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import org.springframework.data.elasticsearch.annotations.Document;
 import org.springframework.data.elasticsearch.annotations.Field;
 import org.springframework.data.elasticsearch.annotations.FieldType;
 
-@Document(indexName = "api-logs")
+@Document(indexName = "action-logs")
 @Getter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ApiLog {
+public class ActionLog {
 
     @Id
     private String id;
 
-    private String method;
-    private String uri;
-    private int status;
-    private long duration;
+    private String action;
+
+    private String entity;
+    private String entityId;
+
+    private boolean success;
+    private String failReason;
+
+    private String beforeData;
+    private String afterData;
+
+    private String actor;
     private String clientIp;
-    private String principal;
 
     @Field(type = FieldType.Date, format = {}, pattern = "uuuu-MM-dd'T'HH:mm:ss.SSS")
     private LocalDateTime timestamp;
