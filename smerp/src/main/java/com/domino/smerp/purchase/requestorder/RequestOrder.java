@@ -71,6 +71,7 @@ public class RequestOrder extends BaseEntity {
     @Column(name = "document_no", nullable = false, length = 30)
     private String documentNo; // 전표 번호
 
+    @Builder.Default
     @OneToMany(mappedBy = "requestOrder", orphanRemoval = true)
     private List<ItemRequestOrder> items = new ArrayList<>();
 
