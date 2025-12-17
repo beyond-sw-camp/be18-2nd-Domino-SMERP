@@ -1,0 +1,1107 @@
+{
+  "info": {
+    "name": "K-pop BOM 전체 등록",
+    "_postman_id": "boms-1234-5678-9012",
+    "description": "소속사 → 그룹 → 멤버/앨범/사이트 전체 BOM 자동 등록",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "빅히트 → 방탄소년단",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": "{{baseUrl}}/api/v1/boms",
+        "body": { "mode": "raw", "raw": "{ \"parentItemId\": {{빅히트_뮤직_id}}, \"childItemId\": {{방탄소년단_id}}, \"qty\": 1.0 }" }
+      }
+    },
+    {
+      "name": "방탄소년단 → RM",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": "{{baseUrl}}/api/v1/boms",
+        "body": { "mode": "raw", "raw": "{ \"parentItemId\": {{방탄소년단_id}}, \"childItemId\": {{RM_id}}, \"qty\": 1.0 }" }
+      }
+    },
+    {
+      "name": "방탄소년단 → 진",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": "{{baseUrl}}/api/v1/boms",
+        "body": { "mode": "raw", "raw": "{ \"parentItemId\": {{방탄소년단_id}}, \"childItemId\": {{진_id}}, \"qty\": 1.0 }" }
+      }
+    },
+    {
+      "name": "방탄소년단 → 슈가",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": "{{baseUrl}}/api/v1/boms",
+        "body": { "mode": "raw", "raw": "{ \"parentItemId\": {{방탄소년단_id}}, \"childItemId\": {{슈가_id}}, \"qty\": 1.0 }" }
+      }
+    },
+    {
+      "name": "방탄소년단 → 제이홉",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": "{{baseUrl}}/api/v1/boms",
+        "body": { "mode": "raw", "raw": "{ \"parentItemId\": {{방탄소년단_id}}, \"childItemId\": {{제이홉_id}}, \"qty\": 1.0 }" }
+      }
+    },
+    {
+      "name": "방탄소년단 → 지민",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": "{{baseUrl}}/api/v1/boms",
+        "body": { "mode": "raw", "raw": "{ \"parentItemId\": {{방탄소년단_id}}, \"childItemId\": {{지민_id}}, \"qty\": 1.0 }" }
+      }
+    },
+    {
+      "name": "방탄소년단 → 뷔",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": "{{baseUrl}}/api/v1/boms",
+        "body": { "mode": "raw", "raw": "{ \"parentItemId\": {{방탄소년단_id}}, \"childItemId\": {{뷔_id}}, \"qty\": 1.0 }" }
+      }
+    },
+    {
+      "name": "방탄소년단 → 정국",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": "{{baseUrl}}/api/v1/boms",
+        "body": { "mode": "raw", "raw": "{ \"parentItemId\": {{방탄소년단_id}}, \"childItemId\": {{정국_id}}, \"qty\": 1.0 }" }
+      }
+    },
+    {
+      "name": "방탄소년단 → 지민 솔로 앨범",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": "{{baseUrl}}/api/v1/boms",
+        "body": { "mode": "raw", "raw": "{ \"parentItemId\": {{방탄소년단_id}}, \"childItemId\": {{지민_솔로_앨범_id}}, \"qty\": 1.0 }" }
+      }
+    },
+    {
+      "name": "방탄소년단 → Proof",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": "{{baseUrl}}/api/v1/boms",
+        "body": { "mode": "raw", "raw": "{ \"parentItemId\": {{방탄소년단_id}}, \"childItemId\": {{Proof_id}}, \"qty\": 1.0 }" }
+      }
+    },
+    {
+      "name": "방탄소년단 → Map of the Soul 7",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": "{{baseUrl}}/api/v1/boms",
+        "body": { "mode": "raw", "raw": "{ \"parentItemId\": {{방탄소년단_id}}, \"childItemId\": {{Map_of_the_Soul_7_id}}, \"qty\": 1.0 }" }
+      }
+    },
+    {
+      "name": "방탄소년단 → Weverse (위버스)",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": "{{baseUrl}}/api/v1/boms",
+        "body": { "mode": "raw", "raw": "{ \"parentItemId\": {{방탄소년단_id}}, \"childItemId\": {{Weverse_BTS_id}}, \"qty\": 1.0 }" }
+      }
+    },
+    {
+      "name": "방탄소년단 → ibighit.com",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": "{{baseUrl}}/api/v1/boms",
+        "body": { "mode": "raw", "raw": "{ \"parentItemId\": {{방탄소년단_id}}, \"childItemId\": {{ibighit_com_id}}, \"qty\": 1.0 }" }
+      }
+    },
+    {
+      "name": "플레디스 → 세븐틴",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": "{{baseUrl}}/api/v1/boms",
+        "body": { "mode": "raw", "raw": "{ \"parentItemId\": {{플레디스_엔터테인먼트_id}}, \"childItemId\": {{세븐틴_id}}, \"qty\": 1.0 }" }
+      }
+    },
+    {
+      "name": "세븐틴 → 에스쿱스",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": "{{baseUrl}}/api/v1/boms",
+        "body": { "mode": "raw", "raw": "{ \"parentItemId\": {{세븐틴_id}}, \"childItemId\": {{에스쿱스_id}}, \"qty\": 1.0 }" }
+      }
+    },
+    {
+      "name": "세븐틴 → 정한",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": "{{baseUrl}}/api/v1/boms",
+        "body": { "mode": "raw", "raw": "{ \"parentItemId\": {{세븐틴_id}}, \"childItemId\": {{정한_id}}, \"qty\": 1.0 }" }
+      }
+    },
+    {
+      "name": "세븐틴 → 조슈아",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": "{{baseUrl}}/api/v1/boms",
+        "body": { "mode": "raw", "raw": "{ \"parentItemId\": {{세븐틴_id}}, \"childItemId\": {{조슈아_id}}, \"qty\": 1.0 }" }
+      }
+    },
+    {
+      "name": "세븐틴 → 준",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": "{{baseUrl}}/api/v1/boms",
+        "body": { "mode": "raw", "raw": "{ \"parentItemId\": {{세븐틴_id}}, \"childItemId\": {{준_id}}, \"qty\": 1.0 }" }
+      }
+    },
+    {
+      "name": "세븐틴 → 호시",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": "{{baseUrl}}/api/v1/boms",
+        "body": { "mode": "raw", "raw": "{ \"parentItemId\": {{세븐틴_id}}, \"childItemId\": {{호시_id}}, \"qty\": 1.0 }" }
+      }
+    },
+    {
+      "name": "세븐틴 → 원우",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": "{{baseUrl}}/api/v1/boms",
+        "body": { "mode": "raw", "raw": "{ \"parentItemId\": {{세븐틴_id}}, \"childItemId\": {{원우_id}}, \"qty\": 1.0 }" }
+      }
+    },
+    {
+      "name": "세븐틴 → 우지",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": "{{baseUrl}}/api/v1/boms",
+        "body": { "mode": "raw", "raw": "{ \"parentItemId\": {{세븐틴_id}}, \"childItemId\": {{우지_id}}, \"qty\": 1.0 }" }
+      }
+    },
+    {
+      "name": "세븐틴 → 도겸",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": "{{baseUrl}}/api/v1/boms",
+        "body": { "mode": "raw", "raw": "{ \"parentItemId\": {{세븐틴_id}}, \"childItemId\": {{도겸_id}}, \"qty\": 1.0 }" }
+      }
+    },
+    {
+      "name": "세븐틴 → 민규",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": "{{baseUrl}}/api/v1/boms",
+        "body": { "mode": "raw", "raw": "{ \"parentItemId\": {{세븐틴_id}}, \"childItemId\": {{민규_id}}, \"qty\": 1.0 }" }
+      }
+    },
+    {
+      "name": "세븐틴 → 디에잇",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": "{{baseUrl}}/api/v1/boms",
+        "body": { "mode": "raw", "raw": "{ \"parentItemId\": {{세븐틴_id}}, \"childItemId\": {{디에잇_id}}, \"qty\": 1.0 }" }
+      }
+    },
+    {
+      "name": "세븐틴 → 승관",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": "{{baseUrl}}/api/v1/boms",
+        "body": { "mode": "raw", "raw": "{ \"parentItemId\": {{세븐틴_id}}, \"childItemId\": {{승관_id}}, \"qty\": 1.0 }" }
+      }
+    },
+    {
+      "name": "세븐틴 → 버논",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": "{{baseUrl}}/api/v1/boms",
+        "body": { "mode": "raw", "raw": "{ \"parentItemId\": {{세븐틴_id}}, \"childItemId\": {{버논_id}}, \"qty\": 1.0 }" }
+      }
+    },
+    {
+      "name": "세븐틴 → 디노",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": "{{baseUrl}}/api/v1/boms",
+        "body": { "mode": "raw", "raw": "{ \"parentItemId\": {{세븐틴_id}}, \"childItemId\": {{디노_id}}, \"qty\": 1.0 }" }
+      }
+    },
+    {
+      "name": "세븐틴 → 부석순(BSS)",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": "{{baseUrl}}/api/v1/boms",
+        "body": { "mode": "raw", "raw": "{ \"parentItemId\": {{세븐틴_id}}, \"childItemId\": {{부석순_id}}, \"qty\": 1.0 }" }
+      }
+    },
+    {
+      "name": "세븐틴 → 정한X원우",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": "{{baseUrl}}/api/v1/boms",
+        "body": { "mode": "raw", "raw": "{ \"parentItemId\": {{세븐틴_id}}, \"childItemId\": {{정한X원우_id}}, \"qty\": 1.0 }" }
+      }
+    },
+    {
+      "name": "세븐틴 → FML",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": "{{baseUrl}}/api/v1/boms",
+        "body": { "mode": "raw", "raw": "{ \"parentItemId\": {{세븐틴_id}}, \"childItemId\": {{FML_id}}, \"qty\": 1.0 }" }
+      }
+    },
+    {
+      "name": "세븐틴 → Seventeenth Heaven",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": "{{baseUrl}}/api/v1/boms",
+        "body": { "mode": "raw", "raw": "{ \"parentItemId\": {{세븐틴_id}}, \"childItemId\": {{Seventeenth_Heaven_id}}, \"qty\": 1.0 }" }
+      }
+    },
+    {
+      "name": "세븐틴 → pledis.co.kr",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": "{{baseUrl}}/api/v1/boms",
+        "body": { "mode": "raw", "raw": "{ \"parentItemId\": {{세븐틴_id}}, \"childItemId\": {{pledis_co_kr_id}}, \"qty\": 1.0 }" }
+      }
+    },
+    {
+      "name": "세븐틴 → weverse.io",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": "{{baseUrl}}/api/v1/boms",
+        "body": { "mode": "raw", "raw": "{ \"parentItemId\": {{세븐틴_id}}, \"childItemId\": {{weverse_svt_id}}, \"qty\": 1.0 }" }
+      }
+    },
+
+    {
+      "name": "YG → 블랙핑크",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": "{{baseUrl}}/api/v1/boms",
+        "body": { "mode": "raw", "raw": "{ \"parentItemId\": {{YG_엔터테인먼트_id}}, \"childItemId\": {{블랙핑크_id}}, \"qty\": 1.0 }" }
+      }
+    },
+    {
+      "name": "블랙핑크 → 지수",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": "{{baseUrl}}/api/v1/boms",
+        "body": { "mode": "raw", "raw": "{ \"parentItemId\": {{블랙핑크_id}}, \"childItemId\": {{지수_id}}, \"qty\": 1.0 }" }
+      }
+    },
+    {
+      "name": "블랙핑크 → 제니",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": "{{baseUrl}}/api/v1/boms",
+        "body": { "mode": "raw", "raw": "{ \"parentItemId\": {{블랙핑크_id}}, \"childItemId\": {{제니_id}}, \"qty\": 1.0 }" }
+      }
+    },
+    {
+      "name": "블랙핑크 → 로제",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": "{{baseUrl}}/api/v1/boms",
+        "body": { "mode": "raw", "raw": "{ \"parentItemId\": {{블랙핑크_id}}, \"childItemId\": {{로제_id}}, \"qty\": 1.0 }" }
+      }
+    },
+    {
+      "name": "블랙핑크 → 리사",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": "{{baseUrl}}/api/v1/boms",
+        "body": { "mode": "raw", "raw": "{ \"parentItemId\": {{블랙핑크_id}}, \"childItemId\": {{리사_id}}, \"qty\": 1.0 }" }
+      }
+    },
+    {
+      "name": "블랙핑크 → 지수 솔로",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": "{{baseUrl}}/api/v1/boms",
+        "body": { "mode": "raw", "raw": "{ \"parentItemId\": {{블랙핑크_id}}, \"childItemId\": {{지수_솔로_id}}, \"qty\": 1.0 }" }
+      }
+    },
+    {
+      "name": "블랙핑크 → 제니 솔로",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": "{{baseUrl}}/api/v1/boms",
+        "body": { "mode": "raw", "raw": "{ \"parentItemId\": {{블랙핑크_id}}, \"childItemId\": {{제니_솔로_id}}, \"qty\": 1.0 }" }
+      }
+    },
+    {
+      "name": "블랙핑크 → BORN PINK",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": "{{baseUrl}}/api/v1/boms",
+        "body": { "mode": "raw", "raw": "{ \"parentItemId\": {{블랙핑크_id}}, \"childItemId\": {{BORN_PINK_id}}, \"qty\": 1.0 }" }
+      }
+    },
+    {
+      "name": "블랙핑크 → THE ALBUM",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": "{{baseUrl}}/api/v1/boms",
+        "body": { "mode": "raw", "raw": "{ \"parentItemId\": {{블랙핑크_id}}, \"childItemId\": {{THE_ALBUM_id}}, \"qty\": 1.0 }" }
+      }
+    },
+    {
+      "name": "블랙핑크 → ygfamily.com",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": "{{baseUrl}}/api/v1/boms",
+        "body": { "mode": "raw", "raw": "{ \"parentItemId\": {{블랙핑크_id}}, \"childItemId\": {{ygfamily_com_id}}, \"qty\": 1.0 }" }
+      }
+    },
+    {
+      "name": "블랙핑크 → weverse.io",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": "{{baseUrl}}/api/v1/boms",
+        "body": { "mode": "raw", "raw": "{ \"parentItemId\": {{블랙핑크_id}}, \"childItemId\": {{weverse_bkp_id}}, \"qty\": 1.0 }" }
+      }
+    },
+
+    {
+      "name": "어도어 → 뉴진스",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": "{{baseUrl}}/api/v1/boms",
+        "body": { "mode": "raw", "raw": "{ \"parentItemId\": {{어도어_id}}, \"childItemId\": {{뉴진스_id}}, \"qty\": 1.0 }" }
+      }
+    },
+    {
+      "name": "뉴진스 → 민지",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": "{{baseUrl}}/api/v1/boms",
+        "body": { "mode": "raw", "raw": "{ \"parentItemId\": {{뉴진스_id}}, \"childItemId\": {{민지_id}}, \"qty\": 1.0 }" }
+      }
+    },
+    {
+      "name": "뉴진스 → 하니",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": "{{baseUrl}}/api/v1/boms",
+        "body": { "mode": "raw", "raw": "{ \"parentItemId\": {{뉴진스_id}}, \"childItemId\": {{하니_id}}, \"qty\": 1.0 }" }
+      }
+    },
+    {
+      "name": "뉴진스 → 다니엘",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": "{{baseUrl}}/api/v1/boms",
+        "body": { "mode": "raw", "raw": "{ \"parentItemId\": {{뉴진스_id}}, \"childItemId\": {{다니엘_id}}, \"qty\": 1.0 }" }
+      }
+    },
+    {
+      "name": "뉴진스 → 해린",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": "{{baseUrl}}/api/v1/boms",
+        "body": { "mode": "raw", "raw": "{ \"parentItemId\": {{뉴진스_id}}, \"childItemId\": {{해린_id}}, \"qty\": 1.0 }" }
+      }
+    },
+    {
+      "name": "뉴진스 → 혜인",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": "{{baseUrl}}/api/v1/boms",
+        "body": { "mode": "raw", "raw": "{ \"parentItemId\": {{뉴진스_id}}, \"childItemId\": {{혜인_id}}, \"qty\": 1.0 }" }
+      }
+    },
+    {
+      "name": "뉴진스 → How Sweet",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": "{{baseUrl}}/api/v1/boms",
+        "body": { "mode": "raw", "raw": "{ \"parentItemId\": {{뉴진스_id}}, \"childItemId\": {{How_Sweet_id}}, \"qty\": 1.0 }" }
+      }
+    },
+    {
+      "name": "뉴진스 → Supernatural",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": "{{baseUrl}}/api/v1/boms",
+        "body": { "mode": "raw", "raw": "{ \"parentItemId\": {{뉴진스_id}}, \"childItemId\": {{Supernatural_id}}, \"qty\": 1.0 }" }
+      }
+    },
+    {
+      "name": "뉴진스 → newjeans.kr",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": "{{baseUrl}}/api/v1/boms",
+        "body": { "mode": "raw", "raw": "{ \"parentItemId\": {{뉴진스_id}}, \"childItemId\": {{newjeans_kr_id}}, \"qty\": 1.0 }" }
+      }
+    },
+    {
+      "name": "뉴진스 → weverse.io",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": "{{baseUrl}}/api/v1/boms",
+        "body": { "mode": "raw", "raw": "{ \"parentItemId\": {{뉴진스_id}}, \"childItemId\": {{weverse_njn_id}}, \"qty\": 1.0 }" }
+      }
+    },
+
+    {
+      "name": "플레디스 → 프로미스나인",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": "{{baseUrl}}/api/v1/boms",
+        "body": { "mode": "raw", "raw": "{ \"parentItemId\": {{플레디스_엔터테인먼트_id}}, \"childItemId\": {{프로미스나인_id}}, \"qty\": 1.0 }" }
+      }
+    },
+    {
+      "name": "프로미스나인 → 이새롬",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": "{{baseUrl}}/api/v1/boms",
+        "body": { "mode": "raw", "raw": "{ \"parentItemId\": {{프로미스나인_id}}, \"childItemId\": {{이새롬_id}}, \"qty\": 1.0 }" }
+      }
+    },
+    {
+      "name": "프로미스나인 → 송하영",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": "{{baseUrl}}/api/v1/boms",
+        "body": { "mode": "raw", "raw": "{ \"parentItemId\": {{프로미스나인_id}}, \"childItemId\": {{송하영_id}}, \"qty\": 1.0 }" }
+      }
+    },
+    {
+      "name": "프로미스나인 → 박지원",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": "{{baseUrl}}/api/v1/boms",
+        "body": { "mode": "raw", "raw": "{ \"parentItemId\": {{프로미스나인_id}}, \"childItemId\": {{박지원_id}}, \"qty\": 1.0 }" }
+      }
+    },
+    {
+      "name": "프로미스나인 → 노지선",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": "{{baseUrl}}/api/v1/boms",
+        "body": { "mode": "raw", "raw": "{ \"parentItemId\": {{프로미스나인_id}}, \"childItemId\": {{노지선_id}}, \"qty\": 1.0 }" }
+      }
+    },
+    {
+      "name": "프로미스나인 → 이서연",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": "{{baseUrl}}/api/v1/boms",
+        "body": { "mode": "raw", "raw": "{ \"parentItemId\": {{프로미스나인_id}}, \"childItemId\": {{이서연_id}}, \"qty\": 1.0 }" }
+      }
+    },
+    {
+      "name": "프로미스나인 → 이채영",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": "{{baseUrl}}/api/v1/boms",
+        "body": { "mode": "raw", "raw": "{ \"parentItemId\": {{프로미스나인_id}}, \"childItemId\": {{이채영_id}}, \"qty\": 1.0 }" }
+      }
+    },
+    {
+      "name": "프로미스나인 → 이나경",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": "{{baseUrl}}/api/v1/boms",
+        "body": { "mode": "raw", "raw": "{ \"parentItemId\": {{프로미스나인_id}}, \"childItemId\": {{이나경_id}}, \"qty\": 1.0 }" }
+      }
+    },
+    {
+      "name": "프로미스나인 → 백지헌",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": "{{baseUrl}}/api/v1/boms",
+        "body": { "mode": "raw", "raw": "{ \"parentItemId\": {{프로미스나인_id}}, \"childItemId\": {{백지헌_id}}, \"qty\": 1.0 }" }
+      }
+    },
+    {
+      "name": "프로미스나인 → 송하영 솔로곡",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": "{{baseUrl}}/api/v1/boms",
+        "body": { "mode": "raw", "raw": "{ \"parentItemId\": {{프로미스나인_id}}, \"childItemId\": {{송하영_솔로곡_id}}, \"qty\": 1.0 }" }
+      }
+    },
+    {
+      "name": "프로미스나인 → Unlock My World",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": "{{baseUrl}}/api/v1/boms",
+        "body": { "mode": "raw", "raw": "{ \"parentItemId\": {{프로미스나인_id}}, \"childItemId\": {{Unlock_My_World_id}}, \"qty\": 1.0 }" }
+      }
+    },
+    {
+      "name": "프로미스나인 → Supersonic",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": "{{baseUrl}}/api/v1/boms",
+        "body": { "mode": "raw", "raw": "{ \"parentItemId\": {{프로미스나인_id}}, \"childItemId\": {{Supersonic_id}}, \"qty\": 1.0 }" }
+      }
+    },
+    {
+      "name": "프로미스나인 → pledis.co.kr",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": "{{baseUrl}}/api/v1/boms",
+        "body": { "mode": "raw", "raw": "{ \"parentItemId\": {{프로미스나인_id}}, \"childItemId\": {{pledis_fmn_id}}, \"qty\": 1.0 }" }
+      }
+    },
+    {
+      "name": "프로미스나인 → weverse.io",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": "{{baseUrl}}/api/v1/boms",
+        "body": { "mode": "raw", "raw": "{ \"parentItemId\": {{프로미스나인_id}}, \"childItemId\": {{weverse_fmn_id}}, \"qty\": 1.0 }" }
+      }
+    },
+
+    {
+      "name": "JYP → 엔믹스",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": "{{baseUrl}}/api/v1/boms",
+        "body": { "mode": "raw", "raw": "{ \"parentItemId\": {{JYP_엔터테인먼트_id}}, \"childItemId\": {{엔믹스_id}}, \"qty\": 1.0 }" }
+      }
+    },
+    {
+      "name": "엔믹스 → 해원",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": "{{baseUrl}}/api/v1/boms",
+        "body": { "mode": "raw", "raw": "{ \"parentItemId\": {{엔믹스_id}}, \"childItemId\": {{해원_id}}, \"qty\": 1.0 }" }
+      }
+    },
+    {
+      "name": "엔믹스 → 설윤",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": "{{baseUrl}}/api/v1/boms",
+        "body": { "mode": "raw", "raw": "{ \"parentItemId\": {{엔믹스_id}}, \"childItemId\": {{설윤_id}}, \"qty\": 1.0 }" }
+      }
+    },
+    {
+      "name": "엔믹스 → 릴리",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": "{{baseUrl}}/api/v1/boms",
+        "body": { "mode": "raw", "raw": "{ \"parentItemId\": {{엔믹스_id}}, \"childItemId\": {{릴리_id}}, \"qty\": 1.0 }" }
+      }
+    },
+    {
+      "name": "엔믹스 → 배이",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": "{{baseUrl}}/api/v1/boms",
+        "body": { "mode": "raw", "raw": "{ \"parentItemId\": {{엔믹스_id}}, \"childItemId\": {{배이_id}}, \"qty\": 1.0 }" }
+      }
+    },
+    {
+      "name": "엔믹스 → 지우",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": "{{baseUrl}}/api/v1/boms",
+        "body": { "mode": "raw", "raw": "{ \"parentItemId\": {{엔믹스_id}}, \"childItemId\": {{지우_id}}, \"qty\": 1.0 }" }
+      }
+    },
+    {
+      "name": "엔믹스 → 규진",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": "{{baseUrl}}/api/v1/boms",
+        "body": { "mode": "raw", "raw": "{ \"parentItemId\": {{엔믹스_id}}, \"childItemId\": {{규진_id}}, \"qty\": 1.0 }" }
+      }
+    },
+    {
+      "name": "엔믹스 → Fe3O4: BREAK",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": "{{baseUrl}}/api/v1/boms",
+        "body": { "mode": "raw", "raw": "{ \"parentItemId\": {{엔믹스_id}}, \"childItemId\": {{Fe3O4_BREAK_id}}, \"qty\": 1.0 }" }
+      }
+    },
+    {
+      "name": "엔믹스 → expérgo",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": "{{baseUrl}}/api/v1/boms",
+        "body": { "mode": "raw", "raw": "{ \"parentItemId\": {{엔믹스_id}}, \"childItemId\": {{expergo_id}}, \"qty\": 1.0 }" }
+      }
+    },
+    {
+      "name": "엔믹스 → Weverse",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": "{{baseUrl}}/api/v1/boms",
+        "body": { "mode": "raw", "raw": "{ \"parentItemId\": {{엔믹스_id}}, \"childItemId\": {{weverse_nmx_id}}, \"qty\": 1.0 }" }
+      }
+    },
+
+    {
+      "name": "KQ → 블락비",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": "{{baseUrl}}/api/v1/boms",
+        "body": { "mode": "raw", "raw": "{ \"parentItemId\": {{KQ_엔터테인먼트_id}}, \"childItemId\": {{블락비_id}}, \"qty\": 1.0 }" }
+      }
+    },
+    {
+      "name": "블락비 → 태일",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": "{{baseUrl}}/api/v1/boms",
+        "body": { "mode": "raw", "raw": "{ \"parentItemId\": {{블락비_id}}, \"childItemId\": {{태일_id}}, \"qty\": 1.0 }" }
+      }
+    },
+    {
+      "name": "블락비 → 비범",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": "{{baseUrl}}/api/v1/boms",
+        "body": { "mode": "raw", "raw": "{ \"parentItemId\": {{블락비_id}}, \"childItemId\": {{비범_id}}, \"qty\": 1.0 }" }
+      }
+    },
+    {
+      "name": "블락비 → 재효",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": "{{baseUrl}}/api/v1/boms",
+        "body": { "mode": "raw", "raw": "{ \"parentItemId\": {{블락비_id}}, \"childItemId\": {{재효_id}}, \"qty\": 1.0 }" }
+      }
+    },
+    {
+      "name": "블락비 → 유권",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": "{{baseUrl}}/api/v1/boms",
+        "body": { "mode": "raw", "raw": "{ \"parentItemId\": {{블락비_id}}, \"childItemId\": {{유권_id}}, \"qty\": 1.0 }" }
+      }
+    },
+    {
+      "name": "블락비 → 박경",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": "{{baseUrl}}/api/v1/boms",
+        "body": { "mode": "raw", "raw": "{ \"parentItemId\": {{블락비_id}}, \"childItemId\": {{박경_id}}, \"qty\": 1.0 }" }
+      }
+    },
+    {
+      "name": "블락비 → 지코",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": "{{baseUrl}}/api/v1/boms",
+        "body": { "mode": "raw", "raw": "{ \"parentItemId\": {{블락비_id}}, \"childItemId\": {{지코_id}}, \"qty\": 1.0 }" }
+      }
+    },
+    {
+      "name": "블락비 → 피오",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": "{{baseUrl}}/api/v1/boms",
+        "body": { "mode": "raw", "raw": "{ \"parentItemId\": {{블락비_id}}, \"childItemId\": {{피오_id}}, \"qty\": 1.0 }" }
+      }
+    },
+    {
+      "name": "블락비 → 블락비 바스타즈",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": "{{baseUrl}}/api/v1/boms",
+        "body": { "mode": "raw", "raw": "{ \"parentItemId\": {{블락비_id}}, \"childItemId\": {{바스타즈_id}}, \"qty\": 1.0 }" }
+      }
+    },
+    {
+      "name": "블락비 → 지코 솔로 앨범",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": "{{baseUrl}}/api/v1/boms",
+        "body": { "mode": "raw", "raw": "{ \"parentItemId\": {{블락비_id}}, \"childItemId\": {{지코_솔로_앨범_id}}, \"qty\": 1.0 }" }
+      }
+    },
+    {
+      "name": "블락비 → Very Good",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": "{{baseUrl}}/api/v1/boms",
+        "body": { "mode": "raw", "raw": "{ \"parentItemId\": {{블락비_id}}, \"childItemId\": {{Very_Good_id}}, \"qty\": 1.0 }" }
+      }
+    },
+    {
+      "name": "블락비 → Blooming Period",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": "{{baseUrl}}/api/v1/boms",
+        "body": { "mode": "raw", "raw": "{ \"parentItemId\": {{블락비_id}}, \"childItemId\": {{Blooming_Period_id}}, \"qty\": 1.0 }" }
+      }
+    },
+    {
+      "name": "블락비 → 블락비 공식 웹사이트",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": "{{baseUrl}}/api/v1/boms",
+        "body": { "mode": "raw", "raw": "{ \"parentItemId\": {{블락비_id}}, \"childItemId\": {{블락비_공식웹_id}}, \"qty\": 1.0 }" }
+      }
+    },
+    {
+      "name": "블락비 → Weverse",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": "{{baseUrl}}/api/v1/boms",
+        "body": { "mode": "raw", "raw": "{ \"parentItemId\": {{블락비_id}}, \"childItemId\": {{weverse_bkb_id}}, \"qty\": 1.0 }" }
+      }
+    },
+
+    {
+      "name": "쏘스뮤직 → 르세라핌",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": "{{baseUrl}}/api/v1/boms",
+        "body": { "mode": "raw", "raw": "{ \"parentItemId\": {{쏘스뮤직_id}}, \"childItemId\": {{르세라핌_id}}, \"qty\": 1.0 }" }
+      }
+    },
+    {
+      "name": "르세라핌 → 김채원",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": "{{baseUrl}}/api/v1/boms",
+        "body": { "mode": "raw", "raw": "{ \"parentItemId\": {{르세라핌_id}}, \"childItemId\": {{김채원_id}}, \"qty\": 1.0 }" }
+      }
+    },
+    {
+      "name": "르세라핌 → 사쿠라",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": "{{baseUrl}}/api/v1/boms",
+        "body": { "mode": "raw", "raw": "{ \"parentItemId\": {{르세라핌_id}}, \"childItemId\": {{사쿠라_id}}, \"qty\": 1.0 }" }
+      }
+    },
+    {
+      "name": "르세라핌 → 허윤진",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": "{{baseUrl}}/api/v1/boms",
+        "body": { "mode": "raw", "raw": "{ \"parentItemId\": {{르세라핌_id}}, \"childItemId\": {{허윤진_id}}, \"qty\": 1.0 }" }
+      }
+    },
+    {
+      "name": "르세라핌 → 카즈하",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": "{{baseUrl}}/api/v1/boms",
+        "body": { "mode": "raw", "raw": "{ \"parentItemId\": {{르세라핌_id}}, \"childItemId\": {{카즈하_id}}, \"qty\": 1.0 }" }
+      }
+    },
+    {
+      "name": "르세라핌 → 홍은채",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": "{{baseUrl}}/api/v1/boms",
+        "body": { "mode": "raw", "raw": "{ \"parentItemId\": {{르세라핌_id}}, \"childItemId\": {{홍은채_id}}, \"qty\": 1.0 }" }
+      }
+    },
+    {
+      "name": "르세라핌 → FEARLESS",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": "{{baseUrl}}/api/v1/boms",
+        "body": { "mode": "raw", "raw": "{ \"parentItemId\": {{르세라핌_id}}, \"childItemId\": {{FEARLESS_id}}, \"qty\": 1.0 }" }
+      }
+    },
+    {
+      "name": "르세라핌 → UNFORGIVEN",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": "{{baseUrl}}/api/v1/boms",
+        "body": { "mode": "raw", "raw": "{ \"parentItemId\": {{르세라핌_id}}, \"childItemId\": {{UNFORGIVEN_id}}, \"qty\": 1.0 }" }
+      }
+    },
+    {
+      "name": "르세라핌 → Weverse",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": "{{baseUrl}}/api/v1/boms",
+        "body": { "mode": "raw", "raw": "{ \"parentItemId\": {{르세라핌_id}}, \"childItemId\": {{weverse_lsf_id}}, \"qty\": 1.0 }" }
+      }
+    },
+
+    {
+      "name": "SM → 에스파",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": "{{baseUrl}}/api/v1/boms",
+        "body": { "mode": "raw", "raw": "{ \"parentItemId\": {{SM_엔터테인먼트_id}}, \"childItemId\": {{에스파_id}}, \"qty\": 1.0 }" }
+      }
+    },
+    {
+      "name": "에스파 → 카리나",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": "{{baseUrl}}/api/v1/boms",
+        "body": { "mode": "raw", "raw": "{ \"parentItemId\": {{에스파_id}}, \"childItemId\": {{카리나_id}}, \"qty\": 1.0 }" }
+      }
+    },
+    {
+      "name": "에스파 → 지젤",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": "{{baseUrl}}/api/v1/boms",
+        "body": { "mode": "raw", "raw": "{ \"parentItemId\": {{에스파_id}}, \"childItemId\": {{지젤_id}}, \"qty\": 1.0 }" }
+      }
+    },
+    {
+      "name": "에스파 → 윈터",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": "{{baseUrl}}/api/v1/boms",
+        "body": { "mode": "raw", "raw": "{ \"parentItemId\": {{에스파_id}}, \"childItemId\": {{윈터_id}}, \"qty\": 1.0 }" }
+      }
+    },
+    {
+      "name": "에스파 → 닝닝",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": "{{baseUrl}}/api/v1/boms",
+        "body": { "mode": "raw", "raw": "{ \"parentItemId\": {{에스파_id}}, \"childItemId\": {{닝닝_id}}, \"qty\": 1.0 }" }
+      }
+    },
+    {
+      "name": "에스파 → 멤버 솔로곡",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": "{{baseUrl}}/api/v1/boms",
+        "body": { "mode": "raw", "raw": "{ \"parentItemId\": {{에스파_id}}, \"childItemId\": {{에스파_솔로곡_id}}, \"qty\": 1.0 }" }
+      }
+    },
+    {
+      "name": "에스파 → Armageddon",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": "{{baseUrl}}/api/v1/boms",
+        "body": { "mode": "raw", "raw": "{ \"parentItemId\": {{에스파_id}}, \"childItemId\": {{Armageddon_id}}, \"qty\": 1.0 }" }
+      }
+    },
+    {
+      "name": "에스파 → Savage",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": "{{baseUrl}}/api/v1/boms",
+        "body": { "mode": "raw", "raw": "{ \"parentItemId\": {{에스파_id}}, \"childItemId\": {{Savage_id}}, \"qty\": 1.0 }" }
+      }
+    },
+    {
+      "name": "에스파 → aespa 공식 웹사이트",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": "{{baseUrl}}/api/v1/boms",
+        "body": { "mode": "raw", "raw": "{ \"parentItemId\": {{에스파_id}}, \"childItemId\": {{aespa_web_id}}, \"qty\": 1.0 }" }
+      }
+    },
+    {
+      "name": "에스파 → Weverse",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": "{{baseUrl}}/api/v1/boms",
+        "body": { "mode": "raw", "raw": "{ \"parentItemId\": {{에스파_id}}, \"childItemId\": {{weverse_aesp_id}}, \"qty\": 1.0 }" }
+      }
+    },
+
+    {
+      "name": "스타쉽 → 아이브",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": "{{baseUrl}}/api/v1/boms",
+        "body": { "mode": "raw", "raw": "{ \"parentItemId\": {{스타쉽_엔터테인먼트_id}}, \"childItemId\": {{아이브_id}}, \"qty\": 1.0 }" }
+      }
+    },
+    {
+      "name": "아이브 → 안유진",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": "{{baseUrl}}/api/v1/boms",
+        "body": { "mode": "raw", "raw": "{ \"parentItemId\": {{아이브_id}}, \"childItemId\": {{안유진_id}}, \"qty\": 1.0 }" }
+      }
+    },
+    {
+      "name": "아이브 → 가을",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": "{{baseUrl}}/api/v1/boms",
+        "body": { "mode": "raw", "raw": "{ \"parentItemId\": {{아이브_id}}, \"childItemId\": {{가을_id}}, \"qty\": 1.0 }" }
+      }
+    },
+    {
+      "name": "아이브 → 레이",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": "{{baseUrl}}/api/v1/boms",
+        "body": { "mode": "raw", "raw": "{ \"parentItemId\": {{아이브_id}}, \"childItemId\": {{레이_id}}, \"qty\": 1.0 }" }
+      }
+    },
+    {
+      "name": "아이브 → 장원영",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": "{{baseUrl}}/api/v1/boms",
+        "body": { "mode": "raw", "raw": "{ \"parentItemId\": {{아이브_id}}, \"childItemId\": {{장원영_id}}, \"qty\": 1.0 }" }
+      }
+    },
+    {
+      "name": "아이브 → 리즈",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": "{{baseUrl}}/api/v1/boms",
+        "body": { "mode": "raw", "raw": "{ \"parentItemId\": {{아이브_id}}, \"childItemId\": {{리즈_id}}, \"qty\": 1.0 }" }
+      }
+    },
+    {
+      "name": "아이브 → 이서",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": "{{baseUrl}}/api/v1/boms",
+        "body": { "mode": "raw", "raw": "{ \"parentItemId\": {{아이브_id}}, \"childItemId\": {{이서_id}}, \"qty\": 1.0 }" }
+      }
+    },
+    {
+      "name": "아이브 → I've IVE 앨범",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": "{{baseUrl}}/api/v1/boms",
+        "body": { "mode": "raw", "raw": "{ \"parentItemId\": {{아이브_id}}, \"childItemId\": {{Ive_Ive_id}}, \"qty\": 1.0 }" }
+      }
+    },
+    {
+      "name": "아이브 → I'VE MINE 앨범",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": "{{baseUrl}}/api/v1/boms",
+        "body": { "mode": "raw", "raw": "{ \"parentItemId\": {{아이브_id}}, \"childItemId\": {{Ive_Mine_id}}, \"qty\": 1.0 }" }
+      }
+    },
+    {
+      "name": "아이브 → Weverse",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": "{{baseUrl}}/api/v1/boms",
+        "body": { "mode": "raw", "raw": "{ \"parentItemId\": {{아이브_id}}, \"childItemId\": {{weverse_ive_id}}, \"qty\": 1.0 }" }
+      }
+    }
+  ]
+}

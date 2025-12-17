@@ -1,11 +1,11 @@
 HELP.md
-.gradle
+smerp/.gradle
 build/
 !gradle/wrapper/gradle-wrapper.jar
 !**/src/main/**/build/
 !**/src/test/**/build/
 gradle.properties
-src/main/generated/
+**/src/main/generated/
 
 ### STS ###
 .apt_generated
