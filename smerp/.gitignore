@@ -39,3 +39,9 @@ out/
 .vscode/
 
 application.yml
+application*.yml
+!application-example.yml
+
+.env
+.env.*
+!.env.example
