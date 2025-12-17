@@ -8,9 +8,9 @@ import com.domino.smerp.user.dto.response.UserResponse;
 import org.springframework.data.domain.Pageable;
 
 public interface UserService {
-    void createUser(CreateUserRequest request);
+    User createUser(CreateUserRequest request);
     PageResponse<UserListResponse> searchUsers(String name, String deptTitle, Pageable pageable);
-    void deleteUser(Long userId);
+    void deleteUser(String enpNo);
     UserResponse findUserByEnpNo(String enpNo);
     void updateUser(String enpNo,UpdateUserRequest request);;
 }

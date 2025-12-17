@@ -6,6 +6,7 @@ import com.domino.smerp.common.dto.PageResponse;
 import com.domino.smerp.common.encrypt.SsnEncryptor;
 import com.domino.smerp.common.exception.CustomException;
 import com.domino.smerp.common.exception.ErrorCode;
+import com.domino.smerp.logging.annotation.ActionLoggable;
 import com.domino.smerp.user.dto.request.CreateUserRequest;
 import com.domino.smerp.user.dto.request.UpdateUserRequest;
 import com.domino.smerp.user.dto.response.UserListResponse;
@@ -28,11 +29,16 @@ public class UserServiceImpl implements UserService {
     private final PasswordEncoder passwordEncoder;
     private final SsnEncryptor ssnEncryptor;
 
-    @Override
     @Transactional
-    public void createUser(final CreateUserRequest request) {
+    @ActionLoggable(
+        action = "CREATE",
+        entity = "USER",
+        entityId = "#result.empNo"
+    )
+    public User createUser(CreateUserRequest request) {
 
         String encryptedSsn = ssnEncryptor.encryptSsn(request.getSsn());
+
         if (userRepository.existsByEmail(request.getEmail())) {
             throw new CustomException(ErrorCode.DUPLICATE_EMAIL);
         }
@@ -49,30 +55,28 @@ public class UserServiceImpl implements UserService {
         Client client = null;
         if (request.getCompanyName() != null) {
             client = clientRepository.findByCompanyName(request.getCompanyName())
-                                     .orElseThrow(
-                                         () -> new CustomException(ErrorCode.CLIENT_NOT_FOUND));
+                .orElseThrow(() -> new CustomException(ErrorCode.CLIENT_NOT_FOUND));
         }
 
         String empNo = generateEmpNo(request.getHireDate());
 
         User user = User.builder()
-                        .name(request.getName())
-                        .email(request.getEmail())
-                        .phone(request.getPhone())
-                        .address(request.getAddress())
-                        .ssn(encryptedSsn)
-                        .loginId(request.getLoginId())
-                        .password(passwordEncoder.encode(request.getPassword()))
-                        .hireDate(request.getHireDate())
-                        .fireDate(
-                            request.getFireDate() != null ? request.getFireDate() : null)
-                        .deptTitle(request.getDeptTitle())
-                        .role(request.getRole())
-                        .empNo(empNo)
-                        .client(client)
-                        .build();
+            .name(request.getName())
+            .email(request.getEmail())
+            .phone(request.getPhone())
+            .address(request.getAddress())
+            .ssn(encryptedSsn)
+            .loginId(request.getLoginId())
+            .password(passwordEncoder.encode(request.getPassword()))
+            .hireDate(request.getHireDate())
+            .fireDate(request.getFireDate())
+            .deptTitle(request.getDeptTitle())
+            .role(request.getRole())
+            .empNo(empNo)
+            .client(client)
+            .build();
 
-        userRepository.save(user);
+        return userRepository.save(user);
     }
 
 
@@ -111,15 +115,19 @@ public class UserServiceImpl implements UserService {
         return PageResponse.from(pageUser);
     }
 
-    @Override
     @Transactional
-    public void deleteUser(final Long userId) {
+    @ActionLoggable(
+        action = "DELETE",
+        entity = "USER",
+        entityId = "#empNo"
+    )
+    public void deleteUser(String empNo) {
 
-        User user = userRepository.findById(userId)
-                                  .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
-        userRepository.deleteById(userId);
+        User user = userRepository.findByEmpNo(empNo)
+            .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+
+        userRepository.delete(user);
     }
-
     @Override
     @Transactional(readOnly = true)
     public UserResponse findUserByEnpNo(final String enpNo) {
@@ -148,22 +156,27 @@ public class UserServiceImpl implements UserService {
                            .build();
     }
 
-    @Override
     @Transactional
-    public void updateUser(final String enpNo, final UpdateUserRequest request) {
+    @ActionLoggable(
+        action = "UPDATE",
+        entity = "USER",
+        entityId = "#enpNo"
+    )
+    public void updateUser(String enpNo, UpdateUserRequest request) {
 
-        if (userRepository.existsByPhone(request.getPhone())) {
+        if (request.getPhone() != null &&
+            userRepository.existsByPhoneAndEmpNoNot(request.getPhone(), enpNo)) {
             throw new CustomException(ErrorCode.DUPLICATE_PHONE);
         }
 
         User user = userRepository.findByEmpNo(enpNo)
-                                  .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+            .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+
         user.updateUser(request);
 
         if (request.getCompanyName() != null) {
             Client client = clientRepository.findByCompanyName(request.getCompanyName())
-                                            .orElseThrow(() -> new CustomException(
-                                                ErrorCode.CLIENT_NOT_FOUND));
+                .orElseThrow(() -> new CustomException(ErrorCode.CLIENT_NOT_FOUND));
             user.updateClient(client);
         }
     }

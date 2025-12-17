@@ -50,11 +50,9 @@ public class UserController {
         return userService.findUserByEnpNo(enpNo);
     }
 
-    @DeleteMapping("/{userId}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteUser(@PathVariable final Long userId) {
-
-        userService.deleteUser(userId);
+    @DeleteMapping("/{enpNo}")
+    public void deleteUser(@PathVariable String enpNo) {
+        userService.deleteUser(enpNo);
     }
 
     @PatchMapping("/{enpNo}")
