@@ -23,14 +23,6 @@ public class BomCacheServiceImpl implements BomCacheService {
   private final BomCacheBuilder bomCacheBuilder;
 
 
-  // BOM 캐시 무효화 후 재계산
-  @Override
-  @Transactional
-  public void invalidateAndRebuild(final Long rootItemId) {
-    bomCostCacheRepository.deleteByRootItemId(rootItemId);
-    rebuildBomCostCache(rootItemId);
-  }
-
   // BOM 캐시 조회
   @Override
   @Transactional(readOnly = true)

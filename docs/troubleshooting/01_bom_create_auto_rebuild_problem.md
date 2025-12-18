@@ -238,3 +238,8 @@ ERP 스타일 BOM 원가 계산 시스템에서 `BOM` 생성/수정 시마다 `b
 
 이 사례는 단순히 “버그를 해결했다”를 넘어서, ERP 스타일 BOM·원가 도메인에서 SRP, 트랜잭션 경계, 데이터 일관성 모델을 어떻게 설계해야 하는지에 대한 실질적인 감각을 쌓게 해 준 경험이다.
 
+---
+
+## 7. 후속 조치 안내
+
+위에서 정리한 문제 인식과 설계 원칙을 바탕으로, 실제 코드 레벨에서는 BOM 생성/수정/삭제 시점의 자동 재빌드를 제거하고, `POST /api/v1/boms/cache/rebuild`, `POST /api/v1/boms/cache/refresh/{item-id}` 두 API를 통해서만 원가 계산이 일어나는 구조로 리팩터링을 진행하였다. 상세한 변경 내역, 실행 흐름(Before/After), Newman/Postman 기반 검증 결과는 `02_bom_explicit_rebuild_refactor_result.md` 문서에서 후속 사례로 정리하였다.

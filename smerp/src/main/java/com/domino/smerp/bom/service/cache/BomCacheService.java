@@ -5,8 +5,6 @@ import java.util.List;
 
 public interface BomCacheService {
 
-  void invalidateAndRebuild(final Long rootItemId);
-
   List<BomCostCache> getCacheByRootItemId(final Long rootItemId);
 
 
