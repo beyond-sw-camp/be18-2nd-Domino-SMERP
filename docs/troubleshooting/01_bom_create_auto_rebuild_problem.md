@@ -287,20 +287,20 @@
 
 - **재빌드 전 `bom_cost_cache` 행 수 130 (이미지 1)**  
 
-  ![이미지 1 – 재빌드 전 bom_cost_cache 행 수 130](./images/01_closure/01.cost_cache_before_rebuild.png)
+  ![이미지 1 – 재빌드 전 bom_cost_cache 행 수 130](images/01_closure/01.cost_cache_before_rebuild.png)
 
   - 일부 루트 품목에 대해서만 원가 계산이 이루어져, `bom_cost_cache`에 저장된 결과가 **130행**에 불과한 상태를 보여준다.
 
 - **재빌드 전 `bom_closure` 행 수 362 (이미지 2)**
 
-  ![이미지 2 – 재빌드 전 bom_closure 행 수 362](./images/01_closure/02.bom_closure.png)
+  ![이미지 2 – 재빌드 전 bom_closure 행 수 362](images/01_closure/02.bom_closure.png)
 
   - 동일 시점에 `bom_closure`는 전체 BOM 구조를 반영하고 있으며, **362행**이 존재한다.
   - 즉, 구조 정보(closure)는 충분히 채워져 있지만, 계산 결과 테이블(`bom_cost_cache`)은 그 절반 이하만 채워져 있는 상태이다.
 
 - **`POST http://localhost:8080/api/v1/boms/cache/rebuild` 호출 후 `bom_cost_cache` 행 수 362 (이미지 3)**
 
-  ![이미지 3 – 재빌드 후 bom_cost_cache 행 수 362](./images/01_closure/03.cost_cache_after_rebuild.png)
+  ![이미지 3 – 재빌드 후 bom_cost_cache 행 수 362](images/01_closure/03.cost_cache_after_rebuild.png)
 
   - 전면 재빌드 API를 호출한 이후에는 `bom_cost_cache` 행 수가 **362행**으로 증가하여, `bom_closure`와 거의 1:1에 가까운 수준으로 맞춰진다.
   - 이 사실은, **현재 구조에서는 수동 전체 재빌드를 수행해야만 계산 결과 테이블이 구조 테이블과 같은 스케일로 채워진다**는 점을 시각적으로 보여준다.
