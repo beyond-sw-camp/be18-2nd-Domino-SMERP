@@ -6,11 +6,8 @@ import com.domino.smerp.bom.dto.request.UpdateBomRequest;
 import com.domino.smerp.bom.dto.response.BomDetailResponse;
 import com.domino.smerp.bom.entity.Bom;
 import com.domino.smerp.bom.entity.BomClosure;
-import com.domino.smerp.bom.event.BomChangedEvent;
 import com.domino.smerp.bom.repository.BomClosureRepository;
 import com.domino.smerp.bom.repository.BomRepository;
-import com.domino.smerp.bom.service.cache.BomCacheBuilder;
-import com.domino.smerp.bom.service.cache.BomCacheService;
 import com.domino.smerp.common.exception.CustomException;
 import com.domino.smerp.common.exception.ErrorCode;
 import com.domino.smerp.item.Item;
@@ -20,7 +17,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -32,9 +28,6 @@ public class BomCommandServiceImpl implements BomCommandService {
 
   private final BomRepository bomRepository;
   private final BomClosureRepository bomClosureRepository;
-  private final BomCacheService bomCacheService;
-
-  private final ApplicationEventPublisher eventPublisher;
 
   private static final ConcurrentHashMap<Long, ReentrantLock> closureLocks = new ConcurrentHashMap<>();
 
@@ -73,11 +66,8 @@ public class BomCommandServiceImpl implements BomCommandService {
     }
 
     final Bom savedBom = bomRepository.save(Bom.create(request, parentItem, childItem));
-    // 클로저 업데이트
+    // 클로저 업데이트 (Upsert 기반으로 구조 일관성 유지)
     updateBomClosure(parentItem.getItemId(), childItem.getItemId());
-
-    // 이벤트 발행 → Listener에서 캐시 갱신
-    eventPublisher.publishEvent(new BomChangedEvent(findRootId(parentItem.getItemId())));
 
     return BomDetailResponse.fromEntity(savedBom);
   }
@@ -90,11 +80,6 @@ public class BomCommandServiceImpl implements BomCommandService {
 
     // 수량과 비고만 업데이트
     bom.update(request);
-
-    if (request.getQty() != null) {
-      final Long rootId = findRootId(bom.getParentItem().getItemId());
-      eventPublisher.publishEvent(new BomChangedEvent(rootId));
-    }
 
     return BomDetailResponse.fromEntity(bom);
   }
@@ -124,8 +109,6 @@ public class BomCommandServiceImpl implements BomCommandService {
     bomClosureRepository.deleteByDescendantItemId(childItemId);
     updateBomClosure(newParentItemId, childItemId);
 
-    bomCacheService.rebuildAllBomCache();
-
     return BomDetailResponse.fromEntity(bom);
   }
 
@@ -150,10 +133,6 @@ public class BomCommandServiceImpl implements BomCommandService {
 
     // 클로저 테이블 갱신
     updateBomClosure(parentId, childItemId);
-
-    // 캐시 갱신 이벤트 발행
-    final Long rootId = findRootId(parentId);
-    eventPublisher.publishEvent(new BomChangedEvent(rootId));
   }
 
   // BOM 강제 삭제
@@ -172,14 +151,8 @@ public class BomCommandServiceImpl implements BomCommandService {
     bomRepository.deleteAllByChildItem_ItemIdIn(descendantItemIds);
     bomClosureRepository.deleteByDescendantItemId(targetItemId);
 
-    // 상위 root 들 invalidate
+    // 상위 root 들 조회 (캐시 무효화/재계산은 명시적 유스케이스에서만 수행)
     final List<BomClosure> ancestors = bomClosureRepository.findById_DescendantItemId(targetItemId);
-
-    ancestors.stream()
-        .map(BomClosure::getAncestorItemId)
-        .map(this::findRootId)
-        .distinct()
-        .forEach(rootId -> eventPublisher.publishEvent(new BomChangedEvent(rootId)));
   }
 
 
