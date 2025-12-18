@@ -41,6 +41,9 @@ dependencies {
 	compileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'
 
+	// redis
+	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+
 	// QueryDsl
 	// Open Feign QueryDSL (latest security patched version)
 	implementation("io.github.openfeign.querydsl:querydsl-core:7.0")
