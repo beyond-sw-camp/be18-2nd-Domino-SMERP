@@ -32,7 +32,7 @@ public class BomCommandServiceImpl implements BomCommandService {
   private static final ConcurrentHashMap<Long, ReentrantLock> closureLocks = new ConcurrentHashMap<>();
 
 
-
+  // TODO: REBUILD 시점 정하기
   // BOM 생성
   @Override
   @Transactional
