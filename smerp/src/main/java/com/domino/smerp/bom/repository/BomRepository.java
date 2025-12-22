@@ -15,9 +15,6 @@ public interface BomRepository extends JpaRepository<Bom, Long> , BomQueryReposi
   // 부모 품목 ID 기준 조회
   List<Bom> findByParentItem_ItemId(final Long parentItemId);
 
-  // BOM 품목구분 ID로 BOM 관계 조회
-  List<Bom> findByChildItem_ItemStatus_ItemStatusId(final Long itemStatusId);
-
   // 부모 ID + 자식 ID 조합 존재 여부 체크
   boolean existsByParentItem_ItemIdAndChildItem_ItemId(final Long parentItemId, final Long childItemId);
 
