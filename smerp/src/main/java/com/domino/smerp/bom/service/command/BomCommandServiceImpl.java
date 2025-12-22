@@ -48,8 +48,8 @@ public class BomCommandServiceImpl implements BomCommandService {
       throw new CustomException(ErrorCode.BOM_CIRCULAR_REFERENCE);
     }
 
-    final Item parentItem;
-    final Item childItem;
+    Item parentItem;
+    Item childItem;
 
     // 품목 ID가 더 작은 쪽이 먼저 잠금 획득
     if (request.getParentItemId() < request.getChildItemId()) {
@@ -66,7 +66,7 @@ public class BomCommandServiceImpl implements BomCommandService {
       throw new CustomException(ErrorCode.BOM_DUPLICATE_RELATIONSHIP);
     }
 
-    final Bom savedBom = bomRepository.save(Bom.create(request, parentItem, childItem));
+    Bom savedBom = bomRepository.save(Bom.create(request, parentItem, childItem));
     // 클로저 업데이트 (Upsert 기반으로 구조 일관성 유지)
     updateBomClosure(parentItem.getItemId(), childItem.getItemId());
 

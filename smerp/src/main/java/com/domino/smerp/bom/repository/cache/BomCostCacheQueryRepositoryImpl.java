@@ -1,10 +1,10 @@
 package com.domino.smerp.bom.repository.cache;
 
 
+import static com.domino.smerp.bom.entity.QBomCostCache.bomCostCache;
+import static com.domino.smerp.item.QItem.item;
+import static com.domino.smerp.item.QItemStatus.itemStatus;
 import com.domino.smerp.bom.dto.response.BomRequirementResponse;
-import com.domino.smerp.bom.entity.QBomCostCache;
-import com.domino.smerp.item.QItem;
-import com.domino.smerp.item.QItemStatus;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -21,9 +21,6 @@ public class BomCostCacheQueryRepositoryImpl implements BomCostCacheQueryReposit
 
   @Override
   public List<BomRequirementResponse> findResponsesByRootItemId(final Long rootItemId) {
-    QBomCostCache bcc = QBomCostCache.bomCostCache;
-    QItem item = QItem.item;
-    QItemStatus itemStatus = QItemStatus.itemStatus;
 
     return queryFactory
         .select(Projections.constructor(BomRequirementResponse.class,
@@ -32,27 +29,27 @@ public class BomCostCacheQueryRepositoryImpl implements BomCostCacheQueryReposit
             item.specification,
             item.unit,
             itemStatus.status.stringValue(),   // enum을 문자열로
-            bcc.totalQty,                      // requiredQty (누적된 소요량)
-            bcc.unitCost,
-            bcc.totalCost,
-            bcc.depth
+            bomCostCache.totalQty,                      // requiredQty (누적된 소요량)
+            bomCostCache.unitCost,
+            bomCostCache.totalCost,
+            bomCostCache.depth
         ))
-        .from(bcc)
-        .join(item).on(item.itemId.eq(bcc.childItemId))
+        .from(bomCostCache)
+        .join(item).on(item.itemId.eq(bomCostCache.childItemId))
         .join(item.itemStatus, itemStatus)
-        .where(bcc.rootItemId.eq(rootItemId))
-        .orderBy(bcc.depth.asc(), item.name.asc())
+        .where(bomCostCache.rootItemId.eq(rootItemId))
+        .orderBy(bomCostCache.depth.asc(), item.name.asc())
         .fetch();
   }
 
   @Override
   public BigDecimal getTotalCost(final Long rootItemId) {
-    QBomCostCache bcc = QBomCostCache.bomCostCache;
+
 
     BigDecimal result = queryFactory
-        .select(Expressions.numberTemplate(BigDecimal.class, "sum({0})", bcc.totalCost))
-        .from(bcc)
-        .where(bcc.rootItemId.eq(rootItemId))
+        .select(Expressions.numberTemplate(BigDecimal.class, "sum({0})", bomCostCache.totalCost))
+        .from(bomCostCache)
+        .where(bomCostCache.rootItemId.eq(rootItemId))
         .fetchOne();
 
     return result != null ? result : BigDecimal.ZERO;
