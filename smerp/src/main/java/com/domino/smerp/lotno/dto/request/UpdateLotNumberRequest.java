@@ -2,7 +2,6 @@ package com.domino.smerp.lotno.dto.request;
 
 
 import jakarta.validation.constraints.DecimalMin;
-import jakarta.validation.constraints.NotBlank;
 import java.math.BigDecimal;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

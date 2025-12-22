@@ -9,7 +9,6 @@ public interface BomCacheService {
 
 
   // TODO: 전체 캐시 재생성 시점 생각하기
-  // BUG: 캐시 재생성 시 `bom_closure`, `bom_cost_cache` 서로 row수 다름
   // BOM 전체 캐시 재생성
   void rebuildAllBomCache();
 

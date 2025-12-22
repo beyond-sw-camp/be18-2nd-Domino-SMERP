@@ -7,7 +7,6 @@ import com.domino.smerp.bom.entity.BomCostCache;
 import com.domino.smerp.bom.entity.QBom;
 import com.domino.smerp.bom.entity.QBomClosure;
 import com.domino.smerp.bom.entity.QBomCostCache;
-import com.domino.smerp.item.Item;
 import com.domino.smerp.item.QItem;
 import com.domino.smerp.item.QItemStatus;
 import com.domino.smerp.item.constants.ItemStatusStatus;

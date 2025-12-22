@@ -13,7 +13,6 @@ import com.domino.smerp.bom.service.command.BomCommandService;
 import com.domino.smerp.bom.service.query.BomQueryService;
 import com.domino.smerp.common.dto.PageResponse;
 import jakarta.validation.Valid;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
