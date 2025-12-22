@@ -8,6 +8,7 @@ import com.domino.smerp.bom.entity.Bom;
 import com.domino.smerp.bom.entity.BomClosure;
 import com.domino.smerp.bom.repository.BomClosureRepository;
 import com.domino.smerp.bom.repository.BomRepository;
+import com.domino.smerp.bom.support.BomReader;
 import com.domino.smerp.common.exception.CustomException;
 import com.domino.smerp.common.exception.ErrorCode;
 import com.domino.smerp.item.Item;
@@ -27,6 +28,7 @@ public class BomCommandServiceImpl implements BomCommandService {
   private final ItemService itemService;
 
   private final BomRepository bomRepository;
+  private final BomReader bomReader;
   private final BomClosureRepository bomClosureRepository;
 
   private static final ConcurrentHashMap<Long, ReentrantLock> closureLocks = new ConcurrentHashMap<>();
@@ -77,7 +79,7 @@ public class BomCommandServiceImpl implements BomCommandService {
   @Override
   @Transactional
   public BomDetailResponse updateBom(final Long bomId, final UpdateBomRequest request) {
-    final Bom bom = findBomById(bomId);
+    final Bom bom = bomReader.findBomById(bomId);
 
     // 수량과 비고만 업데이트
     bom.update(request);
@@ -92,7 +94,7 @@ public class BomCommandServiceImpl implements BomCommandService {
   public BomDetailResponse updateBomRelation(final Long bomId,
       final UpdateBomRelationRequest request) {
 
-    final Bom bom = findBomById(bomId);
+    final Bom bom = bomReader.findBomById(bomId);
 
     final Long newParentItemId = request.getNewParentItemId();
     final Long childItemId = bom.getChildItem().getItemId();
@@ -118,7 +120,7 @@ public class BomCommandServiceImpl implements BomCommandService {
   @Override
   @Transactional
   public void deleteBom(final Long bomId) {
-    final Bom bom = findBomById(bomId);
+    final Bom bom = bomReader.findBomById(bomId);
 
     final Long parentId = bom.getParentItem().getItemId();
     final Long childItemId = bom.getChildItem().getItemId();
@@ -140,7 +142,7 @@ public class BomCommandServiceImpl implements BomCommandService {
   @Override
   @Transactional
   public void forceDeleteBom(final Long bomId) {
-    final Bom bom = findBomById(bomId);
+    final Bom bom = bomReader.findBomById(bomId);
 
     final Long targetItemId = bom.getChildItem().getItemId();
 
@@ -158,14 +160,6 @@ public class BomCommandServiceImpl implements BomCommandService {
 
 
   //===================================================================================
-  // 공통 메소드
-  @Override
-  @Transactional(readOnly = true)
-  public Bom findBomById(final Long bomId) {
-    return bomRepository.findById(bomId)
-        .orElseThrow(() -> new CustomException(ErrorCode.BOM_NOT_FOUND));
-  }
-
   // 헬퍼 메소드
   // BOM 관계 수정시 클로저 업데이트
   private void updateBomClosure(final Long parentId, final Long childId) {

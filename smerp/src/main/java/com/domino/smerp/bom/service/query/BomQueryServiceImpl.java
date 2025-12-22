@@ -12,6 +12,7 @@ import com.domino.smerp.bom.entity.BomCostCache;
 import com.domino.smerp.bom.repository.BomClosureRepository;
 import com.domino.smerp.bom.repository.BomCostCacheRepository;
 import com.domino.smerp.bom.repository.BomRepository;
+import com.domino.smerp.bom.support.BomReader;
 import com.domino.smerp.common.dto.PageResponse;
 import com.domino.smerp.common.exception.CustomException;
 import com.domino.smerp.common.exception.ErrorCode;
@@ -30,6 +31,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class BomQueryServiceImpl implements BomQueryService {
 
   private final BomRepository bomRepository;
+  private final BomReader bomReader;
   private final BomCostCacheRepository bomCostCacheRepository;
   private final BomClosureRepository bomClosureRepository;
 
@@ -115,7 +117,7 @@ public class BomQueryServiceImpl implements BomQueryService {
   @Override
   @Transactional(readOnly = true)
   public BomDetailResponse getBomDetail(final Long bomId, final String direction) {
-    final Bom bom = findBomById(bomId);
+    final Bom bom = bomReader.findBomById(bomId);
     return BomDetailResponse.fromEntity(bom);
   }
 
@@ -142,18 +144,7 @@ public class BomQueryServiceImpl implements BomQueryService {
   }
 
   // ==========================
-  // 공통 메소드 (e.g. findBy)
-  // ==========================
-  @Override
-  @Transactional(readOnly = true)
-  public Bom findBomById(final Long bomId) {
-    return bomRepository.findById(bomId)
-        .orElseThrow(() -> new CustomException(ErrorCode.BOM_NOT_FOUND));
-  }
-
-
-  // ==========================
-  // 내부 유틸
+  // 헬퍼 메서드
   // ==========================
   // 정전개 트리 제작
   private BomCostCacheResponse buildTree(

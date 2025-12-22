@@ -26,7 +26,4 @@ public interface BomCommandService {
   // BOM 자식 있어도 강제 삭제
   void forceDeleteBom(final Long bomId);
 
-  // BOM 공통 findById
-  Bom findBomById(final Long bomId);
-
 }

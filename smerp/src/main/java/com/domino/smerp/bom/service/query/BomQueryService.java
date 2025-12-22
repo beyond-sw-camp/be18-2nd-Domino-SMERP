@@ -24,6 +24,4 @@ public interface BomQueryService {
   // BOM 소요량 계산 및 산출
   BomCostCacheResponse calculateTotalQtyAndCost(final Long rootItemId);
 
-  Bom findBomById(final Long bomId);
-
 }
