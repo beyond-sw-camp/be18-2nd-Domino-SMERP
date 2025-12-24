@@ -11,7 +11,7 @@ import com.domino.smerp.bom.entity.BomClosure;
 import com.domino.smerp.bom.entity.BomCostCache;
 import com.domino.smerp.bom.repository.BomClosureRepository;
 import com.domino.smerp.bom.repository.BomCostCacheRepository;
-import com.domino.smerp.bom.repository.BomRepository;
+import com.domino.smerp.bom.repository.query.BomQueryRepository;
 import com.domino.smerp.bom.support.BomReader;
 import com.domino.smerp.common.dto.PageResponse;
 import com.domino.smerp.common.exception.CustomException;
@@ -30,8 +30,8 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class BomQueryServiceImpl implements BomQueryService {
 
-  private final BomRepository bomRepository;
   private final BomReader bomReader;
+  private final BomQueryRepository bomQueryRepository;
   private final BomCostCacheRepository bomCostCacheRepository;
   private final BomClosureRepository bomClosureRepository;
 
@@ -40,7 +40,7 @@ public class BomQueryServiceImpl implements BomQueryService {
   public PageResponse<BomListResponse> searchBoms(final SearchBomRequest request,
       final Pageable pageable) {
     return PageResponse.from(
-        bomRepository.searchBoms(request, pageable)
+        bomQueryRepository.searchBoms(request, pageable)
     );
   }
 
@@ -66,20 +66,11 @@ public class BomQueryServiceImpl implements BomQueryService {
     // inbound (정전개)
     final BomCostCacheResponse inbound = buildTree(itemId, allEdges, cacheMap, 0);
 
-    // outbound (역전개)
-    final List<Long> ancestorIds = allEdges.stream()
-        .filter(e -> e.getDescendantItemId().equals(itemId))
-        .filter(e -> !e.getAncestorItemId().equals(itemId))
-        .filter(e -> e.getDepth() == 1) // 직계 부모들부터 시작 (상위로 재귀)
-        .map(BomClosure::getAncestorItemId)
-        .distinct()
-        .toList();
-
     // outbound
     final List<Long> allAncestors = allEdges.stream()
         .filter(e -> e.getDescendantItemId().equals(itemId))
-        .filter(e -> !e.getAncestorItemId().equals(itemId))
         .map(BomClosure::getAncestorItemId)
+        .filter(ancestorItemId -> !ancestorItemId.equals(itemId))
         .distinct()
         .toList();
 
@@ -225,12 +216,8 @@ public class BomQueryServiceImpl implements BomQueryService {
     }
 
     // self 캐시 조회 (root=id, child=id)
-    BomCostCache self = bomCostCacheRepository
-        .findByRootItemIdAndChildItemId(id, id)
-        .orElse(null);
+    bomCostCacheRepository
+        .findByRootItemIdAndChildItemId(id, id).ifPresent(self -> selfCacheMap.put(id, self));
 
-    if (self != null) {
-      selfCacheMap.put(id, self);
-    }
   }
 }

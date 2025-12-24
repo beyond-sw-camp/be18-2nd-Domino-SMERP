@@ -1,7 +1,6 @@
 package com.domino.smerp.bom.repository;
 
 import com.domino.smerp.bom.entity.Bom;
-import com.domino.smerp.bom.repository.query.BomQueryRepository;
 import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -10,7 +9,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface BomRepository extends JpaRepository<Bom, Long> , BomQueryRepository {
+public interface BomRepository extends JpaRepository<Bom, Long>{
 
   // 부모 품목 ID 기준 조회
   List<Bom> findByParentItem_ItemId(final Long parentItemId);

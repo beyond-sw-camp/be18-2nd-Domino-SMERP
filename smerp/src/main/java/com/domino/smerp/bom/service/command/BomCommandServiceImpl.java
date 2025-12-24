@@ -154,8 +154,6 @@ public class BomCommandServiceImpl implements BomCommandService {
     bomRepository.deleteAllByChildItem_ItemIdIn(descendantItemIds);
     bomClosureRepository.deleteByDescendantItemId(targetItemId);
 
-    // 상위 root 들 조회 (캐시 무효화/재계산은 명시적 유스케이스에서만 수행)
-    final List<BomClosure> ancestors = bomClosureRepository.findById_DescendantItemId(targetItemId);
   }
 
 
@@ -213,12 +211,6 @@ public class BomCommandServiceImpl implements BomCommandService {
       lock.unlock();
       closureLocks.remove(parentId, lock);
     }
-  }
-
-  // BOM 생성 시 조상찾아서 캐시에 넘기기 용
-  private Long findRootId(final Long itemId) {
-    Long rootId = bomClosureRepository.findRootAncestorId(itemId);
-    return rootId != null ? rootId : itemId; // 혹시 null이면 자기 자신
   }
 
 }

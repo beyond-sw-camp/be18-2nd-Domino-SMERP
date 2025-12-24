@@ -5,7 +5,6 @@ import com.domino.smerp.bom.dto.response.BomAllResponse;
 import com.domino.smerp.bom.dto.response.BomCostCacheResponse;
 import com.domino.smerp.bom.dto.response.BomDetailResponse;
 import com.domino.smerp.bom.dto.response.BomListResponse;
-import com.domino.smerp.bom.entity.Bom;
 import com.domino.smerp.common.dto.PageResponse;
 import org.springframework.data.domain.Pageable;
 

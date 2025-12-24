@@ -4,7 +4,6 @@ import com.domino.smerp.bom.dto.request.CreateBomRequest;
 import com.domino.smerp.bom.dto.request.UpdateBomRelationRequest;
 import com.domino.smerp.bom.dto.request.UpdateBomRequest;
 import com.domino.smerp.bom.dto.response.BomDetailResponse;
-import com.domino.smerp.bom.entity.Bom;
 
 public interface BomCommandService {
 
