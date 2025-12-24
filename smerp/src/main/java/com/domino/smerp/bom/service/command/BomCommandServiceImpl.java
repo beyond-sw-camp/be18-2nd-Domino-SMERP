@@ -105,11 +105,28 @@ public class BomCommandServiceImpl implements BomCommandService {
       throw new CustomException(ErrorCode.BOM_CIRCULAR_REFERENCE);
     }
 
+    final List<Long> subtreeDescendants =
+        bomClosureRepository.findById_AncestorItemId(childItemId)
+            .stream()
+            .map(BomClosure::getDescendantItemId)
+            .toList();
+
+    final List<Long> oldAncestors =
+        bomClosureRepository.findById_DescendantItemId(childItemId)
+            .stream()
+            .map(BomClosure::getAncestorItemId)
+            .filter(a -> !a.equals(childItemId))
+            .toList();
+
+    if (!oldAncestors.isEmpty() && !subtreeDescendants.isEmpty()) {
+      bomClosureRepository.deleteSubtreeRelations(oldAncestors, subtreeDescendants);
+    }
+
     final Item newParentItem = itemService.findItemByIdWithLock(newParentItemId);
     bom.updateRelation(request, newParentItem);
 
     // 기존 관계의 클로저 삭제 후 새로운 관계의 클로저 업데이트
-    bomClosureRepository.deleteByDescendantItemId(childItemId);
+    //bomClosureRepository.deleteByDescendantItemId(childItemId);
     updateBomClosure(newParentItemId, childItemId);
 
     return BomDetailResponse.fromEntity(bom);

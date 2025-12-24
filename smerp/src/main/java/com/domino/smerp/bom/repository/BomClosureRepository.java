@@ -28,6 +28,19 @@ public interface BomClosureRepository extends JpaRepository<BomClosure, BomClosu
   @Query("DELETE FROM BomClosure bc WHERE bc.id.descendantItemId = :descendantItemId")
   void deleteByDescendantItemId(final @Param("descendantItemId") Long descendantItemId);
 
+  // 관계 변경 시 서브노드 관계 보존하기
+  @Modifying
+  @Query("""
+  DELETE FROM BomClosure bc
+  WHERE bc.id.ancestorItemId IN :ancestorIds
+    AND bc.id.descendantItemId IN :descendantIds
+""")
+  void deleteSubtreeRelations(
+      @Param("ancestorIds") List<Long> ancestorIds,
+      @Param("descendantIds") List<Long> descendantIds
+  );
+
+
 
   // ============================================================================
   // query
