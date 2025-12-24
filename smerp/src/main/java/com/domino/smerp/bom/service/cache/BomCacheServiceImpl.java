@@ -2,7 +2,6 @@ package com.domino.smerp.bom.service.cache;
 
 import com.domino.smerp.bom.entity.BomCostCache;
 import com.domino.smerp.bom.repository.BomCostCacheRepository;
-import com.domino.smerp.bom.repository.BomRepository;
 import com.domino.smerp.item.Item;
 import com.domino.smerp.item.ItemService;
 import java.util.List;
@@ -18,7 +17,6 @@ public class BomCacheServiceImpl implements BomCacheService {
 
   private final ItemService itemService;
 
-  private final BomRepository bomRepository;
   private final BomCostCacheRepository bomCostCacheRepository;
   private final BomCacheBuilder bomCacheBuilder;
 
