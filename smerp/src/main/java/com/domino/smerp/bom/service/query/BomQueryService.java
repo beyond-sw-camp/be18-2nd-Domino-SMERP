@@ -12,7 +12,7 @@ public interface BomQueryService {
 
 
   // Bom 목록 페이징
-  PageResponse<BomListResponse> searchBoms(final SearchBomRequest request,final Pageable pageable);
+  PageResponse<BomListResponse> searchBoms(final SearchBomRequest request, final Pageable pageable);
 
   // 정전개, 역전개, 원재료 리스트 한번에
   BomAllResponse getBomAll(final Long itemId);

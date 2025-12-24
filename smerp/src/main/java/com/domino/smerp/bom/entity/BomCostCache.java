@@ -36,11 +36,12 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Table(name = "bom_cost_cache",
     indexes = {
-      @Index(name = "idx_cost_root", columnList = "root_item_id"),
-      @Index(name = "idx_cost_child", columnList = "child_item_id")
+        @Index(name = "idx_cost_root", columnList = "root_item_id"),
+        @Index(name = "idx_cost_child", columnList = "child_item_id")
     },
     uniqueConstraints = {
-        @UniqueConstraint(name = "uq_root_child_depth", columnNames = {"root_item_id", "child_item_id", "depth"})
+        @UniqueConstraint(name = "uq_root_child_depth", columnNames = {"root_item_id",
+            "child_item_id", "depth"})
     }
 )
 public class BomCostCache {

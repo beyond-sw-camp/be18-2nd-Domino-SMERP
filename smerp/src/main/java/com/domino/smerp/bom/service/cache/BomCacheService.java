@@ -1,8 +1,5 @@
 package com.domino.smerp.bom.service.cache;
 
-import com.domino.smerp.bom.entity.BomCostCache;
-import java.util.List;
-
 public interface BomCacheService {
 
   // TODO: 전체 캐시 재생성 시점 생각하기

@@ -21,8 +21,7 @@ public interface BomClosureRepository extends JpaRepository<BomClosure, BomClosu
       ON DUPLICATE KEY UPDATE `depth` = VALUES(`depth`)
       """, nativeQuery = true)
   void upsertBomClosure(@Param("ancestorId") Long ancestorId,
-      @Param("descendantId") Long descendantId,
-      @Param("depth") Integer depth);
+      @Param("descendantId") Long descendantId, @Param("depth") Integer depth);
 
   // 특정 품목을 자손으로 하는 모든 관계 삭제 (품목 자체가 삭제될 때 사용)
   @Modifying
@@ -39,6 +38,7 @@ public interface BomClosureRepository extends JpaRepository<BomClosure, BomClosu
   List<BomClosure> findById_DescendantItemId(final Long descendantItemId);
 
   // 특정 조상-자손 관계가 존재하는지 확인
-  boolean existsById_AncestorItemIdAndId_DescendantItemId(final Long ancestorId, final Long descendantId);
+  boolean existsById_AncestorItemIdAndId_DescendantItemId(final Long ancestorId,
+      final Long descendantId);
 
 }

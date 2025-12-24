@@ -31,7 +31,7 @@ public class BomCacheBuilder {
       final BigDecimal accQty,
       final int depth,
       final List<BomCostCache> caches
-) {
+  ) {
     final List<Bom> children = bomRepository.findByParentItem_ItemId(current.getItemId());
 
     log.info("DFS build: root={}, current={}, depth={}, childrenCount={}",

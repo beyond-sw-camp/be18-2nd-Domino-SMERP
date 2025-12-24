@@ -111,6 +111,7 @@ public class BomQueryRepositoryImpl implements BomQueryRepository {
     return (specification == null || specification.isEmpty()) ? null
         : QItem.item.specification.contains(specification);
   }
+
   private BooleanExpression hasBomTrue(final QItem item, final QBom bom) {
     return JPAExpressions.selectOne()
         .from(bom)

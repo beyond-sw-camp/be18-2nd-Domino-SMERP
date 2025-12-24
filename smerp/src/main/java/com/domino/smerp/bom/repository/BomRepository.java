@@ -9,13 +9,14 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface BomRepository extends JpaRepository<Bom, Long>{
+public interface BomRepository extends JpaRepository<Bom, Long> {
 
   // 부모 품목 ID 기준 조회
   List<Bom> findByParentItem_ItemId(final Long parentItemId);
 
   // 부모 ID + 자식 ID 조합 존재 여부 체크
-  boolean existsByParentItem_ItemIdAndChildItem_ItemId(final Long parentItemId, final Long childItemId);
+  boolean existsByParentItem_ItemIdAndChildItem_ItemId(final Long parentItemId,
+      final Long childItemId);
 
   // bom삭제
   boolean existsByParentItem_ItemId(final Long childItemId);
