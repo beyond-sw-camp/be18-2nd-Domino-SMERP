@@ -16,9 +16,9 @@ public interface BomClosureRepository extends JpaRepository<BomClosure, BomClosu
   // command
   @Modifying
   @Query(value = """
-      INSERT INTO bom_closure (ancestor_item_id, descendant_item_id, depth)
+      INSERT INTO `bom_closure` (`ancestor_item_id`, `descendant_item_id`, `depth`)
       VALUES (:ancestorId, :descendantId, :depth)
-      ON DUPLICATE KEY UPDATE depth = VALUES(depth)
+      ON DUPLICATE KEY UPDATE `depth` = VALUES(`depth`)
       """, nativeQuery = true)
   void upsertBomClosure(@Param("ancestorId") Long ancestorId,
       @Param("descendantId") Long descendantId,
@@ -51,10 +51,10 @@ public interface BomClosureRepository extends JpaRepository<BomClosure, BomClosu
 
   // 특정 아이템의 조상만 조회 nativeQuery로
   @Query(value = """
-      SELECT ancestor_item_id
-      FROM bom_closure
-      WHERE descendant_item_id = :itemId
-      ORDER BY depth DESC
+      SELECT `ancestor_item_id`
+      FROM `bom_closure`
+      WHERE `descendant_item_id` = :itemId
+      ORDER BY `depth` DESC
       LIMIT 1
       """, nativeQuery = true)
   Long findRootAncestorId(@Param("itemId") Long itemId);
