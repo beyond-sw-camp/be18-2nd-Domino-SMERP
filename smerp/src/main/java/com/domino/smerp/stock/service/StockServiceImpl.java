@@ -88,6 +88,7 @@ public class StockServiceImpl implements StockService {
   @Transactional
   public List<Stock> allocateStock(Long itemId, BigDecimal qty) {
 
+    //warehouse 중 창고인 경우만
     List<Warehouse> availableWarehouses = warehouseRepository.findAvailableWarehousesWithCurQty();
     if (availableWarehouses.isEmpty()) {
       throw new RuntimeException("빈 위치가 있는 창고가 없습니다.");
@@ -95,13 +96,14 @@ public class StockServiceImpl implements StockService {
 
 
     Item item = itemRepository.findById(itemId)
-        .orElseThrow(() -> new EntityNotFoundException("item not found by id"));
+        .orElseThrow(() -> new EntityNotFoundException("item not found by id : " + itemId));
 
     BigDecimal remainingQty = qty;
 
     BigDecimal runningTotal = getTotalStock(itemId);
 
     List<Stock> createdStocks = new ArrayList<>();
+    List<Location> changedLocations = new ArrayList<>();
 
     LotNumber lotNumber = lotNumberService.createLotNumberForStock(item, qty);
 
@@ -125,11 +127,7 @@ public class StockServiceImpl implements StockService {
         BigDecimal allocateQty = remainingQty.min(available);
 
         runningTotal = runningTotal.add(allocateQty);
-
-
-
-        if(available.compareTo(BigDecimal.ZERO) <= 0) continue;
-
+        
         Stock stock = Stock.builder()
             .location(loc)
             .lotNumber(lotNumber)
@@ -140,12 +138,13 @@ public class StockServiceImpl implements StockService {
             .build();
 
 
-        stockRepository.save(stock);
+        //stockRepository.save(stock);
         createdStocks.add(stock);
 
         //차지한 공간 -> 마찬가지로 null x
         loc.setCurQty(loc.getCurQty().add(allocateQty));
-        locationRepository.save(loc);
+        changedLocations.add(loc);
+        //locationRepository.save(loc);
 
 
         remainingQty = remainingQty.subtract(allocateQty);
@@ -159,67 +158,60 @@ public class StockServiceImpl implements StockService {
       throw new RuntimeException("수량을 모두 넣을 공간이 없습니다. 남은 수량: " + remainingQty);
     }
 
+    stockRepository.saveAll(createdStocks);
+    locationRepository.saveAll(changedLocations);
     return createdStocks;
   }
 
   @Transactional
   @Override
-  public List<Stock> removeStock(Long itemId, BigDecimal qty, User user) {
+  public List<Stock> removeStock(Long itemId, BigDecimal qty, String username) {
 
     BigDecimal remainQty = qty; //빼야할 수량
 
-    List<Warehouse> availableWarehouses = warehouseRepository.findWarehousesWithStock(itemId);
+//    List<Warehouse> availableWarehouses = warehouseRepository.findWarehousesWithStock(itemId);
     Item item = itemRepository.findById(itemId)
         .orElseThrow(() -> new EntityNotFoundException("item not found by id"));
 
     List<Stock> stocksRemoved = new ArrayList<>();
     LotNumber lotNumber = lotNumberService.createLotNumberForStock(item, qty);
-
+    List<Stock> stocks = stockRepository.findByItemId(itemId);
 
     BigDecimal runningTotalQty = getTotalStock(itemId);
-
-    for(Warehouse warehouse : availableWarehouses) {
+    for(Stock stock : stocks) {
       //빼야할 수량 없으면 x
       if(remainQty.compareTo(BigDecimal.ZERO) <= 0) break;
 
-      //위치 단위로 재고 소진
-      List<Stock> stocks = stockRepository.findByItemIdAndWarehouseId(itemId, warehouse.getId());
+      //위치에 남아있는 재고 > 출고수량 : 출고수량만큼만 빼기
+      //위치에 남은 재고 < 출고수량 : 남아있는 재고만큼만 빼기
+      BigDecimal removeQty = stock.getQty().min(remainQty);
 
-      for(Stock stock : stocks) {
-        //빼야할 수량 없으면 x
-        if(remainQty.compareTo(BigDecimal.ZERO) <= 0) break;
+      //현 위치의 재고 감소
+      stock.setQty(stock.getQty().subtract(removeQty));
+      stock.setLotNumber(lotNumber);
+      //총 재고 수량 - 각 변화되는 값 누적
+      runningTotalQty = runningTotalQty.subtract(removeQty);
+      stock.setCurrentQty(runningTotalQty);
 
-        //위치 중 해당 재고 자체만의 수량으로 비교
+      //stockRepository.save(stock);
 
-        //매 회차 빼줄 대상
-        //위치에 남아있는 재고 > 출고수량 : 출고수량만큼만 빼기
-        //위치에 남은 재고 < 출고수량 : 남아있는 재고만큼만 빼기
-        BigDecimal removeQty = stock.getQty().min(remainQty);
+      Location location = stock.getLocation();
+      location.setCurQty(location.getCurQty().subtract(removeQty));
+      //locationRepository.save(location);
 
-        //현 위치의 재고 감소
-        stock.setQty(stock.getQty().subtract(removeQty));
-        stock.setLotNumber(lotNumber);
-        //총 재고 수량 - 각 변화되는 값 누적
-        runningTotalQty = runningTotalQty.subtract(removeQty);
-        stock.setCurrentQty(stock.getQty().subtract(removeQty));
+      //출고해야할 수량 감소
+      remainQty = remainQty.subtract(removeQty);
 
-        stock.setCurrentQty(runningTotalQty);
-
-
-        stockRepository.save(stock);
-
-        Location location = stock.getLocation();
-        location.setCurQty(location.getCurQty().subtract(removeQty));
-        locationRepository.save(location);
-
-        //출고해야할 수량 감소
-        remainQty = remainQty.subtract(removeQty);
-
-        //재고 qty == 0이더라도 유지 -> 재고 삭제 x
-        stocksRemoved.add(stock);
-        System.out.println("Stock " + stock.getId() + " currentQty=" + stock.getCurrentQty());
-      }
+      //재고 qty == 0이더라도 유지 -> 재고 삭제 x
+      stocksRemoved.add(stock);
+      System.out.println("Stock " + stock.getId() + " currentQty=" + stock.getCurrentQty());
+      System.out.println("Stock " + stock.getId() + " Qty=" + stock.getQty());
+      System.out.println("Stock running total" + runningTotalQty);
+      System.out.println("stock remain " + remainQty);
+      System.out.println("location " + location.getId());
     }
+    stockRepository.saveAll(stocksRemoved);
+    locationRepository.saveAll(stocksRemoved.stream().map(Stock::getLocation).toList());
     return stocksRemoved;
   }
 

@@ -22,7 +22,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
+import jakarta.persistence.*;
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Builder
@@ -52,9 +52,9 @@ public class Warehouse extends BaseEntity {
   @Column(nullable = false)
   private String zipcode;
 
-  @Column(name = "daily_capacity") //nullable o -> 공장용
+  @Column(name = "daily_capacity", scale = 12, precision = 3) //nullable o -> 공장용
   @Builder.Default
-  private BigDecimal dailyCapacity = new BigDecimal("1600.00");
+  private BigDecimal dailyCapacity = new BigDecimal("1600.000");
 
   @OneToMany(mappedBy = "warehouse")
   @Builder.Default

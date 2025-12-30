@@ -12,11 +12,12 @@ public interface LocationRepository extends JpaRepository<Location, Long> {
 
   List<Location> findAllByWarehouseIdAndFilledFalse(Long warehouseId);
 
+  //현 재고 + 추가 재고 <= 최대
   @Query("""
     SELECT l 
     FROM Location l
     WHERE l.warehouse.id = :warehouseId
-      AND COALESCE(l.curQty, 0) < l.maxQty
+      AND COALESCE(l.curQty, 0) + :qty <= l.maxQty 
     ORDER BY l.curQty ASC
   """)
   List<Location> findAvailableLocationsWithCurQty(@Param("warehouseId") Long warehouseId,

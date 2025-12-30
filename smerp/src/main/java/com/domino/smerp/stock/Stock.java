@@ -61,7 +61,7 @@ public class Stock extends BaseEntity {
 
   //수량
   @Builder.Default
-  @Column(precision = 12, scale = 2, nullable = false)
+  @Column(precision = 12, scale = 3, nullable = false)
   @ToString.Include
   private BigDecimal qty = BigDecimal.ZERO;
 
@@ -74,7 +74,6 @@ public class Stock extends BaseEntity {
   @Builder.Default
   private BigDecimal currentQty = BigDecimal.ZERO;
 
-  //item 매핑 필요한가
   //item 생성하는 로직 시 stock까지 create 하도록 확인
   public static Stock create(Item item){
     return Stock.builder()
@@ -89,7 +88,7 @@ public class Stock extends BaseEntity {
   }
 
   public void setCurrentQty(BigDecimal qty){
-    this.qty = qty;
+    this.currentQty = qty;
   }
 
   public void setLotNumber(LotNumber lotNumber){
