@@ -3,7 +3,6 @@ package com.domino.smerp.bom.repository;
 import com.domino.smerp.bom.entity.BomClosure;
 import com.domino.smerp.bom.entity.BomClosureId;
 import java.util.List;
-import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -17,23 +16,30 @@ public interface BomClosureRepository extends JpaRepository<BomClosure, BomClosu
   // command
   @Modifying
   @Query(value = """
-      INSERT INTO bom_closure (ancestor_item_id, descendant_item_id, depth)
+      INSERT INTO `bom_closure` (`ancestor_item_id`, `descendant_item_id`, `depth`)
       VALUES (:ancestorId, :descendantId, :depth)
-      ON DUPLICATE KEY UPDATE depth = VALUES(depth)
+      ON DUPLICATE KEY UPDATE `depth` = VALUES(`depth`)
       """, nativeQuery = true)
   void upsertBomClosure(@Param("ancestorId") Long ancestorId,
-      @Param("descendantId") Long descendantId,
-      @Param("depth") Integer depth);
-
-  // 특정 품목을 조상으로 하는 모든 관계 삭제 (해당 품목의 모든 BOM 트리 삭제 시 사용)
-  @Modifying
-  @Query("DELETE FROM BomClosure bc WHERE bc.id.ancestorItemId = :ancestorItemId")
-  void deleteByAncestorItemId(final @Param("ancestorItemId") Long ancestorItemId);
+      @Param("descendantId") Long descendantId, @Param("depth") Integer depth);
 
   // 특정 품목을 자손으로 하는 모든 관계 삭제 (품목 자체가 삭제될 때 사용)
   @Modifying
   @Query("DELETE FROM BomClosure bc WHERE bc.id.descendantItemId = :descendantItemId")
   void deleteByDescendantItemId(final @Param("descendantItemId") Long descendantItemId);
+
+  // 관계 변경 시 서브노드 관계 보존하기
+  @Modifying
+  @Query("""
+  DELETE FROM BomClosure bc
+  WHERE bc.id.ancestorItemId IN :ancestorIds
+    AND bc.id.descendantItemId IN :descendantIds
+""")
+  void deleteSubtreeRelations(
+      @Param("ancestorIds") List<Long> ancestorIds,
+      @Param("descendantIds") List<Long> descendantIds
+  );
+
 
 
   // ============================================================================
@@ -45,22 +51,7 @@ public interface BomClosureRepository extends JpaRepository<BomClosure, BomClosu
   List<BomClosure> findById_DescendantItemId(final Long descendantItemId);
 
   // 특정 조상-자손 관계가 존재하는지 확인
-  boolean existsById_AncestorItemIdAndId_DescendantItemId(final Long ancestorId, final Long descendantId);
-
-  List<BomClosure> findById_AncestorItemIdAndDepth(final Long ancestorItemId, int depth);
-
-
-  // 특정 아이템의 조상만 조회 nativeQuery로
-  @Query(value = """
-      SELECT ancestor_item_id
-      FROM bom_closure
-      WHERE descendant_item_id = :itemId
-      ORDER BY depth DESC
-      LIMIT 1
-      """, nativeQuery = true)
-  Long findRootAncestorId(@Param("itemId") Long itemId);
-
-
-
+  boolean existsById_AncestorItemIdAndId_DescendantItemId(final Long ancestorId,
+      final Long descendantId);
 
 }

@@ -11,13 +11,11 @@ import com.domino.smerp.bom.entity.BomClosure;
 import com.domino.smerp.bom.entity.BomCostCache;
 import com.domino.smerp.bom.repository.BomClosureRepository;
 import com.domino.smerp.bom.repository.BomCostCacheRepository;
-import com.domino.smerp.bom.repository.BomRepository;
-import com.domino.smerp.bom.service.cache.BomCacheBuilder;
+import com.domino.smerp.bom.repository.query.BomQueryRepository;
+import com.domino.smerp.bom.support.BomReader;
 import com.domino.smerp.common.dto.PageResponse;
 import com.domino.smerp.common.exception.CustomException;
 import com.domino.smerp.common.exception.ErrorCode;
-import com.domino.smerp.item.Item;
-import com.domino.smerp.item.ItemService;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
@@ -32,19 +30,17 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class BomQueryServiceImpl implements BomQueryService {
 
-  private final ItemService itemService;
-
-  private final BomRepository bomRepository;
+  private final BomReader bomReader;
+  private final BomQueryRepository bomQueryRepository;
   private final BomCostCacheRepository bomCostCacheRepository;
   private final BomClosureRepository bomClosureRepository;
-  private final BomCacheBuilder bomCacheBuilder;
 
   @Override
   @Transactional(readOnly = true)
   public PageResponse<BomListResponse> searchBoms(final SearchBomRequest request,
       final Pageable pageable) {
     return PageResponse.from(
-        bomRepository.searchBoms(request, pageable)
+        bomQueryRepository.searchBoms(request, pageable)
     );
   }
 
@@ -54,15 +50,6 @@ public class BomQueryServiceImpl implements BomQueryService {
   public BomAllResponse getBomAll(final Long itemId) {
     // 캐시 조회
     List<BomCostCache> caches = bomCostCacheRepository.findByRootItemId(itemId);
-
-    // 비어있으면 캐시 즉시 빌드 + 저장
-    if (caches.isEmpty()) {
-      final Item root = itemService.findItemById(itemId);
-      caches = bomCacheBuilder.build(root);
-      if (!caches.isEmpty()) {
-        bomCostCacheRepository.saveAll(caches);
-      }
-    }
 
     // 진짜 비어있는지 확인
     if (caches.isEmpty()) {
@@ -79,20 +66,11 @@ public class BomQueryServiceImpl implements BomQueryService {
     // inbound (정전개)
     final BomCostCacheResponse inbound = buildTree(itemId, allEdges, cacheMap, 0);
 
-    // outbound (역전개)
-    final List<Long> ancestorIds = allEdges.stream()
-        .filter(e -> e.getDescendantItemId().equals(itemId))
-        .filter(e -> !e.getAncestorItemId().equals(itemId))
-        .filter(e -> e.getDepth() == 1) // 직계 부모들부터 시작 (상위로 재귀)
-        .map(BomClosure::getAncestorItemId)
-        .distinct()
-        .toList();
-
     // outbound
     final List<Long> allAncestors = allEdges.stream()
         .filter(e -> e.getDescendantItemId().equals(itemId))
-        .filter(e -> !e.getAncestorItemId().equals(itemId))
         .map(BomClosure::getAncestorItemId)
+        .filter(ancestorItemId -> !ancestorItemId.equals(itemId))
         .distinct()
         .toList();
 
@@ -130,21 +108,19 @@ public class BomQueryServiceImpl implements BomQueryService {
   @Override
   @Transactional(readOnly = true)
   public BomDetailResponse getBomDetail(final Long bomId, final String direction) {
-    final Bom bom = findBomById(bomId);
+    final Bom bom = bomReader.findBomById(bomId);
     return BomDetailResponse.fromEntity(bom);
   }
 
 
-  // BOM 소요량/원가 산출 (캐시O, Lazy Build 적용)
+  // BOM 소요량/원가 산출 (캐시O, Lazy Build 제거: 캐시가 없으면 계산하지 않음)
   @Override
   @Transactional(readOnly = true)
   public BomCostCacheResponse calculateTotalQtyAndCost(final Long rootItemId) {
-    // 1. 캐시 조회 (없으면 빌드)
+    // 1. 캐시 조회 (없으면 에러 반환)
     List<BomCostCache> caches = bomCostCacheRepository.findByRootItemId(rootItemId);
     if (caches.isEmpty()) {
-      final Item root = itemService.findItemById(rootItemId);
-      caches = bomCacheBuilder.build(root);
-      bomCostCacheRepository.saveAll(caches);
+      throw new CustomException(ErrorCode.BOM_NOT_FOUND);
     }
 
     // 2. 캐시 맵핑
@@ -159,18 +135,7 @@ public class BomQueryServiceImpl implements BomQueryService {
   }
 
   // ==========================
-  // 공통 메소드 (e.g. findBy)
-  // ==========================
-  @Override
-  @Transactional(readOnly = true)
-  public Bom findBomById(final Long bomId) {
-    return bomRepository.findById(bomId)
-        .orElseThrow(() -> new CustomException(ErrorCode.BOM_NOT_FOUND));
-  }
-
-
-  // ==========================
-  // 내부 유틸
+  // 헬퍼 메서드
   // ==========================
   // 정전개 트리 제작
   private BomCostCacheResponse buildTree(
@@ -244,36 +209,15 @@ public class BomQueryServiceImpl implements BomQueryService {
     return BomCostCacheResponse.of(self, depth, self.getTotalCost(), parents);
   }
 
-  // self 캐시를 보장: 없으면 빌드 후 저장
+  // self 캐시를 보장: 없으면 빌드하지 않고, 존재하는 경우에만 사용
   private void ensureSelfCache(final Long id, final Map<Long, BomCostCache> selfCacheMap) {
     if (selfCacheMap.containsKey(id)) {
       return;
     }
 
     // self 캐시 조회 (root=id, child=id)
-    BomCostCache self = bomCostCacheRepository
-        .findByRootItemIdAndChildItemId(id, id)
-        .orElse(null);
-
-    if (self == null) {
-      // 해당 루트의 캐시가 없다면 즉시 빌드 & 저장
-      final Item item = itemService.findItemById(id);
-      List<BomCostCache> built = bomCacheBuilder.build(item);
-      if (!built.isEmpty()) {
-        bomCostCacheRepository.saveAll(built);
-      }
-
-      // 다시 self 캐시만 찾아서 맵핑
-      self = built.stream()
-          .filter(c -> c.getRootItemId().equals(id) && c.getChildItemId().equals(id))
-          .findFirst()
-          .orElse(null);
-    }
-
-    if (self != null) {
-      selfCacheMap.put(id, self);
-    }
-
+    bomCostCacheRepository
+        .findByRootItemIdAndChildItemId(id, id).ifPresent(self -> selfCacheMap.put(id, self));
 
   }
 }

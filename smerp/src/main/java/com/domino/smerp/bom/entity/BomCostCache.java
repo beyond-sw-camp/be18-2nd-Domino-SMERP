@@ -19,6 +19,16 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+/**
+ * BOM 전개 결과에 대한 원가 계산 캐시 엔티티.
+ *
+ * - BOM 구조 변경 시 반복되는 재귀 탐색 비용을 줄이기 위해
+ *   계산 결과를 관계형 테이블에 캐싱한다.
+ *
+ * - Redis 기반 캐시는 사용하지 않으며,
+ *   트랜잭션 경계 내 정합성과 조회 결과의 재현성을 우선한다.
+ */
+
 @Entity
 @Getter
 @Builder
@@ -26,11 +36,12 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Table(name = "bom_cost_cache",
     indexes = {
-      @Index(name = "idx_cost_root", columnList = "root_item_id"),
-      @Index(name = "idx_cost_child", columnList = "child_item_id")
+        @Index(name = "idx_cost_root", columnList = "root_item_id"),
+        @Index(name = "idx_cost_child", columnList = "child_item_id")
     },
     uniqueConstraints = {
-        @UniqueConstraint(name = "uq_root_child_depth", columnNames = {"root_item_id", "child_item_id", "depth"})
+        @UniqueConstraint(name = "uq_root_child_depth", columnNames = {"root_item_id",
+            "child_item_id", "depth"})
     }
 )
 public class BomCostCache {

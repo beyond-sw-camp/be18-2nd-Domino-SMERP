@@ -3,6 +3,7 @@ package com.domino.smerp.bom.service.cache;
 import com.domino.smerp.bom.entity.Bom;
 import com.domino.smerp.bom.entity.BomCostCache;
 import com.domino.smerp.bom.repository.BomRepository;
+import com.domino.smerp.bom.support.BomReader;
 import com.domino.smerp.item.Item;
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -16,7 +17,7 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class BomCacheBuilder {
 
-  private final BomRepository bomRepository;
+  private final BomReader bomReader;
 
   public List<BomCostCache> build(final Item rootItem) {
     final List<BomCostCache> caches = new ArrayList<>();
@@ -31,8 +32,8 @@ public class BomCacheBuilder {
       final BigDecimal accQty,
       final int depth,
       final List<BomCostCache> caches
-) {
-    final List<Bom> children = bomRepository.findByParentItem_ItemId(current.getItemId());
+  ) {
+    final List<Bom> children = bomReader.findChildren(current.getItemId());
 
     log.info("DFS build: root={}, current={}, depth={}, childrenCount={}",
         root.getName(), current.getName(), depth, children.size());

@@ -30,7 +30,6 @@ import org.hibernate.annotations.SQLRestriction;
 @Entity
 @Getter
 @Builder
-@ToString
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Table(name = "lot_number")

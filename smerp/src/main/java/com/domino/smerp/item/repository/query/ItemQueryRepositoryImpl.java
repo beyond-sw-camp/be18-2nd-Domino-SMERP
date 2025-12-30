@@ -1,11 +1,11 @@
 package com.domino.smerp.item.repository.query;
 
 import com.domino.smerp.common.util.QuerydslUtils;
-import com.domino.smerp.item.constants.ItemStatusStatus;
-import com.domino.smerp.item.dto.request.SearchItemRequest;
 import com.domino.smerp.item.Item;
 import com.domino.smerp.item.QItem;
 import com.domino.smerp.item.QItemStatus;
+import com.domino.smerp.item.constants.ItemStatusStatus;
+import com.domino.smerp.item.dto.request.SearchItemRequest;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.Path;
 import com.querydsl.core.types.dsl.BooleanExpression;
@@ -131,4 +131,19 @@ public class ItemQueryRepositoryImpl implements ItemQueryRepository {
     return (groupName3 == null || groupName3.isEmpty()) ? null
         : QItem.item.groupName3.contains(groupName3);
   }
+
+  @Override
+  public List<Long> findAllActiveItemIds() {
+    final QItem i = QItem.item;
+
+    // isDeleted = false인 모든 Item ID를 조회
+    return queryFactory
+        .selectDistinct(i.itemId)
+        .from(i)
+        .where(
+            i.isDeleted.eq(false) // 삭제되지 않은 모든 아이템을 대상
+        )
+        .fetch();
+  }
+
 }

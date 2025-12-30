@@ -45,3 +45,7 @@ application*.yml
 .env
 .env.*
 !.env.example
+
+# macOS
+.DS_Store
+**/.DS_Store

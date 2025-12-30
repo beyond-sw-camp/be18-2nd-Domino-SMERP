@@ -147,6 +147,12 @@ public class ItemServiceImpl implements ItemService {
         .orElseThrow(() -> new CustomException(ErrorCode.ITEM_NOT_FOUND));
   }
 
+  @Override
+  @Transactional(readOnly = true)
+  public List<Long> findAllActiveItemIds() {
+    return itemRepository.findAllActiveItemIds();
+  }
+
 
 
   // 품목 구분으로 리스트 조회

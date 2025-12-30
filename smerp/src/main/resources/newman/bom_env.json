@@ -3,6 +3,7 @@
   "name": "K-pop BOM 환경변수",
   "values": [
     { "key": "baseUrl", "value": "http://localhost:8080", "enabled": true },
+    {"key": "rootItemId", "value": "2", "enabled": true},
 
     { "key": "빅히트_뮤직_id", "value": "1", "enabled": true },
     { "key": "플레디스_엔터테인먼트_id", "value": "2", "enabled": true },
