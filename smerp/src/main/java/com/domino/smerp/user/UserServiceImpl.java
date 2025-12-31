@@ -83,7 +83,7 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional(readOnly = true)
     public PageResponse<UserListResponse> searchUsers(final String name, final String deptTitle,
-        Pageable pageable) {
+        final Pageable pageable) {
 
         BooleanExpression nameCondition =
             (name != null && !name.isEmpty()) ? QUser.user.name.startsWith(name) : null;
