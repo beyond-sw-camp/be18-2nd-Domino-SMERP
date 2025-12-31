@@ -27,10 +27,12 @@ public class SecurityConfig {
             .cors(customizer ->
                 customizer.configurationSource(getCorsConfigurationSource()))
             .authorizeHttpRequests(
-                auth -> auth.requestMatchers("/api/v1/**")
-                            .permitAll()
-                            .anyRequest()
-                            .authenticated()
+                auth -> auth.requestMatchers("/api/v1/**",
+                        "/es-test",
+                        "/error-test")
+                    .permitAll()
+                    .anyRequest()
+                    .authenticated()
             )
             .anonymous(anonymous -> anonymous
                 .principal("SYSTEM"))
@@ -61,7 +63,7 @@ public class SecurityConfig {
             corsConfiguration.setAllowedOriginPatterns(List.of("*"));
 
             corsConfiguration.setAllowedMethods(
-                Arrays.asList("GET", "POST", "PATCH", "DELETE", "OPTIONS"));
+                Arrays.asList("GET", "POST", "PATCH", "PUT", "DELETE", "OPTIONS"));
 
             corsConfiguration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type"));
 

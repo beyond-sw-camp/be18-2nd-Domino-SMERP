@@ -1,18 +1,26 @@
 package com.domino.smerp.itemorder;
 
 import com.domino.smerp.item.Item;
-import com.domino.smerp.log.audit.AuditLogEntityListener;
 import com.domino.smerp.order.Order;
-import jakarta.persistence.*;
-import lombok.*;
-import org.hibernate.envers.Audited;
-
+import jakarta.persistence.Column;
+import jakarta.persistence.ConstraintMode;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.ForeignKey;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 import java.math.BigDecimal;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Entity
-//@ToString
-//@Audited
-//@EntityListeners(AuditLogEntityListener.class)
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor

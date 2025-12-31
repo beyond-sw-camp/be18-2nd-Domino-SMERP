@@ -11,6 +11,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -23,45 +24,56 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("api/v1/users")
+@RequestMapping("/api/v1/users")
 @RequiredArgsConstructor
 public class UserController {
+
     private final UserService userService;
 
     @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
-    public void createUser(@Valid @RequestBody final CreateUserRequest request) {
-
+    public ResponseEntity<Void> createUser(
+        @Valid @RequestBody final CreateUserRequest request
+    ) {
         userService.createUser(request);
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @GetMapping
-    @ResponseStatus(HttpStatus.OK)
-    public PageResponse<UserListResponse> searchUsers(@RequestParam(required = false) String name,
-        @RequestParam(required = false) String deptTitle,@PageableDefault(size = 20, sort = "userId", direction = Sort.Direction.DESC)
-        Pageable pageable) {
-
-        return userService.searchUsers(name, deptTitle,pageable);
+    public ResponseEntity<PageResponse<UserListResponse>> searchUsers(
+        @RequestParam(required = false) final String name,
+        @RequestParam(required = false) final String deptTitle,
+        @PageableDefault(size = 20, sort = "userId", direction = Sort.Direction.DESC)
+        Pageable pageable
+    ) {
+        return ResponseEntity.ok(
+            userService.searchUsers(name, deptTitle, pageable)
+        );
     }
 
     @GetMapping("/{enpNo}")
-    public UserResponse findUserById(@PathVariable final String enpNo) {
-
-        return userService.findUserByEnpNo(enpNo);
-    }
-
-    @DeleteMapping("/{userId}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteUser(@PathVariable final Long userId) {
-
-        userService.deleteUser(userId);
+    public ResponseEntity<UserResponse> findUserById(
+        @PathVariable final String enpNo
+    ) {
+        return ResponseEntity.ok(
+            userService.findUserByEnpNo(enpNo)
+        );
     }
 
     @PatchMapping("/{enpNo}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void updateUser(@PathVariable final String enpNo,
-        @Valid @RequestBody final UpdateUserRequest request) {
-
+    public ResponseEntity<Void> updateUser(
+        @PathVariable final String enpNo,
+        @Valid @RequestBody final UpdateUserRequest request
+    ) {
         userService.updateUser(enpNo, request);
+        return ResponseEntity.noContent().build(); // 204
+    }
+
+    @DeleteMapping("/{enpNo}")
+    public ResponseEntity<Void> deleteUser(
+        @PathVariable final String enpNo
+    ) {
+        userService.deleteUser(enpNo);
+        return ResponseEntity.noContent().build(); // 204
     }
 }
+
