@@ -42,6 +42,8 @@ public class AdminApiLogSearchRepositoryImpl
 
         if (cond.getStatus() != null) {
             criteria = criteria.and("status").is(cond.getStatus());
+        } else {
+            criteria = criteria.and("status").lessThan(400);
         }
 
         if (cond.getUri() != null) {
