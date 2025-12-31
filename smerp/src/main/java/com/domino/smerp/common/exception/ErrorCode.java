@@ -110,7 +110,10 @@ public enum ErrorCode {
 
 
     // 전표 생성 예외 정보
-    DOCUMENT_NO_GENERATION_FAILED(HttpStatus.CONFLICT, "DOCUMENT_NO_GENERATION_FAILED", "전표번호 생성에 실패했습니다.");
+    DOCUMENT_NO_GENERATION_FAILED(HttpStatus.CONFLICT, "DOCUMENT_NO_GENERATION_FAILED", "전표번호 생성에 실패했습니다."),
+
+    // log - 로그 관련 예외
+    ACTION_LOG_NOT_FOUND(HttpStatus.NOT_FOUND, "ACTION_LOG_NOT_FOUND", "존재하지 않는 활동 로그입니다.");
 
     private final HttpStatus status;
     private final String code;

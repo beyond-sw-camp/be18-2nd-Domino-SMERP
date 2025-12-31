@@ -1,5 +1,7 @@
 package com.domino.smerp.logging.service;
 
+import com.domino.smerp.common.exception.CustomException;
+import com.domino.smerp.common.exception.ErrorCode;
 import com.domino.smerp.logging.domain.ActionLog;
 import com.domino.smerp.logging.dto.response.ActionLogDetailResponse;
 import com.domino.smerp.logging.dto.response.ActionLogResponse;
@@ -28,7 +30,7 @@ public class AdminActionLogService {
 
     public ActionLogDetailResponse getDetailLog(final String id) {
         ActionLog log = actionLogRepository.findById(id)
-            .orElseThrow(() -> new IllegalArgumentException("행위 로그를 찾을 수 없습니다."));
+            .orElseThrow(() -> new CustomException(ErrorCode.ACTION_LOG_NOT_FOUND));
 
         return ActionLogDetailResponse.from(log);
     }
