@@ -19,14 +19,14 @@ public class AdminActionLogService {
     private final ActionLogRepository actionLogRepository;
 
     public Page<ActionLogResponse> search(
-        AdminActionLogSearchCondition cond,
+        final AdminActionLogSearchCondition cond,
         Pageable pageable
     ) {
         return repository.search(cond, pageable)
             .map(ActionLogResponse::from);
     }
 
-    public ActionLogDetailResponse getDetailLog(String id) {
+    public ActionLogDetailResponse getDetailLog(final String id) {
         ActionLog log = actionLogRepository.findById(id)
             .orElseThrow(() -> new IllegalArgumentException("행위 로그를 찾을 수 없습니다."));
 

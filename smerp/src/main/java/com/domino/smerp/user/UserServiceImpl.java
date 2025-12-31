@@ -35,7 +35,7 @@ public class UserServiceImpl implements UserService {
         entity = "USER",
         entityId = "#result.empNo"
     )
-    public User createUser(CreateUserRequest request) {
+    public User createUser(final CreateUserRequest request) {
 
         String encryptedSsn = ssnEncryptor.encryptSsn(request.getSsn());
 
@@ -82,7 +82,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional(readOnly = true)
-    public PageResponse<UserListResponse> searchUsers(String name, String deptTitle,
+    public PageResponse<UserListResponse> searchUsers(final String name, final String deptTitle,
         Pageable pageable) {
 
         BooleanExpression nameCondition =
@@ -121,7 +121,7 @@ public class UserServiceImpl implements UserService {
         entity = "USER",
         entityId = "#empNo"
     )
-    public void deleteUser(String empNo) {
+    public void deleteUser(final String empNo) {
 
         User user = userRepository.findByEmpNo(empNo)
             .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
@@ -162,7 +162,7 @@ public class UserServiceImpl implements UserService {
         entity = "USER",
         entityId = "#enpNo"
     )
-    public void updateUser(String enpNo, UpdateUserRequest request) {
+    public void updateUser(final String enpNo, final UpdateUserRequest request) {
 
         if (request.getPhone() != null &&
             userRepository.existsByPhoneAndEmpNoNot(request.getPhone(), enpNo)) {

@@ -15,7 +15,7 @@ public class AdminLogService {
     private final AdminApiLogSearchRepository apiLogSearchRepository;
 
     public Page<ApiLogResponse> searchApiLogs(
-        AdminLogSearchCondition cond,
+        final AdminLogSearchCondition cond,
         Pageable pageable
     ) {
         return apiLogSearchRepository.search(cond, pageable)

@@ -27,13 +27,13 @@ public class AdminActionLogController {
 
     @GetMapping
     public Page<ActionLogResponse> search(
-        @RequestParam(required = false) LocalDateTime from,
-        @RequestParam(required = false) LocalDateTime to,
-        @RequestParam(required = false) String action,
-        @RequestParam(required = false) String entity,
-        @RequestParam(required = false) String entityId,
-        @RequestParam(required = false) Boolean success,
-        @RequestParam(required = false) String actor,
+        @RequestParam(required = false) final LocalDateTime from,
+        @RequestParam(required = false) final LocalDateTime to,
+        @RequestParam(required = false) final String action,
+        @RequestParam(required = false) final String entity,
+        @RequestParam(required = false) final String entityId,
+        @RequestParam(required = false) final Boolean success,
+        @RequestParam(required = false) final String actor,
         @PageableDefault(size = 20, sort = "timestamp", direction = Sort.Direction.DESC)
             Pageable pageable
     ) {
@@ -53,7 +53,7 @@ public class AdminActionLogController {
 
     @GetMapping("/{id}")
     public ActionLogDetailResponse detail(
-        @PathVariable String id
+        @PathVariable final String id
     ) {
         return service.getDetailLog(id);
     }

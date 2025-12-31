@@ -15,7 +15,7 @@ public class AdminErrorLogService {
     private final AdminErrorLogSearchRepository searchRepository;
 
     public Page<ErrorLogResponse> searchErrorLogs(
-        AdminErrorLogSearchCondition cond,
+        final AdminErrorLogSearchCondition cond,
         Pageable pageable
     ) {
         return searchRepository.search(cond, pageable)

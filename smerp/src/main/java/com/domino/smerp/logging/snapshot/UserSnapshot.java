@@ -26,7 +26,7 @@ public class UserSnapshot {
 
     private String companyName;
 
-    public static UserSnapshot from(User user) {
+    public static UserSnapshot from(final User user) {
         return UserSnapshot.builder()
             .empNo(user.getEmpNo())
             .name(user.getName())

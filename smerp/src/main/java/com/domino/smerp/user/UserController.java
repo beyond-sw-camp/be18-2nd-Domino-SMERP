@@ -37,8 +37,8 @@ public class UserController {
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public PageResponse<UserListResponse> searchUsers(@RequestParam(required = false) String name,
-        @RequestParam(required = false) String deptTitle,@PageableDefault(size = 20, sort = "userId", direction = Sort.Direction.DESC)
+    public PageResponse<UserListResponse> searchUsers(@RequestParam(required = false) final String name,
+        @RequestParam(required = false) final String deptTitle, @PageableDefault(size = 20, sort = "userId", direction = Sort.Direction.DESC)
         Pageable pageable) {
 
         return userService.searchUsers(name, deptTitle,pageable);
@@ -51,7 +51,7 @@ public class UserController {
     }
 
     @DeleteMapping("/{enpNo}")
-    public void deleteUser(@PathVariable String enpNo) {
+    public void deleteUser(@PathVariable final String enpNo) {
         userService.deleteUser(enpNo);
     }
 

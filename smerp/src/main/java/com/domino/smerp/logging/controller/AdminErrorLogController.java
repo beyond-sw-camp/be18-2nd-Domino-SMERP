@@ -25,12 +25,12 @@ public class AdminErrorLogController {
 
     @GetMapping
     public Page<ErrorLogResponse> search(
-        @RequestParam(required = false) LocalDateTime from,
-        @RequestParam(required = false) LocalDateTime to,
-        @RequestParam(required = false) Integer status,
-        @RequestParam(required = false) String uri,
-        @RequestParam(required = false) String principal,
-        @RequestParam(required = false) String exceptionClass,
+        @RequestParam(required = false) final LocalDateTime from,
+        @RequestParam(required = false) final LocalDateTime to,
+        @RequestParam(required = false) final Integer status,
+        @RequestParam(required = false) final String uri,
+        @RequestParam(required = false) final String principal,
+        @RequestParam(required = false) final String exceptionClass,
         @PageableDefault(size = 20, sort = "timestamp", direction = Sort.Direction.DESC)
             Pageable pageable
     ) {
