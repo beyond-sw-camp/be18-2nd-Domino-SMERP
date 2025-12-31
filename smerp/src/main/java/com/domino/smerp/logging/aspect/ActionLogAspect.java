@@ -1,5 +1,7 @@
 package com.domino.smerp.logging.aspect;
 
+import com.domino.smerp.logging.provider.ActionLogEntityProvider;
+import com.domino.smerp.logging.provider.ActionLogEntityProviderRegistry;
 import com.domino.smerp.logging.snapshot.UserSnapshot;
 import com.domino.smerp.logging.annotation.ActionLoggable;
 import com.domino.smerp.logging.domain.ActionLog;
@@ -24,14 +26,14 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
+@RequiredArgsConstructor
 @Aspect
 @Component
-@RequiredArgsConstructor
 public class ActionLogAspect {
 
     private final ActionLogRepository repository;
     private final ObjectMapper objectMapper;
-    private final UserRepository userRepository;
+    private final ActionLogEntityProviderRegistry providerRegistry;
 
     @PersistenceContext
     private EntityManager em;
@@ -64,12 +66,11 @@ public class ActionLogAspect {
 
         if (!"CREATE".equals(action)) {
             entityId = parseSpel(actionLoggable.entityId(), context);
-            beforeJson = toJson(loadEntity(entity, entityId));
+            beforeJson = toJson(loadSnapshot(entity, entityId));
         }
 
         try {
             Object result = joinPoint.proceed();
-
             em.flush();
 
             if ("CREATE".equals(action)) {
@@ -77,10 +78,9 @@ public class ActionLogAspect {
                 entityId = parseSpel(actionLoggable.entityId(), context);
             }
 
-            String afterJson = null;
-            if (!"DELETE".equals(action)) {
-                afterJson = toJson(loadEntity(entity, entityId));
-            }
+            String afterJson =
+                "DELETE".equals(action) ? null
+                    : toJson(loadSnapshot(entity, entityId));
 
             repository.save(ActionLog.builder()
                 .action(action)
@@ -116,14 +116,15 @@ public class ActionLogAspect {
         }
     }
 
-    private Object loadEntity(String entity, String entityId) {
-        return switch (entity) {
-            case "USER" -> userRepository
-                .findByEmpNo(entityId)
-                .map(UserSnapshot::from)
-                .orElse(null);
-            default -> null;
-        };
+    private Object loadSnapshot(String entity, String entityId) {
+        if (entityId == null) return null;
+
+        ActionLogEntityProvider provider =
+            providerRegistry.getProvider(entity);
+
+        return provider != null
+            ? provider.loadSnapshot(entityId)
+            : null;
     }
 
     private EvaluationContext buildContext(

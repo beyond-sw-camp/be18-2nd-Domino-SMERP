@@ -29,6 +29,7 @@ public class UserServiceImpl implements UserService {
     private final PasswordEncoder passwordEncoder;
     private final SsnEncryptor ssnEncryptor;
 
+    @Override
     @Transactional
     @ActionLoggable(
         action = "CREATE",
@@ -115,6 +116,7 @@ public class UserServiceImpl implements UserService {
         return PageResponse.from(pageUser);
     }
 
+    @Override
     @Transactional
     @ActionLoggable(
         action = "DELETE",
@@ -128,6 +130,7 @@ public class UserServiceImpl implements UserService {
 
         userRepository.delete(user);
     }
+
     @Override
     @Transactional(readOnly = true)
     public UserResponse findUserByEnpNo(final String enpNo) {
@@ -156,6 +159,7 @@ public class UserServiceImpl implements UserService {
                            .build();
     }
 
+    @Override
     @Transactional
     @ActionLoggable(
         action = "UPDATE",
